@@ -133,8 +133,8 @@
 
 /* Fade only the scene, leaving the author's logo and all text untouched. */
 .hero-picture {
-  opacity: .78;
-  filter: saturate(.7);
+  opacity: .74;
+  filter: saturate(.65);
   transition: opacity 650ms ease, filter 650ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
