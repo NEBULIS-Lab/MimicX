@@ -19,6 +19,7 @@ MEDIA = {
     "kungfu-fixed.mp4": "VIDEO__KONGFU__FIXED_REFERENCE__WITH_REFERENCE.mp4",
     "kungfu-ours.mp4": "VIDEO__KONGFU__MIMICX__WITH_REFERENCE.mp4",
     "hero-tennis.png": "MOTION__TENNIS__MIMICX__COURT_WIDE__7POSE.png",
+    "readme-tennis-motion.png": "MOTION__TENNIS__MIMICX__ACTION_PANORAMA__7POSE.png",
     "hero-tennis-mobile.png": "FRAME__TENNIS__MIMICX__PIPELINE_CAMERA__STEP000201.png",
     "stage-human.png": "REFERENCE_ASSET__TENNIS__SMPLX_CAMERA__OBLIQUE__POSE05__FRAME000131__ALPHA.png",
     "stage-world.png": "REFERENCE_ASSET__TENNIS__SMPLX_GLOBAL__OBLIQUE__POSE05__FRAME000131__ALPHA.png",
