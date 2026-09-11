@@ -49,8 +49,8 @@
   gap: 0;
   margin: 0;
   font-family: "MimicX Montserrat", "Avenir Next", sans-serif;
-  font-size: 168px;
-  font-weight: 900;
+  font-size: 156px;
+  font-weight: 800;
   font-style: normal;
   line-height: 1;
   letter-spacing: 0;
@@ -79,7 +79,7 @@
   color: #c54a35;
   -webkit-text-fill-color: #c54a35;
 }
-.brand-x { flex: none; width: 184px; height: 184px; object-fit: contain; }
+.brand-x { flex: none; width: 200px; height: 200px; object-fit: contain; }
 .hero-copy .paper-title {
   max-width: 1020px;
   margin: 0;
@@ -91,8 +91,8 @@
 }
 
 @media (max-width: 1000px) {
-  .hero-copy .brand-wordmark { font-size: 132px; }
-  .brand-x { width: 148px; height: 148px; }
+  .hero-copy .brand-wordmark { font-size: 122px; }
+  .brand-x { width: 160px; height: 160px; }
   .hero-copy .paper-title { font-size: 22px; max-width: 720px; }
 }
 @media (max-width: 600px) {
@@ -100,21 +100,21 @@
   .hero-scene { height: min(660px, 84svh); }
   .hero-picture { inset: 80px 0 -80px; }
   .hero-copy { inset: 50% 18px auto; gap: 18px; }
-  .hero-copy .brand-wordmark { font-size: 74px; }
-  .brand-x { width: 84px; height: 84px; }
+  .hero-copy .brand-wordmark { font-size: 68px; }
+  .brand-x { width: 92px; height: 92px; }
   .hero-copy .paper-title { font-size: 18px; max-width: 440px; line-height: 1.45; }
 }
 @media (max-width: 360px) {
-  .hero-copy .brand-wordmark { font-size: 64px; }
-  .brand-x { width: 74px; height: 74px; }
+  .hero-copy .brand-wordmark { font-size: 60px; }
+  .brand-x { width: 80px; height: 80px; }
   .hero-copy .paper-title { font-size: 16px; }
 }
 @media (max-height: 540px) and (min-width: 601px) {
   .top-nav { min-height: 60px; }
   .hero-picture { inset: 30px 0 -30px; }
   .hero-copy { gap: 8px; }
-  .hero-copy .brand-wordmark { font-size: 76px; }
-  .brand-x { width: 90px; height: 90px; }
+  .hero-copy .brand-wordmark { font-size: 70px; }
+  .brand-x { width: 98px; height: 98px; }
   .hero-copy .paper-title { font-size: 17px; max-width: 760px; }
 }
 @media (max-height: 650px) and (max-width: 600px) {

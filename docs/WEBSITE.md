@@ -7,7 +7,7 @@ analytics account or runtime data fetch.
 ## Layout and Theme
 
 The hero uses the author's human/G1 X mark, combined with self-hosted
-Montserrat Black text as a centered MimicX wordmark. Charcoal-to-terracotta
+Montserrat ExtraBold text as a centered MimicX wordmark. Charcoal-to-terracotta
 letterforms and coral i dots sit above the bold black full paper title.
 Navigation and the bottom image information strip use dark translucent
 backgrounds. The same original X supplies the site's transparent favicon.
