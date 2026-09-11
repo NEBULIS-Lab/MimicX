@@ -24,9 +24,15 @@ identity are separate from measured results, which live in the website only.
 `configs/paper/core_inputs.json` records checksums for 22 assets: four original
 motions, two pre-registered repaired motions, four warmstarts, eight historical
 parameter dumps, and four fixed-policy HLoop checkpoints. The bundle has been
-assembled and byte-verified by the authors. It is **not yet published at a
-download URL** and is not included in Git. An external reader needs this
-bundle to resume the exact paper policies. Do not substitute a newly trained
+assembled and verified by the authors. It is now available through the paired
+[MimicX-Policies](https://huggingface.co/Shuaijun/MimicX-Policies) and
+[MimicX-Assets](https://huggingface.co/datasets/Shuaijun/MimicX-Assets)
+repositories, rather than stored in Git. The bundled `prepare.py core-inputs`
+command reconstructs the 22-file input bundle; see the
+[artifact usage guide](https://huggingface.co/Shuaijun/MimicX-Policies/blob/main/USAGE.md).
+Public parameter dumps have sanitized paths and updated checksums; use the
+emitted `manifest.json` with `--spec`, as shown below. Checkpoint and motion
+bytes are unchanged. Do not substitute a newly trained
 warmstart while calling it an exact reproduction of the reported continuation.
 
 Raw video reconstruction uses separately obtained source videos/models. The
@@ -38,6 +44,7 @@ After obtaining the bundle and installing the pinned backend:
 ```bash
 python scripts/reproduction/configure_core.py \
   --assets /path/to/paper-core-inputs \
+  --spec /path/to/paper-core-inputs/manifest.json \
   --backend third_party/unitree_rl_mjlab \
   --runtime-python /path/to/tracking-environment/bin/python \
   --output runs/paper-config

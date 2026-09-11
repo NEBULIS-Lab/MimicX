@@ -83,3 +83,14 @@ def test_core_asset_manifest_is_path_free():
     for task in payload["tasks"]:
         for key in ("motion_file", "base_checkpoint", "hloop_checkpoint"):
             assert task[key] in paths
+
+
+def test_huggingface_links_are_in_header_and_resources():
+    source = (WEBSITE / "index.html").read_text()
+    header = source.split('<nav class="top-nav"')[1].split('</nav>')[0]
+    resources = source.split('id="resources"')[1].split('</section>')[0]
+    for url in ("https://huggingface.co/Shuaijun/MimicX-Policies",
+                "https://huggingface.co/datasets/Shuaijun/MimicX-Assets"):
+        assert f'href="{url}"' in header
+        assert f'href="{url}"' in resources
+    assert "recommended/README.md" in resources

@@ -3,3 +3,9 @@
 @media(max-width:768px){.hero-scene{height:600px;min-height:420px;max-height:82svh}.top-nav{gap:18px;padding:16px 20px}.hero-copy{left:0;top:64px;padding:20px;max-width:100%}.hero-copy h1{font-size:52px}.paper-title{font-size:20px}.desktop-break{display:none}.hero-bottom{padding:12px 20px;font-size:12px}.hero-bottom span{max-width:200px}.section-nav{gap:10px 20px;padding:12px 16px}.section-nav a{font-size:12px}.section{padding:44px 20px}h2{font-size:27px}.lead{font-size:18px}.findings{grid-template-columns:1fr;gap:20px}.findings strong{font-size:27px}.stage-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px}.stage-grid figcaption{font-size:12px}.method-columns{grid-template-columns:1fr;gap:18px}.method-columns p{margin-bottom:0}.policy-pair{grid-template-columns:1fr}.results-table th,.results-table td{padding:10px}.hloop-flow{gap:10px;font-size:13px;flex-wrap:wrap}.resource-links,#result-downloads{grid-template-columns:1fr}.comparison-controls select{max-width:100%}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 .hero-scene{background-image:url('../media/tennis-court-poster.jpg');background-size:cover;background-position:center 60%}.hero-copy{background:none;text-shadow:none}.hero-copy h1{color:var(--coral)}.hero-copy .paper-title{color:var(--ink)}
+.top-nav{align-items:center;flex-wrap:wrap;gap:10px 20px}
+.hf-nav-links{display:inline-flex;gap:12px}
+.top-nav .hf-link{background:var(--pale);color:var(--deep);border-radius:4px;padding:4px 10px;white-space:nowrap}
+.top-nav .hf-link:hover{background:#fff;color:var(--deep)}
+.resource-links .hf-resource{color:var(--deep);border-bottom:2px solid var(--coral)}
+@media(max-width:520px){.top-nav{justify-content:center;gap:8px 16px;padding:12px 16px}.top-nav a{font-size:13px}.hero-copy{top:112px}}

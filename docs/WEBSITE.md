@@ -20,6 +20,13 @@ are recorded in `assets/media/manifest.json`.
 
 ## Maintenance
 
+Header and resource links point to the published
+[Policies](https://huggingface.co/Shuaijun/MimicX-Policies) and
+[Assets](https://huggingface.co/datasets/Shuaijun/MimicX-Assets) repositories.
+The recommended-policy entry supports one-task downloads; complete artifacts
+remain on HF, not duplicated in the website. Keep these links synchronized
+when updating release navigation.
+
 ```bash
 python scripts/build_website_results.py
 python -m pytest tests/test_website_release.py -q
