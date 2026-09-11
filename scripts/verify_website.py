@@ -43,8 +43,8 @@ def main():
                     page.goto(f"http://127.0.0.1:{server.server_port}/", wait_until="networkidle")
                     page.wait_for_function("document.querySelector('#hero-image').complete && document.querySelector('#hero-image').naturalWidth > 0")
                     page.evaluate('document.fonts.ready')
-                    assert page.evaluate('document.fonts.check(\'800 32px "MimicX Montserrat"\')')
-                    assert page.locator('.brand-wordmark').evaluate("e => getComputedStyle(e).fontWeight") == '800'
+                    assert page.evaluate('document.fonts.check(\'700 32px "MimicX Montserrat"\')')
+                    assert page.locator('.brand-wordmark').evaluate("e => getComputedStyle(e).fontWeight") == '700'
                     assert page.locator('.brand-x').get_attribute('src') == 'assets/branding/logo-x.png'
                     brand = page.locator('.brand-wordmark').bounding_box()
                     title = page.locator('.hero-copy .paper-title').bounding_box()

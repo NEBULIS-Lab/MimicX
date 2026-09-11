@@ -4,7 +4,7 @@
 and a G1 robot. Its bytes are unchanged. It is a project mark, not an
 experimental result, and must not be replaced by generated artwork.
 
-The website combines live Montserrat ExtraBold text (`Mimic`, weight 800) with this image as
+The website combines live Montserrat Bold text (`Mimic`, weight 700) with this image as
 the final `X`. The text transitions from charcoal to terracotta; both native
 letter-i dots are coral. The complete wordmark has one accessible `MimicX`
 name. There are no shadows, outlines or glow effects.

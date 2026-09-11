@@ -7,13 +7,18 @@ analytics account or runtime data fetch.
 ## Layout and Theme
 
 The hero uses the author's human/G1 X mark, combined with self-hosted
-Montserrat ExtraBold text as a centered MimicX wordmark. Charcoal-to-terracotta
+Montserrat Bold text as a centered MimicX wordmark. Charcoal-to-terracotta
 letterforms and coral i dots sit above the bold black full paper title.
 Navigation and the bottom image information strip use dark translucent
 backgrounds. The same original X supplies the site's transparent favicon.
 Brand sources, rights notes and resizing provenance are in `assets/branding/`;
 the font and its OFL license are in `assets/fonts/`. `assets/css/brand.css`
 owns the hero branding; the rest of the site's layout remains in `mimicx.css`.
+Top navigation uses five centered, labeled Lucide-icon buttons. The arXiv
+button temporarily links to `https://example.com` at the author's request;
+replace that URL after the preprint is uploaded. The existing paper-source
+repository remains linked in Resources. Both dark information bars use 58%
+opacity, and the desktop navigation is reduced to a 76px minimum height.
 
 The static image hero, section navigation, method and experiment sequence adapt the
 RoboSplat project page structure. MimicX uses coral `#D45B4C`, pale coral
