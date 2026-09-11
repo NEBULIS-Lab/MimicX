@@ -34,13 +34,23 @@ def main():
                                              args=["--disable-gpu", "--disable-dev-shm-usage",
                                                    "--disable-accelerated-video-decode", "--disable-accelerated-video-encode"])
             try:
-                for name, width, height in (("desktop", 1440, 1000), ("tablet", 820, 1180), ("mobile", 390, 844)):
+                for name, width, height in (("desktop", 1440, 1000), ("tablet", 820, 1180), ("mobile", 390, 844),
+                                            ("wide", 1920, 1080), ("small-mobile", 320, 568), ("landscape", 844, 390)):
                     page = browser.new_page(viewport={"width": width, "height": height})
                     errors = []
                     page.on("pageerror", lambda error: errors.append(str(error)))
                     page.on("response", lambda response: errors.append(f"HTTP {response.status} {response.url}") if response.status >= 400 else None)
                     page.goto(f"http://127.0.0.1:{server.server_port}/", wait_until="networkidle")
                     page.wait_for_function("document.querySelector('#hero-image').complete && document.querySelector('#hero-image').naturalWidth > 0")
+                    page.evaluate('document.fonts.ready')
+                    assert page.evaluate('document.fonts.check(\'900 32px "MimicX Montserrat"\')')
+                    assert page.locator('.brand-x').get_attribute('src') == 'assets/branding/logo-x.png'
+                    brand = page.locator('.brand-wordmark').bounding_box()
+                    title = page.locator('.hero-copy .paper-title').bounding_box()
+                    hero_box = page.locator('#top').bounding_box()
+                    assert abs(brand['x'] + brand['width'] / 2 - width / 2) < 2
+                    assert title['y'] >= brand['y'] + brand['height']
+                    assert title['y'] + title['height'] < hero_box['height'] - 35
                     assert page.locator("#top video").count() == 0
                     assert page.locator(".result-plot").count() == 4
                     assert page.locator("#method-overview").is_visible()
@@ -74,7 +84,7 @@ def main():
                     assert not errors, errors
                     reports.append({"viewport": name, "width": width, "height": height,
                                     "table_rows": 8, "download_csvs": 9, "playback_pairs": 4,
-                                    "static_hero": True, "result_plots": 4,
+                                    "static_hero": True, "result_plots": 4, "centered_author_logo": True,
                                     "errors": errors, "horizontal_overflow": False})
                     page.close()
             finally:

@@ -1,0 +1,25 @@
+[
+  {
+    "file": "logo-x.png",
+    "role": "Unmodified author-designed X",
+    "sha256": "a14c01d1b869b9b326346d53a648aaabf7441da6696d9431007f79cdc946c870"
+  },
+  {
+    "file": "favicon-32.png",
+    "operation": "Lanczos resize to 32x32; preserve alpha",
+    "source": "logo-x.png",
+    "sha256": "19903dd118338de5126bafd49c6e49e1d43d1eba2a20130b2c2c8004f234a735"
+  },
+  {
+    "file": "favicon-192.png",
+    "operation": "Lanczos resize to 192x192; preserve alpha",
+    "source": "logo-x.png",
+    "sha256": "5ad0068267542a66fdf0acefe96b7cdf9aa48a9cd90fe46a0b4a86453b241450"
+  },
+  {
+    "file": "apple-touch-icon.png",
+    "operation": "Lanczos resize to 180x180; preserve alpha",
+    "source": "logo-x.png",
+    "sha256": "8d97f304bf78851ebcbc493e60872d93f9cf54f5d5798b70bcade98ea4cee466"
+  }
+]

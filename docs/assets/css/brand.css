@@ -1,0 +1,122 @@
+@font-face {
+  font-family: "MimicX Montserrat";
+  src: url("../fonts/Montserrat-Variable.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+.hero-scene {
+  width: 100%;
+  height: min(720px, 84svh);
+  min-height: 0;
+  max-height: none;
+  aspect-ratio: auto;
+  background: #bdccdf;
+}
+.hero-picture { inset: 100px 0 -100px; }
+.hero-picture img { object-fit: cover; object-position: center; }
+.top-nav {
+  min-height: 100px;
+  background: rgba(20, 24, 28, .9);
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
+  z-index: 2;
+}
+.top-nav a { color: #fff; }
+.top-nav a:hover { color: #f29887; }
+.top-nav .hf-link { background: #363235; color: #f3ac9e; }
+.top-nav .hf-link:hover { background: #4b3633; color: #fff; }
+.hero-bottom { background: rgba(20, 24, 28, .9); color: #fff; z-index: 2; }
+.hero-bottom a { color: #f3ac9e; }
+.hero-bottom a:hover { color: #fff; }
+
+.hero-copy {
+  inset: 50% 24px auto;
+  transform: translateY(-50%);
+  max-width: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  background: none;
+}
+.hero-copy .brand-wordmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 0;
+  font-family: "MimicX Montserrat", "Avenir Next", sans-serif;
+  font-size: 168px;
+  font-weight: 900;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0;
+  font-kerning: normal;
+}
+.brand-text {
+  color: #5b2c27;
+  background: linear-gradient(180deg, #1b1b1d 25%, #5b2c27 60%, #c44732 96%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.brand-i {
+  position: relative;
+  display: inline-block;
+  background: inherit;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+/* Reuse the font's own i dot instead of drawing a mismatched accent. */
+.brand-i::after {
+  content: "i";
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 70% 0);
+  color: #c54a35;
+  -webkit-text-fill-color: #c54a35;
+}
+.brand-x { flex: none; width: 184px; height: 184px; object-fit: contain; }
+.hero-copy .paper-title {
+  max-width: 1020px;
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.4;
+  color: #101012;
+  text-wrap: balance;
+}
+
+@media (max-width: 1000px) {
+  .hero-copy .brand-wordmark { font-size: 132px; }
+  .brand-x { width: 148px; height: 148px; }
+  .hero-copy .paper-title { font-size: 22px; max-width: 720px; }
+}
+@media (max-width: 600px) {
+  .top-nav { min-height: 84px; }
+  .hero-scene { height: min(660px, 84svh); }
+  .hero-picture { inset: 80px 0 -80px; }
+  .hero-copy { inset: 50% 18px auto; gap: 18px; }
+  .hero-copy .brand-wordmark { font-size: 74px; }
+  .brand-x { width: 84px; height: 84px; }
+  .hero-copy .paper-title { font-size: 18px; max-width: 440px; line-height: 1.45; }
+}
+@media (max-width: 360px) {
+  .hero-copy .brand-wordmark { font-size: 64px; }
+  .brand-x { width: 74px; height: 74px; }
+  .hero-copy .paper-title { font-size: 16px; }
+}
+@media (max-height: 540px) and (min-width: 601px) {
+  .top-nav { min-height: 60px; }
+  .hero-picture { inset: 30px 0 -30px; }
+  .hero-copy { gap: 8px; }
+  .hero-copy .brand-wordmark { font-size: 76px; }
+  .brand-x { width: 90px; height: 90px; }
+  .hero-copy .paper-title { font-size: 17px; max-width: 760px; }
+}
+@media (max-height: 650px) and (max-width: 600px) {
+  .hero-picture { inset: 60px 0 -60px; }
+}

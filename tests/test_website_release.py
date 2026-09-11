@@ -122,3 +122,17 @@ def test_transparent_workflow_derivatives_have_recorded_sources():
         assert content[25] == 6, 'Workflow PNG must retain RGBA transparency'
         assert len(records[name]['source_sha256']) == 64
         assert len(records[name]['alpha_bounds']) == 4
+
+
+def test_author_brand_and_favicons():
+    directory = WEBSITE / 'assets/branding'
+    for row in json.loads((directory / 'manifest.json').read_text()):
+        payload = (directory / row['file']).read_bytes()
+        assert hashlib.sha256(payload).hexdigest() == row['sha256']
+        assert payload[25] == 6, 'Brand assets must preserve RGBA'
+    html = (WEBSITE / 'index.html').read_text()
+    assert 'class="brand-wordmark" aria-label="MimicX"' in html
+    assert html.count('class="brand-i"') == 2
+    assert 'MimicX: Policy-in-the-Loop Supervision Refinement' in html
+    assert 'assets/branding/favicon-32.png' in html
+    assert (WEBSITE / 'assets/fonts/Montserrat-OFL.txt').is_file()

@@ -6,17 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="MimicX: Policy-in-the-Loop Supervision Refinement for Video-Driven Humanoid Motion Tracking.">
   <meta name="theme-color" content="#D45B4C">
-  <link rel="icon" href="data:,">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/branding/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/branding/favicon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/branding/apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/Montserrat-Variable.ttf" as="font" type="font/ttf" crossorigin>
   <title>MimicX | Policy-in-the-Loop Humanoid Motion Tracking</title>
   <link rel="stylesheet" href="assets/css/bulma.min.css">
   <link rel="stylesheet" href="assets/css/mimicx.css">
+  <link rel="stylesheet" href="assets/css/brand.css">
   <script src="assets/js/mimicx.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#overview">Skip to research overview</a>
   <header class="hero-scene" id="top">
     <picture class="hero-picture">
-      <source media="(max-width: 600px)" srcset="assets/media/hero-tennis-mobile.png">
       <img id="hero-image" src="assets/media/hero-tennis.png" fetchpriority="high" alt="Recorded MimicX tennis motion rendered on court; successive poses arranged from left to right">
     </picture>
     <nav class="top-nav" aria-label="Project links">
@@ -29,8 +32,11 @@
       </span>
     </nav>
     <div class="hero-copy">
-      <h1>MimicX</h1>
-      <p class="paper-title">Policy-in-the-Loop Supervision Refinement<br class="desktop-break"> for Video-Driven Humanoid Motion Tracking</p>
+      <h1 class="brand-wordmark" aria-label="MimicX">
+        <span class="brand-text" aria-hidden="true">M<span class="brand-i">i</span>m<span class="brand-i">i</span>c</span>
+        <img class="brand-x" src="assets/branding/logo-x.png" width="1254" height="1254" alt="" aria-hidden="true">
+      </h1>
+      <p class="paper-title"><span>MimicX: Policy-in-the-Loop Supervision Refinement</span><br class="desktop-break"> <span>for Video-Driven Humanoid Motion Tracking</span></p>
     </div>
     <div class="hero-bottom"><span>Tennis Swing &middot; Recorded policy motion</span><a href="#policies">View policy rollouts &darr;</a></div>
   </header>
