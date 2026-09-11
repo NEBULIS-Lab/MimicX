@@ -17,8 +17,8 @@
 .hero-picture { inset: 100px 0 -100px; }
 .hero-picture img { object-fit: cover; object-position: center; }
 .top-nav {
-  min-height: 100px;
-  padding: 14px 36px;
+  min-height: 76px;
+  padding: 9px 36px;
   justify-content: center;
   gap: 16px 38px;
   background: rgba(20, 24, 28, .9);
@@ -105,7 +105,7 @@
   .hero-copy .paper-title { font-size: 22px; max-width: 720px; }
 }
 @media (max-width: 600px) {
-  .top-nav { min-height: 84px; }
+  .top-nav { min-height: 68px; }
   .hero-scene { height: min(660px, 84svh); }
   .hero-picture { inset: 80px 0 -80px; }
   .hero-copy { inset: 50% 18px auto; gap: 18px; }
