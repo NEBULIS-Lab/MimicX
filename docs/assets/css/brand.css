@@ -82,7 +82,7 @@
   color: #db563e;
   -webkit-text-fill-color: #db563e;
 }
-.brand-x { flex: none; width: 224px; height: 224px; object-fit: contain; }
+.brand-x { flex: none; width: 224px; height: 224px; margin-left: -.1em; object-fit: contain; }
 .hero-copy .paper-title {
   max-width: 1020px;
   margin: 0;
