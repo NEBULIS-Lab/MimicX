@@ -1,0 +1,21 @@
+{
+  "schema": "mimicx.dependencies.v1",
+  "repositories": {
+    "unitree_rl_mjlab": {
+      "url": "https://github.com/unitreerobotics/unitree_rl_mjlab.git",
+      "revision": "1425b15f73bd4095f0df53709d7c389c3eb9e790",
+      "license": "Apache-2.0",
+      "overlay": "backend_overlay/unitree_rl_mjlab"
+    },
+    "GVHMR": {
+      "url": "https://github.com/zju3dv/GVHMR.git",
+      "revision": "6ec3ca39336c50492c0fae65fba2fb831fc7d866",
+      "license": "Upstream research/non-commercial license"
+    },
+    "GMR": {
+      "url": "https://github.com/YanjieZe/GMR.git",
+      "revision": "bb1bbe40774794fceb2a7c579a3464a28e68c844",
+      "license": "MIT"
+    }
+  }
+}

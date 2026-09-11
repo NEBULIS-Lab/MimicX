@@ -1,0 +1,33 @@
+schema: mimicx.autorefine-loop.v1
+task:
+  id: fixture-task
+  motion_file: artifacts/motion.npz
+  base_checkpoint: artifacts/model.pt
+  load_run: fixture-run
+  strict_task: Fixture-Strict-Task
+  horizon: 12
+runtime:
+  workdir: runtime
+  python: /usr/bin/python3
+  train_script: runtime/train.py
+  rollout_script: runtime/rollout.py
+  dynamic_task: Fixture-Dynamic-Task
+search:
+  max_iterations: 2
+  candidate_budget: 3
+  train_iterations: 20
+  num_envs: 4
+  learning_rate: 2.0e-6
+  train_seed: 202
+  candidate_gpus: [4, 5]
+  eval_gpus: [4, 5]
+verification:
+  repeats: 3
+  seeds: [11, 22, 33]
+  metric_keys: [body_pos_error_max, ee_z_error_max]
+  guards:
+    body_pos_error_max:
+      direction: lower
+      relative_tolerance: 0.1
+execution:
+  max_parallel: 2

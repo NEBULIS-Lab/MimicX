@@ -1,0 +1,4 @@
+policy,reward,worst_frontier,decision
+Incumbent,0.5707,879,kept
+core3975,0.6275,677,rejected
+late3925,0.5838,689,rejected

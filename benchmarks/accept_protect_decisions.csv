@@ -1,0 +1,13 @@
+task,train_seed,outcome,selected_policy
+dance2,101,rollback,incumbent
+dance2,202,rollback,incumbent
+dance2,303,rollback,incumbent
+football1,101,accepted,auto_02_window_strong_replay
+football1,202,accepted,auto_02_window_strong_replay
+football1,303,accepted,auto_02_window_strong_replay
+kongfu1,101,rollback,incumbent
+kongfu1,202,rollback,incumbent
+kongfu1,303,rollback,incumbent
+tennis,101,accepted,auto_01_window_local_global
+tennis,202,accepted,auto_03_full_start_consolidate
+tennis,303,accepted,auto_02_window_strong_replay

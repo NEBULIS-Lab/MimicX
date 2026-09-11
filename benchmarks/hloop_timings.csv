@@ -1,0 +1,16 @@
+repetition,scheduler,wall_time_seconds
+0,sequential,242.402509
+0,bulk_sync,121.812647
+0,e0,124.017122
+1,sequential,239.62741
+1,bulk_sync,126.440251
+1,e0,121.039911
+2,sequential,238.569158
+2,bulk_sync,120.473519
+2,e0,119.923565
+3,sequential,241.220853
+3,bulk_sync,126.131179
+3,e0,125.623809
+4,sequential,241.920957
+4,bulk_sync,122.258374
+4,e0,128.875543

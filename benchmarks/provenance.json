@@ -1,0 +1,70 @@
+[
+  {
+    "file": "core_method_task_summary.csv",
+    "rows": 16,
+    "source_sha256": "cbe23e2a5f9ab40f89401cb1707eddc50814c58fc41a8ea389d9125f6be91411",
+    "published_sha256": "293120790f1a34d5cf17187c97c847ac50be0e761337303696880f6031661d47",
+    "omitted_columns": []
+  },
+  {
+    "file": "core_trial_results.csv",
+    "rows": 48,
+    "source_sha256": "4d8f7070db2c989aa8ca2599da79a5f67b8e24e9acfb5463c2b1038157368f24",
+    "published_sha256": "57039f9425a46f7113ba03d153130a4aaf021c27396f9276599e10b509ee35e7",
+    "omitted_columns": [
+      "gpu_id",
+      "checkpoint"
+    ]
+  },
+  {
+    "file": "accept_protect_decisions.csv",
+    "rows": 12,
+    "source_sha256": "32d8b58826e419c4639d17da914781fde419538073a6ba96db3b714bfa75efb2",
+    "published_sha256": "4c84bef1ea350d359d5791ecad5199cea86bbdc2ab253fa4111c606a4df93527",
+    "omitted_columns": []
+  },
+  {
+    "file": "hloop_timings.csv",
+    "rows": 15,
+    "source_sha256": "63ca6401f6d1c17a171d8dfc700e33540581ebb3998a38de6a1f14e28351e9cb",
+    "published_sha256": "0208398571f6e244ae034b03a32786371f33771dcd4d1543eff78f37eb0ee11b",
+    "omitted_columns": []
+  },
+  {
+    "file": "sonic_comparison.csv",
+    "rows": 2,
+    "source_sha256": "4d75f4cc0e741382009be3a7221d094ebd39fc9752c5c7d4c56a3a0261dc3792",
+    "published_sha256": "55e50938c253ec29d71bf82d9e625dd38a6dfc8e86ef2dbe4fa684078bd38a19",
+    "omitted_columns": []
+  },
+  {
+    "file": "additional_video_tasks.csv",
+    "rows": 4,
+    "source_sha256": "de7dbaafc9666b9699cd1de119a52867092595ebd2d9bb6435701367df7189da",
+    "published_sha256": "07d0e851154eccaa7960c9b80b20870d4c40944d662efc644ec5c7487bdde91d",
+    "omitted_columns": []
+  },
+  {
+    "file": "motion_breadth.csv",
+    "rows": 14,
+    "source_sha256": "08835ddf584334ad7e3ac7d4f2b5f7764c68dbaf5c6f7de5dbd84f68132d8e45",
+    "published_sha256": "15f6ff9a284b34bb4afbdbd00eb01ccbab379945e755f2e6a387db8aaea74dc1",
+    "omitted_columns": []
+  },
+  {
+    "file": "reward_higher_regression_rejection.csv",
+    "rows": 3,
+    "source_sha256": "af615f7c7d572d8c622bd98de493ea875e763071c15afa4e0c4395a353eeb890",
+    "published_sha256": "7780224b68d1f1e951dd920a64dd8dc3ce426697f99db6e46dd144cb924a1fee",
+    "omitted_columns": []
+  },
+  {
+    "file": "tennis_training_dynamics_3000_points.csv",
+    "rows": 3000,
+    "source_sha256": "e7544bda16134ea26f949e192b2f3989d230d51c0cd61a79d686bf718761d407",
+    "published_sha256": "f3f787c956a7fe63acb4ae3c9470585323c30f09a42243f743ed8b09a3b13fe3",
+    "omitted_columns": [
+      "source_log"
+    ]
+  }
+]

@@ -1,0 +1,27 @@
+[project]
+name = "mimicx"
+version = "0.2.0"
+description = "Policy-in-the-loop supervision refinement for video-driven humanoid motion tracking"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = ["numpy>=1.24,<3", "scipy>=1.10", "PyYAML>=6", "tqdm>=4.65"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "build>=1"]
+visualization = ["imageio[ffmpeg]>=2.31", "Pillow>=10"]
+plots = ["matplotlib>=3.7"]
+
+[project.urls]
+Repository = "https://github.com/NEBULIS-Lab/MimicX"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["mimicx*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
