@@ -1,10 +1,12 @@
 import hashlib
 from html.parser import HTMLParser
 import json
+import struct
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 from scripts.build_website_results import build
+from scripts.package_website_media import MEDIA, PROMPT_MEDIA
 
 ROOT = Path(__file__).resolve().parents[1]
 WEBSITE = ROOT / "docs"
@@ -38,7 +40,7 @@ def test_website_local_links_and_fragments_exist():
 def test_media_match_source_manifest():
     directory = WEBSITE / "assets/media"
     records = json.loads((directory / "manifest.json").read_text())
-    assert len(records) == 17
+    assert {row['file'] for row in records} == set(MEDIA) | set(PROMPT_MEDIA)
     for row in records:
         content = (directory / row["file"]).read_bytes()
         assert len(content) == row["bytes"]
@@ -94,3 +96,29 @@ def test_huggingface_links_are_in_header_and_resources():
         assert f'href="{url}"' in header
         assert f'href="{url}"' in resources
     assert "recommended/README.md" in resources
+
+
+def test_static_hero_clean_workflow_and_four_result_plots():
+    source = (WEBSITE / "index.html").read_text()
+    hero = source.split('<header')[1].split('</header>')[0]
+    assert '<video' not in hero
+    assert 'id="hero-image"' in hero
+    assert 'id="method-overview"' in source
+    assert source.count('class="result-plot"') == 4
+    assert 'Inspect the method. Run the loop.' not in source
+    assert 'hero-video' not in (WEBSITE / 'assets/js/mimicx.js').read_text()
+    for name in ('stage-human.png', 'stage-world.png', 'stage-reference.png'):
+        assert MEDIA[name].endswith('__ALPHA.png')
+    assert all('PIPELINE__V9__' not in value for value in MEDIA.values())
+
+
+def test_transparent_workflow_derivatives_have_recorded_sources():
+    directory = WEBSITE / 'assets/media'
+    records = {r['file']: r for r in json.loads((directory / 'manifest.json').read_text())}
+    for name in ('stage-human.png', 'stage-world.png', 'stage-reference.png'):
+        content = (directory / name).read_bytes()
+        assert content[:8] == b'\x89PNG\r\n\x1a\n'
+        assert struct.unpack('>II', content[16:24]) == (1200, 900)
+        assert content[25] == 6, 'Workflow PNG must retain RGBA transparency'
+        assert len(records[name]['source_sha256']) == 64
+        assert len(records[name]['alpha_bounds']) == 4

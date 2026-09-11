@@ -6,7 +6,7 @@ analytics account or runtime data fetch.
 
 ## Layout and Theme
 
-The video hero, section navigation, method and experiment sequence adapt the
+The static image hero, section navigation, method and experiment sequence adapt the
 RoboSplat project page structure. MimicX uses coral `#D45B4C`, pale coral
 `#FBECE9`, blue `#3B78A8`, teal `#23866B`, grey `#7A7F87` and ink `#20252B`.
 Solid robots represent executed policies; transparent robots represent the
@@ -16,7 +16,27 @@ Numerical CSVs, provenance and metric definitions live only in `assets/results`.
 The page contains all four core tasks and links every CSV, rather than selecting
 only favorable outcomes. Videos are illustrative recorded trials, not an
 aggregation of verification repeats. Exact source filenames and byte hashes
-are recorded in `assets/media/manifest.json`.
+are recorded in `assets/media/manifest.json`. Three transparent reconstruction
+and reference assets have web derivatives: trim alpha-only empty margins,
+downsample without changing aspect ratio, and center on a transparent canvas.
+The manifest records both source and derivative hashes and the crop bounds.
+Other displayed images and all plots/videos are byte-identical source copies.
+
+The six workflow images contain no added captions; labels are native HTML.
+The first four stages show input and motion preparation, while the last two
+show Fixed Reference and the verified policy at recorded step 131. The input
+illustrates the source video; it is not claimed to be a frame-synchronous
+six-way comparison. Four square SVG plots share one desktop row: tracking
+channels, paired execution horizons, dense tennis training dynamics and HLoop
+wall time. Each links to its full-size vector original.
+
+## Author-Drawn Overview
+
+`index.html` reserves `figure#method-overview` before the workflow frames.
+When the author supplies the illustration, replace that figure's placeholder
+contents with an image and descriptive alt text, remove the
+`overview-placeholder` class, and register the new asset in the media manifest.
+Do not substitute a generated diagram or experimental figure montage.
 
 ## Maintenance
 
@@ -35,7 +55,8 @@ python -m pytest tests/test_website_release.py -q
 Run from the repository root. The builder creates the HTML table and download
 links from the website's CSV files. It never writes result data into code or
 training configuration directories. To update approved media, use
-`scripts/package_website_media.py --source /path/to/approved-media` and review
+`python scripts/package_website_media.py --source /path/to/approved-media --prompt-source /path/to/prompt-materials`
+(requires Pillow) and review
 desktop/mobile playback before publishing.
 
 For the optional browser audit, install `playwright` in a development

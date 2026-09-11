@@ -1,10 +1,4 @@
 'use strict';
-const hero = document.getElementById('hero-video');
-const heroToggle = document.getElementById('hero-toggle');
-const updateHero = () => { heroToggle.textContent = hero.paused ? 'Play video' : 'Pause video'; heroToggle.setAttribute('aria-pressed', String(hero.paused)); };
-heroToggle.addEventListener('click', () => { if (hero.paused) hero.play().catch(updateHero); else hero.pause(); });
-hero.addEventListener('play', updateHero); hero.addEventListener('pause', updateHero);
-if (matchMedia('(prefers-reduced-motion: reduce)').matches) hero.pause();
 const fixed = document.getElementById('fixed-video');
 const ours = document.getElementById('ours-video');
 const pairToggle = document.getElementById('pair-toggle');
@@ -40,4 +34,3 @@ fixed.addEventListener('timeupdate', () => {
   if (!fixed.paused && !ours.paused && Math.abs(fixed.currentTime - ours.currentTime) > 0.25) ours.currentTime = fixed.currentTime;
 });
 for (const video of [fixed, ours]) video.addEventListener('ended', stopPair);
-updateHero();

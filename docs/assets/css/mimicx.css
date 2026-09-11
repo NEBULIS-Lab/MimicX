@@ -9,3 +9,38 @@
 .top-nav .hf-link:hover{background:#fff;color:var(--deep)}
 .resource-links .hf-resource{color:var(--deep);border-bottom:2px solid var(--coral)}
 @media(max-width:520px){.top-nav{justify-content:center;gap:8px 16px;padding:12px 16px}.top-nav a{font-size:13px}.hero-copy{top:112px}}
+
+/* Static research imagery: no cropping of workflow poses or plot axes. */
+.hero-scene{width:100%;height:auto;aspect-ratio:14/5;min-height:480px;max-height:80svh;background:#bdccdf;background-image:none;color:var(--ink)}
+.hero-picture{position:absolute;inset:0;display:block}
+.hero-picture img{display:block;width:100%;height:100%;object-fit:cover}
+.top-nav{background:rgba(255,255,255,.92);padding:14px 36px;border-bottom:1px solid rgba(32,37,43,.12)}
+.top-nav a{color:var(--ink)}
+.hero-copy{top:76px;padding:14px 36px;max-width:920px}
+.hero-copy h1{font-size:64px;margin-bottom:8px;color:#a83f35}
+.paper-title{font-size:23px;max-width:800px}
+.hero-bottom{padding:10px 36px;background:rgba(255,255,255,.9);color:var(--ink);font-size:12px}
+.hero-bottom a{font-weight:700;white-space:nowrap}
+.overview-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:180px;margin:30px 0 38px;border:1px dashed #c4cbd0;background:#fff;color:#687178}
+.overview-placeholder span{font-size:17px;font-weight:700}
+.overview-placeholder small{font-size:13px}
+.stage-grid{gap:24px;margin:32px 0}
+.stage-grid img{aspect-ratio:4/3;background:#e9edef;object-fit:contain}
+.stage-grid img.isolated{padding:10px;background:transparent}
+.stage-grid figcaption{font-size:15px;font-weight:700;padding-top:12px;border-top:1px solid var(--line);margin-top:10px}
+.stage-grid figcaption small{display:block;font-size:12px;color:#626a70;font-weight:400;padding-top:4px}
+.method-columns h3{font-size:18px}
+.results-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:36px 0 12px}
+.result-plot{margin:0;min-width:0}
+.result-plot a{display:block;background:white}
+.result-plot img{display:block;width:100%;aspect-ratio:1;object-fit:contain}
+.result-plot figcaption{font-size:13px;padding-top:12px;line-height:1.5}
+.result-plot strong{display:block;color:var(--ink);font-size:14px;margin-bottom:4px}
+.result-plot figcaption span{color:#535b63}
+@media(max-width:1000px){.hero-copy h1{font-size:52px}.paper-title{font-size:20px}.hero-copy{max-width:780px}.results-gallery{gap:12px}}
+@media(max-width:768px){.hero-scene{min-height:440px}.hero-copy{padding:14px 20px}.top-nav{padding:12px 20px}.stage-grid{gap:24px 16px}.stage-grid figcaption{font-size:14px}.stage-grid img{aspect-ratio:1}.results-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 16px}.hero-bottom{padding:10px 20px}.hero-bottom span{max-width:none}}
+@media(max-width:600px){.hero-scene{height:660px;max-height:84svh;min-height:480px;aspect-ratio:auto}.hero-picture{top:210px;bottom:38px}.hero-picture img{object-fit:contain;object-position:center bottom}.hero-copy{top:92px;padding:10px 20px;max-width:100%}.hero-copy h1{font-size:42px;margin:0 0 6px}.paper-title{font-size:17px;line-height:1.4}.top-nav{justify-content:center;gap:8px 16px}.top-nav a{font-size:13px}.hero-bottom{font-size:10px;gap:10px;padding:10px 14px}.overview-placeholder{min-height:140px;margin:24px 0 30px}}
+@media(max-width:400px){.results-gallery{grid-template-columns:1fr;max-width:340px;margin-inline:auto}.stage-grid figcaption{font-size:12px}.stage-grid figcaption small{font-size:11px}}
+@media(min-width:1001px){.hero-copy{left:27%;right:28px;top:70px;max-width:none;padding:0;display:flex;align-items:center;gap:26px}.hero-copy h1{flex:none;font-size:56px;margin:0}.hero-copy .paper-title{font-size:19px;line-height:1.4;margin:0}}
+@media(min-width:601px) and (max-width:1000px){.hero-copy{left:24px;right:24px;top:74px;padding:0;display:flex;align-items:center;gap:24px}.hero-copy h1{flex:none;font-size:40px;margin:0}.hero-copy .paper-title{font-size:17px;line-height:1.4;margin:0}}
+@media(min-width:769px) and (max-width:1024px){.results-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}}

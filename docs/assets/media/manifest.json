@@ -54,52 +54,99 @@
     "sha256": "77247687a04559969177246016a5a62bfc14833abf78aebb0a5198f86668e55d"
   },
   {
-    "file": "stage-video.png",
-    "source_filename": "PIPELINE__V9__TENNIS__01_ORIGINAL_RGB.png",
-    "bytes": 1516269,
-    "sha256": "23bc4638a4fed75d74987424b03b55cc25af7a51fc3f560981c016f47502a22a"
+    "file": "hero-tennis.png",
+    "source_filename": "MOTION__TENNIS__MIMICX__COURT_WIDE__7POSE.png",
+    "bytes": 6447511,
+    "sha256": "e791b0f9a1be12dd1747ff82395480025563ace95cb47761c977f8574f4669c3"
+  },
+  {
+    "file": "hero-tennis-mobile.png",
+    "source_filename": "FRAME__TENNIS__MIMICX__PIPELINE_CAMERA__STEP000201.png",
+    "bytes": 2054057,
+    "sha256": "22dd8cef4baca756196edac23b184c6892738693a0943c1d3207fc659888c5b4"
   },
   {
     "file": "stage-human.png",
-    "source_filename": "PIPELINE__V9__TENNIS__03_SMPL_CAMERA.png",
-    "bytes": 1502899,
-    "sha256": "d455363263c3532bf7b24b9a364b0141a9bd197ae872a8932000c4b53654180c"
+    "source_filename": "REFERENCE_ASSET__TENNIS__SMPLX_CAMERA__OBLIQUE__POSE05__FRAME000131__ALPHA.png",
+    "bytes": 162963,
+    "sha256": "62ecb5ddb87ea0fbee37779d5c9206b7eec82c657c22e0d52a078087dba74e4e",
+    "operation": "Trim alpha-only padding, fit pose within 1152x852, center on transparent 1200x900 web canvas",
+    "alpha_bounds": [
+      941,
+      327,
+      2131,
+      3770
+    ],
+    "source_sha256": "6d55e93ff22eeda10034eb8a21494c8b844d95c61040d33d15ff64cf4b20a0fe"
   },
   {
     "file": "stage-world.png",
-    "source_filename": "PIPELINE__V9__TENNIS__04_SMPL_WORLD.png",
-    "bytes": 208727,
-    "sha256": "a48dcbcf765c5d6613f92359e2cd2cc6fcb5d4561a2be20ecc22776fe25854ae"
+    "source_filename": "REFERENCE_ASSET__TENNIS__SMPLX_GLOBAL__OBLIQUE__POSE05__FRAME000131__ALPHA.png",
+    "bytes": 164507,
+    "sha256": "c246b127aa0f2ca2357a2052f470280e3ed7c4731bcf95547893d8140808df82",
+    "operation": "Trim alpha-only padding, fit pose within 1152x852, center on transparent 1200x900 web canvas",
+    "alpha_bounds": [
+      1383,
+      818,
+      2395,
+      3769
+    ],
+    "source_sha256": "339bfa215426f90bcaeb3ad63f2c19207c6ebc6a99f7c14e1bf4aba0826e9cee"
   },
   {
     "file": "stage-reference.png",
-    "source_filename": "PIPELINE__V9__TENNIS__05_RETARGETED_G1_REFERENCE.png",
-    "bytes": 914650,
-    "sha256": "7532d79ff2203968728a3979340b9c224d1274472acda1ae8bd0bbe6bdaee02a"
+    "source_filename": "REFERENCE_ASSET__TENNIS__G1__OBLIQUE__POSE05__FRAME000131__ALPHA.png",
+    "bytes": 206207,
+    "sha256": "dd59a99a1fdcaf8a922bb6a4a273bbcb22ae9e7f90be9a15f4e9de3b9e0135f8",
+    "operation": "Trim alpha-only padding, fit pose within 1152x852, center on transparent 1200x900 web canvas",
+    "alpha_bounds": [
+      1389,
+      844,
+      2407,
+      3755
+    ],
+    "source_sha256": "31cb1ef8d52c6e69ff76b8f4de0b6eab185442e71dd9d41ca6f70c35548aaecf"
   },
   {
     "file": "stage-fixed.png",
-    "source_filename": "PIPELINE__V9__TENNIS__06_FIXED_REFERENCE_POLICY.png",
-    "bytes": 1695221,
-    "sha256": "49ec3e3b25f2693cdf3ca56c95c0e1ccdb818a148492cef4429d94e0f8d0ef3d"
+    "source_filename": "FRAME__TENNIS__FIXED_REFERENCE__SOURCE_REGISTERED__STEP000131.png",
+    "bytes": 3192987,
+    "sha256": "ddfbfeee9f0e33222dac97b3874366fa62bdef27ed47c6762e8067047f81c96b"
   },
   {
     "file": "stage-ours.png",
-    "source_filename": "PIPELINE__V9__TENNIS__07_MIMICX_POLICY.png",
-    "bytes": 358276,
-    "sha256": "b1cc7c7c6978fb81edefe7c467ea4a5e54f12955aee93ea9f29d8f0b94016cbd"
+    "source_filename": "FRAME__TENNIS__MIMICX__SOURCE_REGISTERED__STEP000131.png",
+    "bytes": 3086156,
+    "sha256": "f35cfaedb2e48e70e3b5b7b03d450f3a6c67ff0ace9759dab5f5aedda4c8e3d2"
   },
   {
-    "file": "tracking-channels.png",
-    "source_filename": "RESULT__V9__01_PAIRED_SEED_IMPROVEMENTS.png",
-    "bytes": 368167,
-    "sha256": "aafb69398a45455b618959877c9a051d55715da385eb28608fe6966d6c6616ad"
+    "file": "tracking-channels.svg",
+    "source_filename": "RESULT__V9__01_PAIRED_SEED_IMPROVEMENTS.svg",
+    "bytes": 36094,
+    "sha256": "c4aad455860288427f2617ffeb7efe9885d8c89846373eba2e341d90472e5775"
   },
   {
-    "file": "tennis-court-poster.jpg",
-    "source_filename": "VIDEO_SCENE__TENNIS__MIMICX__COURT_WIDE.mp4",
-    "operation": "CPU-decoded video frame at 1.0 seconds",
-    "bytes": 78718,
-    "sha256": "0d58a862fe47c0965b53a96e0692f62ab5d94f6049d26ca2273dacc815d635df"
+    "file": "execution-horizon.svg",
+    "source_filename": "RESULT__V9__04_PAIRED_EXECUTION_HORIZON.svg",
+    "bytes": 25427,
+    "sha256": "63f42243ce419e592cc1e2096411c670466c406820450adca3ad07eae8770d8a"
+  },
+  {
+    "file": "training-body-error.svg",
+    "source_filename": "RESULT__V9__07_DENSE_LEARNING_BODY_ERROR.svg",
+    "bytes": 167530,
+    "sha256": "a8f65dab86583b0782c53adaa65e7ddeb68783156e99644b194e72365f614f0d"
+  },
+  {
+    "file": "hloop-wall-time.svg",
+    "source_filename": "RESULT__V9__09_HLOOP_PAIRED_WALL_TIME.svg",
+    "bytes": 14673,
+    "sha256": "f16e21ff9fb0e6d272c69677b7cd70e50e24b0f903d7e81e4d56c2d4d4c3541f"
+  },
+  {
+    "file": "stage-video.png",
+    "source_filename": "REF01_HUMAN_VIDEO.png",
+    "bytes": 1000320,
+    "sha256": "b0920f9be6d111a16f33a8c526ce2f159a8c5f1523f806366d230109f555dd54"
   }
 ]
