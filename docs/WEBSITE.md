@@ -14,11 +14,14 @@ backgrounds. The same original X supplies the site's transparent favicon.
 Brand sources, rights notes and resizing provenance are in `assets/branding/`;
 the font and its OFL license are in `assets/fonts/`. `assets/css/brand.css`
 owns the hero branding; the rest of the site's layout remains in `mimicx.css`.
-Top navigation uses five centered, labeled Lucide-icon buttons. The arXiv
-button temporarily links to `https://example.com` at the author's request;
-replace that URL after the preprint is uploaded. The existing paper-source
-repository remains linked in Resources. Both dark information bars use 58%
-opacity, and the desktop navigation is reduced to a 76px minimum height.
+Top navigation restores the simple dark-bar links and subdued HF pills, with
+wider spacing and providers in parentheses. The arXiv link temporarily points
+to `https://example.com` at the author's request; replace it after upload.
+The paper-source repository remains linked in Resources. The upper bar uses
+90% opacity and the lower strip retains 58%. Only the scene image gently
+desaturates/fades when the pointer leaves the hero; the wordmark and text stay
+unchanged. Touch devices retain full color, keyboard focus restores full
+color, and reduced-motion preferences disable the transition.
 
 The static image hero, section navigation, method and experiment sequence adapt the
 RoboSplat project page structure. MimicX uses coral `#D45B4C`, pale coral

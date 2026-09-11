@@ -17,11 +17,11 @@
 .hero-picture { inset: 100px 0 -100px; }
 .hero-picture img { object-fit: cover; object-position: center; }
 .top-nav {
-  min-height: 76px;
-  padding: 10px 24px;
-  justify-content: center;
-  gap: 16px 28px;
-  background: rgba(20, 24, 28, .58);
+  min-height: 100px;
+  padding: 14px 36px;
+  justify-content: flex-end;
+  gap: 16px 32px;
+  background: rgba(20, 24, 28, .9);
   border-bottom: 1px solid rgba(255, 255, 255, .12);
   z-index: 2;
 }
@@ -60,8 +60,8 @@
   font-kerning: normal;
 }
 .brand-text {
-  color: #5b2c27;
-  background: linear-gradient(180deg, #1b1b1d 25%, #5b2c27 60%, #c44732 96%);
+  color: #71382e;
+  background: linear-gradient(180deg, #292326 25%, #71382e 60%, #df593f 96%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -79,8 +79,8 @@
   position: absolute;
   inset: 0;
   clip-path: inset(0 0 70% 0);
-  color: #c54a35;
-  -webkit-text-fill-color: #c54a35;
+  color: #db563e;
+  -webkit-text-fill-color: #db563e;
 }
 .brand-x { flex: none; width: 224px; height: 224px; object-fit: contain; }
 .hero-copy .paper-title {
@@ -99,7 +99,7 @@
   .hero-copy .paper-title { font-size: 22px; max-width: 720px; }
 }
 @media (max-width: 600px) {
-  .top-nav { min-height: 0; }
+  .top-nav { min-height: 84px; }
   .hero-scene { height: min(660px, 84svh); }
   .hero-picture { inset: 80px 0 -80px; }
   .hero-copy { inset: 50% 18px auto; gap: 18px; }
@@ -125,35 +125,25 @@
 }
 
 .top-nav .hf-nav-links { display: contents; }
-.top-nav .nav-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  min-width: 132px;
-  height: 52px;
-  padding: 7px 16px;
-  border: 1px solid rgba(255, 255, 255, .8);
-  border-radius: 6px;
-  background: #f7f8fa;
-  color: #20252b;
-  text-decoration: none;
-  font-size: 14px;
-  line-height: 1.15;
-}
-.top-nav .nav-button img { flex: none; width: 20px; height: 20px; }
-.top-nav .nav-button small { display: block; margin-bottom: 3px; font-size: 10px; font-weight: 500; color: #535b63; }
-.top-nav .paper-button { background: #fbece9; border-color: #e9a396; }
-.top-nav .hf-link { background: #fbece9; border-color: #e9a396; color: #853c30; }
-.top-nav .assets-button { background: #e8f1f7; border-color: #9ebfd7; color: #234e6f; }
-.top-nav .nav-button:hover { background: #fff; border-color: #d45b4c; color: #a83f35; }
-@media (max-width: 900px) {
-  .top-nav { gap: 12px 18px; padding: 10px 14px; }
-  .top-nav .nav-button { min-width: 120px; padding: 7px 12px; }
-}
+.top-nav a { white-space: nowrap; }
 @media (max-width: 600px) {
-  .top-nav { gap: 8px 12px; padding: 8px 12px; }
-  .top-nav .nav-button { min-width: 0; height: 44px; padding: 6px 10px; gap: 7px; font-size: 12px; }
-  .top-nav .nav-button small { font-size: 9px; }
-  .top-nav .nav-button img { width: 17px; height: 17px; }
+  .top-nav { justify-content: center; gap: 12px 22px; padding: 12px 16px; }
+  .top-nav a { font-size: 12px; }
+}
+
+/* Fade only the scene, leaving the author's logo and all text untouched. */
+.hero-picture {
+  opacity: .78;
+  filter: saturate(.7);
+  transition: opacity 650ms ease, filter 650ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero-scene:hover .hero-picture { opacity: 1; filter: saturate(1); }
+}
+.hero-scene:focus-within .hero-picture { opacity: 1; filter: saturate(1); }
+@media (hover: none) {
+  .hero-picture { opacity: 1; filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-picture { transition: none; }
 }
