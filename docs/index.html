@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!-- Project-page structure adapted from RoboSplat, NeRFies and UMI on Legs. See WEBSITE.md. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MimicX: Policy-in-the-Loop Supervision Refinement for Video-Driven Humanoid Motion Tracking.">
+  <meta name="theme-color" content="#D45B4C">
+  <link rel="icon" href="data:,">
+  <title>MimicX | Policy-in-the-Loop Humanoid Motion Tracking</title>
+  <link rel="stylesheet" href="assets/css/bulma.min.css">
+  <link rel="stylesheet" href="assets/css/mimicx.css">
+  <script src="assets/js/mimicx.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#overview">Skip to research overview</a>
+  <header class="hero-scene" id="top">
+    <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/media/tennis-court-poster.jpg" aria-label="MimicX tennis policy rendered in a tennis-court scene">
+      <source src="assets/media/tennis-court.mp4" type="video/mp4">
+    </video>
+    <nav class="top-nav" aria-label="Project links">
+      <a href="https://github.com/NEBULIS-Lab/MimicX">Code</a>
+      <a href="https://github.com/NEBULIS-Lab/shuaijun-ICLR-paper-MimicX">Paper source</a>
+      <a href="REPRODUCIBILITY.md">Reproduce</a>
+    </nav>
+    <div class="hero-copy">
+      <h1>MimicX</h1>
+      <p class="paper-title">Policy-in-the-Loop Supervision Refinement<br class="desktop-break"> for Video-Driven Humanoid Motion Tracking</p>
+    </div>
+    <div class="hero-bottom"><span>Video-driven motion. Execution-guided learning.</span><button id="hero-toggle" type="button" aria-pressed="false">Pause video</button></div>
+  </header>
+  <nav class="section-nav" aria-label="Page sections">
+    <a href="#overview">Overview</a><a href="#method">Method</a><a href="#policies">Policy rollouts</a><a href="#results">Results</a><a href="#hloop">HLoop</a><a href="#resources">Resources</a>
+  </nav>
+  <main>
+    <section class="section" id="overview">
+      <div class="container research-width">
+        <p class="eyebrow">From human videos to executable robot motion</p>
+        <h2>Learn from execution, not just the reference.</h2>
+        <p class="lead"><strong>MimicX</strong> turns video-derived human motion into humanoid tracking policies, then uses policy rollouts to improve training supervision. Failure diagnosis identifies <em>when</em> tracking breaks, <em>where</em> the error concentrates, and <em>which</em> training objectives and curricula to refine.</p>
+        <div class="findings">
+          <div><strong>11.1% <span aria-hidden="true">&rarr;</span> 100%</strong><span>Tennis strict success</span></div>
+          <div><strong>0.241 <span aria-hidden="true">&rarr;</span> 0.157 m</strong><span>Tennis aligned worst-body error</span></div>
+          <div><strong>53.7 <span aria-hidden="true">&rarr;</span> 427.3</strong><span>Football execution horizon, steps</span></div>
+        </div>
+        <p class="metric-note">Fixed Reference to MimicX in the four-task continuation study. Body error is a temporal mean of aligned worst-body distance; horizon is the worst first-failure step across verification repeats.</p>
+      </div>
+    </section>
+    <section class="section quiet-band" id="method">
+      <div class="container research-width">
+        <p class="eyebrow">Policy-in-the-loop supervision refinement</p>
+        <h2>A video-to-policy workflow with execution feedback.</h2>
+        <div class="stage-grid">
+          <figure><img src="assets/media/stage-video.png" loading="lazy" alt="Original tennis video frame"><figcaption><b>01</b> Human video</figcaption></figure>
+          <figure><img src="assets/media/stage-human.png" loading="lazy" alt="Reconstructed human motion in the camera coordinate system"><figcaption><b>02</b> Human reconstruction</figcaption></figure>
+          <figure><img src="assets/media/stage-world.png" loading="lazy" alt="Global human body motion"><figcaption><b>03</b> Global motion</figcaption></figure>
+          <figure><img src="assets/media/stage-reference.png" loading="lazy" alt="Retargeted G1 motion reference"><figcaption><b>04</b> Robot reference</figcaption></figure>
+          <figure><img src="assets/media/stage-fixed.png" loading="lazy" alt="Fixed-reference policy rollout"><figcaption><b>05</b> Initial policy rollout</figcaption></figure>
+          <figure><img src="assets/media/stage-ours.png" loading="lazy" alt="MimicX refined policy rollout"><figcaption><b>06</b> Verified policy</figcaption></figure>
+        </div>
+        <div class="method-columns">
+          <article><span class="method-label blue">Diagnose</span><h3>Locate the failure.</h3><p>Strict rollouts expose difficult time windows and body-error channels. The diagnosis routes attention to task-critical body regions.</p></article>
+          <article><span class="method-label teal">Refine</span><h3>Continue with targeted supervision.</h3><p>Bounded candidates combine local, global and dynamics objectives with failure-window replay. Each continues from the same current policy.</p></article>
+          <article><span class="method-label coral">Verify</span><h3>Accept execution improvements.</h3><p>Repeated rollouts rank completion, failure horizon and tracking fidelity before reward. Candidates that fail verification leave the current policy intact.</p></article>
+        </div>
+        <p class="metric-note">GVHMR and SMPL-X reconstruct the human; GMR retargets the motion; PPO learns tracking in MuJoCo/MjLab. Input preparation establishes the registered reference, which stays fixed within an AutoRefine loop.</p>
+      </div>
+    </section>
+    <section class="section" id="policies">
+      <div class="container research-width">
+        <p class="eyebrow">Recorded policy execution</p>
+        <h2>Compare the actual rollouts.</h2>
+        <div class="comparison-controls">
+          <label for="task-select">Task</label>
+          <select id="task-select"><option value="tennis">Tennis Swing</option><option value="football">Football Juggling</option><option value="dance">Dance Sequence</option><option value="kungfu">Kung Fu Sequence</option></select>
+          <button id="pair-toggle" type="button">Play both</button><button id="pair-reset" type="button">Restart</button>
+        </div>
+        <div class="policy-pair">
+          <figure class="fixed"><figcaption>Fixed Reference</figcaption><video id="fixed-video" controls muted playsinline preload="metadata" src="assets/media/tennis-fixed.mp4"></video></figure>
+          <figure class="ours"><figcaption>MimicX</figcaption><video id="ours-video" controls muted playsinline preload="metadata" src="assets/media/tennis-ours.mp4"></video></figure>
+        </div>
+        <label class="seek-label" for="pair-seek">Shared playback position <output id="pair-time">0.0 s</output></label>
+        <input id="pair-seek" type="range" min="0" max="1000" value="0" aria-label="Shared playback position">
+        <p id="task-note" class="metric-note" aria-live="polite">Tennis: MimicX reaches strict success in all nine core evaluation rollouts. Videos illustrate a selected recorded trial.</p>
+        <p class="metric-note">Solid geometry is the executed robot; transparent geometry is the reference. The hero uses the recorded policy in a presentation scene; props and scene appearance are not ball-contact training evidence.</p>
+      </div>
+    </section>
+    <section class="section quiet-band" id="results">
+      <div class="container research-width">
+        <p class="eyebrow">Controlled continuation study</p>
+        <h2>Execution improves across the tracking pipeline.</h2>
+        <p>Four tasks, four methods, three continuation seeds and three verification repeats: 48 method-task-seed trials and 144 final evaluation rollouts. The table retains every core task.</p>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Core results table">
+          <table class="results-table"><caption>Fixed Reference and MimicX, averaged over continuation seeds</caption>
+            <thead><tr><th scope="col">Task</th><th scope="col">Method</th><th scope="col">Strict success</th><th scope="col">Execution horizon</th><th scope="col">Body error</th></tr></thead>
+            <tbody id="core-results">
+<tr><th scope="row">Tennis Swing</th><td>Fixed Reference</td><td>11.1%</td><td>322.0</td><td>0.241 m</td></tr>
+<tr class="ours-row"><th scope="row">Tennis Swing</th><td>MimicX</td><td>100.0%</td><td>801.0</td><td>0.157 m</td></tr>
+<tr><th scope="row">Football Juggling</th><td>Fixed Reference</td><td>0.0%</td><td>53.7</td><td>0.286 m</td></tr>
+<tr class="ours-row"><th scope="row">Football Juggling</th><td>MimicX</td><td>0.0%</td><td>427.3</td><td>0.244 m</td></tr>
+<tr><th scope="row">Dance Sequence</th><td>Fixed Reference</td><td>0.0%</td><td>193.3</td><td>0.270 m</td></tr>
+<tr class="ours-row"><th scope="row">Dance Sequence</th><td>MimicX</td><td>0.0%</td><td>341.3</td><td>0.244 m</td></tr>
+<tr><th scope="row">Kung Fu Sequence</th><td>Fixed Reference</td><td>0.0%</td><td>97.7</td><td>0.249 m</td></tr>
+<tr class="ours-row"><th scope="row">Kung Fu Sequence</th><td>MimicX</td><td>0.0%</td><td>196.0</td><td>0.141 m</td></tr>
+</tbody>
+          </table>
+        </div>
+        <p class="metric-note">Success uses the full evaluation budget. An unfailed rollout uses H + 1 as its horizon sentinel. Trials share a task-specific warmstart; protected Dance/Kung Fu outputs retain that checkpoint. Full component results and metric definitions are included below.</p>
+        <figure class="channel-figure"><a href="assets/media/tracking-channels.png"><img loading="lazy" src="assets/media/tracking-channels.png" alt="Paired-seed changes across seven tracking and reward channels"></a><figcaption>Matched-seed changes across all seven recorded metric channels. Raw values, denominators and comparison protocols are provided with the numerical data.</figcaption></figure>
+        <details class="data-details"><summary>All numerical data and comparison protocols</summary><div id="result-downloads">
+<a href="assets/results/accept_protect_decisions.csv">accept protect decisions (CSV)</a>
+<a href="assets/results/additional_video_tasks.csv">additional video tasks (CSV)</a>
+<a href="assets/results/core_method_task_summary.csv">core method task summary (CSV)</a>
+<a href="assets/results/core_trial_results.csv">core trial results (CSV)</a>
+<a href="assets/results/hloop_timings.csv">hloop timings (CSV)</a>
+<a href="assets/results/motion_breadth.csv">motion breadth (CSV)</a>
+<a href="assets/results/reward_higher_regression_rejection.csv">reward higher regression rejection (CSV)</a>
+<a href="assets/results/sonic_comparison.csv">sonic comparison (CSV)</a>
+<a href="assets/results/tennis_training_dynamics_3000_points.csv">tennis training dynamics 3000 points (CSV)</a>
+</div><p><a href="assets/results/PROTOCOL.md">Metric definitions and evaluation protocol</a> &middot; <a href="assets/results/provenance.json">Source hashes</a></p></details>
+      </div>
+    </section>
+    <section class="section" id="hloop">
+      <div class="container research-width">
+        <p class="eyebrow teal">MimicX-HLoop</p>
+        <h2>Overlap execution. Preserve the workload.</h2>
+        <p>GPU rollout jobs feed CPU diagnosis and final report selection. Dependency-ready execution overlaps independent work without changing the frozen policies, inputs or evaluation budget.</p>
+        <div class="hloop-flow"><span>8 GPU rollouts</span><span aria-hidden="true">&rarr;</span><span>8 CPU diagnoses</span><span aria-hidden="true">&rarr;</span><span>1 report selection</span></div>
+        <div class="table-scroll"><table class="results-table"><caption>Five repetitions of a fixed-policy workload</caption><thead><tr><th>Executor</th><th>Median time</th><th>Speedup vs sequential</th></tr></thead><tbody><tr><th>Sequential</th><td>241.221 s</td><td>1.000&times;</td></tr><tr><th>Bulk-synchronous</th><td>122.258 s</td><td>1.973&times;</td></tr><tr class="ours-row"><th>MimicX-HLoop</th><td>124.017 s</td><td>1.945&times;</td></tr></tbody></table></div>
+        <p class="metric-note">All modes have matching report selections. This workload performs zero PPO updates; timing measures execution efficiency, not policy convergence.</p>
+      </div>
+    </section>
+    <section class="section quiet-band" id="resources">
+      <div class="container research-width"><p class="eyebrow">Code and reproducibility</p><h2>Inspect the method. Run the loop.</h2><div class="resource-links"><a href="https://github.com/NEBULIS-Lab/MimicX">Code repository &nearr;</a><a href="https://github.com/NEBULIS-Lab/shuaijun-ICLR-paper-MimicX">Paper source &nearr;</a><a href="QUICKSTART.md">Video-to-policy quickstart &rarr;</a><a href="REPRODUCIBILITY.md">Paper reproduction inventory &rarr;</a><a href="HLOOP.md">HLoop protocol &rarr;</a></div><p class="metric-note">The source contains the training/refinement code, pinned backend setup and paper configurations. Exact checkpoint/input artifacts are verified separately; see the reproduction inventory for availability.</p></div>
+    </section>
+  </main>
+  <footer><div class="container research-width"><a class="footer-brand" href="#top">MimicX</a><p>Page structure adapted from <a href="https://yangsizhe.github.io/robosplat/">RoboSplat</a>, <a href="https://nerfies.github.io/">NeRFies</a> and <a href="https://github.com/umi-on-legs/umi-on-legs.github.io/">UMI on Legs</a>. Adapted website template: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Research media retain their respective rights.</p></div></footer>
+</body>
+</html>

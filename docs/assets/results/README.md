@@ -18,7 +18,7 @@ export; rows are not filtered by outcome. No checkpoint paths, device-placement
 metadata or private log paths are published. Regenerate with
 `scripts/export_release_results.py --source-dir ... --output-dir ...`.
 
-Definitions and comparison protocols are in [docs/RESULTS.md](../docs/RESULTS.md).
+Definitions and comparison protocols are in [PROTOCOL.md](PROTOCOL.md).
 The time series contains twelve 250-point traces (four methods, three seeds),
 not a single 3000-iteration training run. HLoop's internal `e0` ID means
 MimicX-HLoop. Checkpoint weights are not included in this snapshot.

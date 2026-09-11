@@ -1,0 +1,5 @@
+id: m0_open_loop
+mode: static
+patch_profile: none
+use_refined_reference: false
+description: Fixed video-derived reference with standard MimicX PPO tracking.

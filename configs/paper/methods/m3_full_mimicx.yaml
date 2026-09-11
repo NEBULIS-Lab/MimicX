@@ -1,0 +1,7 @@
+id: m3_full_mimicx
+mode: closed_loop
+patch_profile: autorefine
+use_refined_reference: true
+max_iterations: 1
+candidate_budget: 3
+description: Full failure mining, candidate refinement, matched repeated rollout gate, and rollback.

@@ -1,6 +1,6 @@
 # Numerical Evidence and Evaluation
 
-`benchmarks/` stores the current numerical evidence snapshot. These are
+This website's `assets/results/` stores the current numerical evidence snapshot. These are
 previously completed research experiments, not new measurements from the
 source-release CPU tests. Positive, neutral and negative rows are retained.
 

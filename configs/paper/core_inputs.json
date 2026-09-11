@@ -1,0 +1,241 @@
+{
+  "schema": "mimicx.paper-inputs.v1",
+  "tasks": [
+    {
+      "id": "tennis",
+      "motion_file": "motions/tennis/original.npz",
+      "base_checkpoint": "warmstarts/tennis/model_999.pt",
+      "policy_observation_dim": 160,
+      "load_run": "2026-06-27_17-11-56_val_tennis_mimicx_curriculum_1024env_1000it",
+      "horizon": 800,
+      "failure_window": [
+        340,
+        430
+      ],
+      "priority_bodies": [
+        "left_shoulder_roll_link",
+        "left_elbow_link",
+        "left_wrist_yaw_link",
+        "right_shoulder_roll_link",
+        "right_elbow_link",
+        "right_wrist_yaw_link"
+      ],
+      "learning_rate": 1e-06,
+      "hloop_checkpoint": "hloop/tennis/model_1248.pt"
+    },
+    {
+      "id": "football1",
+      "motion_file": "motions/football1/original.npz",
+      "base_checkpoint": "warmstarts/football1/model_2318.pt",
+      "policy_observation_dim": 160,
+      "load_run": "2026-07-08_03-13-29_mimicx_football1_autorefine_dynamic_from2019_1024env_300it",
+      "horizon": 455,
+      "failure_window": [
+        380,
+        430
+      ],
+      "priority_bodies": [
+        "left_hip_roll_link",
+        "left_knee_link",
+        "left_ankle_roll_link",
+        "right_hip_roll_link",
+        "right_knee_link",
+        "right_ankle_roll_link"
+      ],
+      "learning_rate": 7e-07,
+      "hloop_checkpoint": "hloop/football1/model_2567.pt"
+    },
+    {
+      "id": "dance2",
+      "motion_file": "motions/dance2/original.npz",
+      "refined_motion_file": "motions/dance2/registered.npz",
+      "base_checkpoint": "warmstarts/dance2/model_2318.pt",
+      "policy_observation_dim": 160,
+      "load_run": "2026-07-08_03-13-29_mimicx_dance2_autorefine_dynamic_from2019_1024env_300it",
+      "horizon": 784,
+      "failure_window": [
+        500,
+        545
+      ],
+      "priority_bodies": [
+        "pelvis",
+        "torso_link",
+        "left_ankle_roll_link",
+        "right_ankle_roll_link"
+      ],
+      "learning_rate": 9e-07,
+      "hloop_checkpoint": "hloop/dance2/model_2567.pt"
+    },
+    {
+      "id": "kongfu1",
+      "motion_file": "motions/kongfu1/original.npz",
+      "refined_motion_file": "motions/kongfu1/registered.npz",
+      "base_checkpoint": "warmstarts/kongfu1/model_2318.pt",
+      "policy_observation_dim": 160,
+      "load_run": "2026-06-28_14-25-14_mimicx_kongfu1_g1_autorefine_hierarchical_from2019_1024env_300it",
+      "horizon": 1062,
+      "failure_window": [
+        165,
+        225
+      ],
+      "priority_bodies": [
+        "pelvis",
+        "torso_link",
+        "left_hip_roll_link",
+        "left_knee_link",
+        "left_ankle_roll_link",
+        "right_hip_roll_link",
+        "right_knee_link",
+        "right_ankle_roll_link"
+      ],
+      "learning_rate": 5e-07,
+      "hloop_checkpoint": "hloop/kongfu1/model_2567.pt"
+    }
+  ],
+  "assets": [
+    {
+      "path": "warmstarts/tennis/model_999.pt",
+      "role": "warmstart",
+      "bytes": 6769187,
+      "sha256": "750ca2de859521934ecbf307953b99c66c10ee7c39951af68808020f77481e37"
+    },
+    {
+      "path": "motions/tennis/original.npz",
+      "role": "original reference",
+      "bytes": 931842,
+      "sha256": "4fd30044cd047e7137dda191436a8b18ea73faa3feeb7ab650a8f31ff4d5791a"
+    },
+    {
+      "path": "warmstarts/tennis/params/agent.yaml",
+      "role": "historical parameter dump (local)",
+      "bytes": 1069,
+      "sha256": "07b32157701f9126f5c78e9b4e6175f014fe7edebb435b992e7067614ca3e044"
+    },
+    {
+      "path": "warmstarts/tennis/params/env.yaml",
+      "role": "historical parameter dump (local)",
+      "bytes": 22311,
+      "sha256": "098fa5f2dc07f00b7bd813386b1b1b348ad2e8b0ce22c358f11689893f131664"
+    },
+    {
+      "path": "warmstarts/football1/model_2318.pt",
+      "role": "warmstart",
+      "bytes": 6769269,
+      "sha256": "6fa2b30a5c97d7cf66a54323f65d7e2e851897d2d7683738ca8e5e8d27e897a6"
+    },
+    {
+      "path": "motions/football1/original.npz",
+      "role": "original reference",
+      "bytes": 817154,
+      "sha256": "9b58b814cd186b70e7a29d56732a61d79362cf0cb212ef6dd6c27c1eae9faaae"
+    },
+    {
+      "path": "warmstarts/football1/params/agent.yaml",
+      "role": "historical parameter dump (local)",
+      "bytes": 1166,
+      "sha256": "f116b30247cd5428f533ad0ae73fadc39b617d9db2684855e338ba91510fd724"
+    },
+    {
+      "path": "warmstarts/football1/params/env.yaml",
+      "role": "historical parameter dump (local)",
+      "bytes": 25753,
+      "sha256": "7d0275c57789fe5f26e414025127525364e57c22598ae00b29db2b9c603bc0bc"
+    },
+    {
+      "path": "warmstarts/dance2/model_2318.pt",
+      "role": "warmstart",
+      "bytes": 6769269,
+      "sha256": "9b22c1a544aaadcf8dccb7ac4ae83818a31caeede7c171657da28b401501c945"
+    },
+    {
+      "path": "motions/dance2/original.npz",
+      "role": "original reference",
+      "bytes": 1406722,
+      "sha256": "4645c84c47264d103e77a6e6ee543c0a4d11d654d25ad42714fa18c8e4550409"
+    },
+    {
+      "path": "motions/dance2/registered.npz",
+      "role": "registered repaired reference",
+      "bytes": 1406722,
+      "sha256": "2154de69a602529ba86de4e5b4e99b22f83907ce3d4906dc2bdee4105898cd1e"
+    },
+    {
+      "path": "warmstarts/dance2/params/agent.yaml",
+      "role": "historical parameter dump (local)",
+      "bytes": 1163,
+      "sha256": "65cded2dad01b7173b157577aae72b49280fe1bbde34fb09f8866c1dab7ffc3c"
+    },
+    {
+      "path": "warmstarts/dance2/params/env.yaml",
+      "role": "historical parameter dump (local)",
+      "bytes": 25750,
+      "sha256": "0fb2cd5cb05fb9e7fe73be975f847d8e98c738a7e3878231a877fe7530ac3ca4"
+    },
+    {
+      "path": "warmstarts/kongfu1/model_2318.pt",
+      "role": "warmstart",
+      "bytes": 6769269,
+      "sha256": "b7697a84d8e56ef236668d10b14c394f95387871edf53a4526763e86354507e9"
+    },
+    {
+      "path": "motions/kongfu1/original.npz",
+      "role": "original reference",
+      "bytes": 1904898,
+      "sha256": "bf84d3e3e784fe4d3683a6af33ceb67dc3e6e07ba4ba0cd51d956f42de5f9f80"
+    },
+    {
+      "path": "motions/kongfu1/registered.npz",
+      "role": "registered repaired reference",
+      "bytes": 1904898,
+      "sha256": "8f3f80bd7e125902b59f6afe7ff96034f1b5145cd26ee4f1c64c03fe36d5624b"
+    },
+    {
+      "path": "warmstarts/kongfu1/params/agent.yaml",
+      "role": "historical parameter dump (local)",
+      "bytes": 1173,
+      "sha256": "d4de8839daaa82ff1e589c49a7457d7424c09ce0c649c8cc1879d0ca4679bc2b"
+    },
+    {
+      "path": "warmstarts/kongfu1/params/env.yaml",
+      "role": "historical parameter dump (local)",
+      "bytes": 25751,
+      "sha256": "ec212aecae4290a9764046fcd0edd8ee38b7fb6bb1b95bc4afb84314db23fdcd"
+    },
+    {
+      "path": "hloop/dance2/model_2567.pt",
+      "role": "fixed HLoop baseline policy",
+      "bytes": 6769269,
+      "sha256": "df7b1f08c951fa509862e19e49eb0726c230175f0624cafe5c4d13a4eb532c6c"
+    },
+    {
+      "path": "hloop/football1/model_2567.pt",
+      "role": "fixed HLoop baseline policy",
+      "bytes": 6769269,
+      "sha256": "deec423cb19c2f89cbe4dfbecd32953291a11aa0cffa53e8c411ab174217e3c8"
+    },
+    {
+      "path": "hloop/kongfu1/model_2567.pt",
+      "role": "fixed HLoop baseline policy",
+      "bytes": 6769269,
+      "sha256": "14f12be41b84cf5ee2e33abf26359dd9a81a7c6a1a0f50f8f043dc77fa0205b2"
+    },
+    {
+      "path": "hloop/tennis/model_1248.pt",
+      "role": "fixed HLoop baseline policy",
+      "bytes": 6769269,
+      "sha256": "323b1bd767b0a0523ddff316de36f205160449b746f3733bf30c00be189eb4e0"
+    }
+  ],
+  "seeds": [
+    101,
+    202,
+    303
+  ],
+  "verification_seeds": [
+    1001,
+    2002,
+    3003
+  ],
+  "train_iterations": 250,
+  "num_envs": 1024
+}

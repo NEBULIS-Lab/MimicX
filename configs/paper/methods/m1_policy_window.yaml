@@ -1,0 +1,5 @@
+id: m1_policy_window
+mode: static
+patch_profile: window
+use_refined_reference: false
+description: M0 plus failure-window curriculum only.

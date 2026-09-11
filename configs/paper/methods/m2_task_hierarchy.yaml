@@ -1,0 +1,5 @@
+id: m2_task_hierarchy
+mode: static
+patch_profile: hierarchical
+use_refined_reference: false
+description: M1 plus task-aware local, global, and dynamics objectives.

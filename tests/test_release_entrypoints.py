@@ -65,7 +65,7 @@ def test_comparison_generator_expands_all_methods_and_seeds(tmp_path):
 
 
 def test_numerical_release_matches_recorded_checksums():
-    root = ROOT / "benchmarks"
+    root = ROOT / "docs/assets/results"
     for record in json.loads((root / "provenance.json").read_text()):
         path = root / record["file"]
         assert hashlib.sha256(path.read_bytes()).hexdigest() == record["published_sha256"]

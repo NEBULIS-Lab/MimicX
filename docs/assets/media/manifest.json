@@ -1,0 +1,105 @@
+[
+  {
+    "file": "tennis-court.mp4",
+    "source_filename": "VIDEO_SCENE__TENNIS__MIMICX__COURT_WIDE.mp4",
+    "bytes": 1088806,
+    "sha256": "e99f754e9e7f604882d56f27ef699e8c8bf724b0ab8838143340f8f033cdaa70"
+  },
+  {
+    "file": "tennis-fixed.mp4",
+    "source_filename": "VIDEO__TENNIS__FIXED_REFERENCE__WITH_REFERENCE.mp4",
+    "bytes": 6083425,
+    "sha256": "9c870aee4d55e80c7469c57eb286e6ab63402557fa8d6f3941bcc04d10859ed1"
+  },
+  {
+    "file": "tennis-ours.mp4",
+    "source_filename": "VIDEO__TENNIS__MIMICX__WITH_REFERENCE.mp4",
+    "bytes": 6224796,
+    "sha256": "7cdd01f2989d652eb9d24ed70176abefbcff21df9bf8377ae92aa5d859d89cdc"
+  },
+  {
+    "file": "football-fixed.mp4",
+    "source_filename": "VIDEO__FOOTBALL__FIXED_REFERENCE__WITH_REFERENCE.mp4",
+    "bytes": 4687945,
+    "sha256": "674a7125af0f4b95966b2bfb46270884ede7d17520c34f5d06efea9eaf733b35"
+  },
+  {
+    "file": "football-ours.mp4",
+    "source_filename": "VIDEO__FOOTBALL__MIMICX__WITH_REFERENCE.mp4",
+    "bytes": 3675589,
+    "sha256": "07884ea4e6e114e4d7298e03676f0b001ffd1c30628ce502097f69229d92efcc"
+  },
+  {
+    "file": "dance-fixed.mp4",
+    "source_filename": "VIDEO__DANCE__FIXED_REFERENCE__WITH_REFERENCE.mp4",
+    "bytes": 7733952,
+    "sha256": "c00e436abea372ac644428963c59e2afeb853d0ad75aa6065a02162db0e3388f"
+  },
+  {
+    "file": "dance-ours.mp4",
+    "source_filename": "VIDEO__DANCE__MIMICX__WITH_REFERENCE.mp4",
+    "bytes": 6816124,
+    "sha256": "a360af2afed14d417fd049e94d95446a1051fbcc81ce335f62a4392b90d718a4"
+  },
+  {
+    "file": "kungfu-fixed.mp4",
+    "source_filename": "VIDEO__KONGFU__FIXED_REFERENCE__WITH_REFERENCE.mp4",
+    "bytes": 7607158,
+    "sha256": "3944c5bdc9f9104e16eb683a874bdd109b4eae892477f4c49c85cdda75f83fb1"
+  },
+  {
+    "file": "kungfu-ours.mp4",
+    "source_filename": "VIDEO__KONGFU__MIMICX__WITH_REFERENCE.mp4",
+    "bytes": 5916269,
+    "sha256": "77247687a04559969177246016a5a62bfc14833abf78aebb0a5198f86668e55d"
+  },
+  {
+    "file": "stage-video.png",
+    "source_filename": "PIPELINE__V9__TENNIS__01_ORIGINAL_RGB.png",
+    "bytes": 1516269,
+    "sha256": "23bc4638a4fed75d74987424b03b55cc25af7a51fc3f560981c016f47502a22a"
+  },
+  {
+    "file": "stage-human.png",
+    "source_filename": "PIPELINE__V9__TENNIS__03_SMPL_CAMERA.png",
+    "bytes": 1502899,
+    "sha256": "d455363263c3532bf7b24b9a364b0141a9bd197ae872a8932000c4b53654180c"
+  },
+  {
+    "file": "stage-world.png",
+    "source_filename": "PIPELINE__V9__TENNIS__04_SMPL_WORLD.png",
+    "bytes": 208727,
+    "sha256": "a48dcbcf765c5d6613f92359e2cd2cc6fcb5d4561a2be20ecc22776fe25854ae"
+  },
+  {
+    "file": "stage-reference.png",
+    "source_filename": "PIPELINE__V9__TENNIS__05_RETARGETED_G1_REFERENCE.png",
+    "bytes": 914650,
+    "sha256": "7532d79ff2203968728a3979340b9c224d1274472acda1ae8bd0bbe6bdaee02a"
+  },
+  {
+    "file": "stage-fixed.png",
+    "source_filename": "PIPELINE__V9__TENNIS__06_FIXED_REFERENCE_POLICY.png",
+    "bytes": 1695221,
+    "sha256": "49ec3e3b25f2693cdf3ca56c95c0e1ccdb818a148492cef4429d94e0f8d0ef3d"
+  },
+  {
+    "file": "stage-ours.png",
+    "source_filename": "PIPELINE__V9__TENNIS__07_MIMICX_POLICY.png",
+    "bytes": 358276,
+    "sha256": "b1cc7c7c6978fb81edefe7c467ea4a5e54f12955aee93ea9f29d8f0b94016cbd"
+  },
+  {
+    "file": "tracking-channels.png",
+    "source_filename": "RESULT__V9__01_PAIRED_SEED_IMPROVEMENTS.png",
+    "bytes": 368167,
+    "sha256": "aafb69398a45455b618959877c9a051d55715da385eb28608fe6966d6c6616ad"
+  },
+  {
+    "file": "tennis-court-poster.jpg",
+    "source_filename": "VIDEO_SCENE__TENNIS__MIMICX__COURT_WIDE.mp4",
+    "operation": "CPU-decoded video frame at 1.0 seconds",
+    "bytes": 78718,
+    "sha256": "0d58a862fe47c0965b53a96e0692f62ab5d94f6049d26ca2273dacc815d635df"
+  }
+]

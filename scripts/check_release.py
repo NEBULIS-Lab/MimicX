@@ -9,7 +9,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 FORBIDDEN_SUFFIXES = {".pt", ".pth", ".npz", ".pkl", ".mp4", ".pdf", ".png", ".jpg", ".pyc"}
-FORBIDDEN_ROOTS = {"third_party", ".venv", "runs", "data", "logs", "checkpoints", "dist", "build"}
+FORBIDDEN_ROOTS = {"third_party", ".venv", "runs", "data", "logs", "checkpoints", "dist", "build", "results", "benchmarks"}
 
 
 def main():
@@ -21,14 +21,15 @@ def main():
     total = 0
     for relative in files:
         path = ROOT / relative
-        if path.is_symlink() or relative.parts[0] in FORBIDDEN_ROOTS or path.suffix.lower() in FORBIDDEN_SUFFIXES:
+        website_media = relative.parts[:3] == ("docs", "assets", "media") and path.suffix.lower() in {".mp4", ".png", ".jpg"}
+        if path.is_symlink() or relative.parts[0] in FORBIDDEN_ROOTS or (path.suffix.lower() in FORBIDDEN_SUFFIXES and not website_media):
             failures.append(f"Excluded artifact: {relative}")
             continue
         content = path.read_bytes()
         total += len(content)
-        if len(content) > 10_000_000:
+        if len(content) > (90_000_000 if website_media else 10_000_000):
             failures.append(f"Large file: {relative}")
-        if path.suffix.lower() == ".stl":
+        if path.suffix.lower() == ".stl" or website_media:
             continue
         text = content.decode("utf-8")
         if re.search(r"(?:ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}|-----BEGIN [A-Z ]*PRIVATE KEY-----)", text):

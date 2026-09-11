@@ -30,12 +30,12 @@ Human video -> GVHMR / SMPL-X -> GMR -> MuJoCo motion reference
   policy rollout telemetry, videos, screenshots, and exact-state replay export.
 - MimicX-HLoop's CPU/GPU/I/O dependency scheduler, sequential and
   bulk-synchronous executors, and artifact/selection parity checks.
-- Controlled-comparison tooling, numerical result snapshots, and CPU tests.
+- Paper-specific controlled-comparison configurations and CPU tests.
 
 The released automated search holds the registered reference motion fixed
 within each loop and refines objectives and curricula. Input reference
 preparation is a separate stage. See [the method](docs/METHOD.md) for the exact
-implemented contract and [results](docs/RESULTS.md) for the evaluation protocol.
+implemented contract and the [project website](docs/index.html) for results.
 
 ## Start Here
 
@@ -60,28 +60,19 @@ licensed motion inputs:
 3. [Run and resume AutoRefine](docs/QUICKSTART.md#autorefine).
 4. [Export videos, screenshots, and replay states](docs/VISUALIZATION.md).
 5. [Use HLoop and compare scheduling modes](docs/HLOOP.md).
+6. [Reproduce the paper protocols](docs/REPRODUCIBILITY.md).
 
 GPU entry points must run inside the compute allocation provided by your
 environment. Device numbers refer to the process-visible GPU set; launchers
 preserve the inherited visibility mask. Use `--devices 0` for a single visible
 GPU. The lightweight package does not automatically install a CUDA runtime.
 
-## Result Snapshot
+## Project Website
 
-The four-task controlled comparison contains 48 task/method/continuation-seed
-trials, each with three evaluation rollouts. Selected findings:
-
-| Metric | Fixed Reference | MimicX |
-|---|---:|---:|
-| Tennis strict success | 11.1% | 100.0% |
-| Tennis aligned worst-body error, temporal mean | 0.241 m | 0.157 m |
-| Football worst first-failure horizon, seed mean | 53.7 steps | 427.3 steps |
-
-The twelve full-loop trials accepted six refinements and protected six current
-policies. HLoop's median fixed-policy workload time was 124.017 s versus
-241.221 s sequential and 122.258 s bulk-synchronous. Full task results,
-component comparisons, reductions, and workload definitions are in
-[docs/RESULTS.md](docs/RESULTS.md) and [benchmarks](benchmarks/README.md).
+The self-contained [project page](docs/index.html) presents the method,
+paired policy videos and complete numerical evidence. Results live only under
+`docs/assets/results/`, separate from the implementation and runtime inputs.
+See [website maintenance](docs/WEBSITE.md) for rebuilding and publishing it.
 
 ## Repository Map
 
@@ -94,7 +85,8 @@ component comparisons, reductions, and workload definitions are in
 | `mimicx/visualization/` | Replay, source-object registration, camera/geometry utilities |
 | `backend_overlay/` | Tracking backend modifications |
 | `scripts/` | Setup, data conversion, training-loop and export entry points |
-| `benchmarks/` | Numerical evidence without private filesystem metadata |
+| `configs/paper/` | Frozen method settings and checksummed input specification |
+| `docs/` | Project website and reproduction documentation |
 | `tests/` | Portable CPU regression tests |
 
 ## Dependencies and License
@@ -106,6 +98,8 @@ in [dependencies](dependencies/README.md); their licenses remain separate.
 Obtain body models, datasets, and pretrained weights from their original
 providers. They are not bundled in this source release.
 
-Published policy checkpoints and source videos are not included in this Git
-snapshot. The quickstart documents training a task-specific warmstart and
-refining it. [Release verification](docs/RELEASE.md) records what was tested.
+Policy checkpoints and source videos are not included in this Git snapshot.
+Selected demonstration media are included only in the website. Exact paper
+inputs are tracked by a hash manifest; their availability and the alternative
+new-task workflow are documented in the [reproduction inventory](docs/REPRODUCIBILITY.md).
+[Release verification](docs/RELEASE.md) records what was tested.

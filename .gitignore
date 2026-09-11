@@ -30,3 +30,6 @@ outputs/
 *.blend
 *.zip
 *.tar*
+!docs/assets/media/*.mp4
+!docs/assets/media/*.png
+!docs/assets/media/*.jpg

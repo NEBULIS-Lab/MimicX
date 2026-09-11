@@ -33,4 +33,20 @@ resource allocation in each mode, with repeated wall-clock measurements.
 
 The numerical snapshot includes five repeats of each executor over the fixed
 rollout/diagnosis workload. HLoop approaches bulk-synchronous throughput while
-supporting dependency-ready execution; see [results](RESULTS.md).
+supporting dependency-ready execution; see [results](assets/results/PROTOCOL.md).
+
+## Frozen Paper Workload
+
+First follow [paper input configuration](REPRODUCIBILITY.md). The resulting
+`hloop.yaml` registers the four Fixed Reference seed-101 checkpoints, two
+evaluation seeds, three executor modes and five measured repetitions per mode.
+
+```bash
+python scripts/autorefine/run_native_hloop_benchmark.py \
+  --config runs/paper-config/hloop.yaml --run-dir runs/paper-hloop --prepare-only
+```
+
+This CPU preparation writes the fixed 17-job workload: eight rollouts, eight
+diagnoses and one report selector. To execute it, rerun without `--prepare-only`
+inside a two-visible-GPU compute allocation. It performs no PPO updates. The
+selector is a fixed-report reduction, distinct from the repeated policy gate.
