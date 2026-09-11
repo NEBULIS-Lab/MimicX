@@ -33,3 +33,4 @@ outputs/
 !docs/assets/media/*.mp4
 !docs/assets/media/*.png
 !docs/assets/media/*.jpg
+!docs/assets/branding/*.png
