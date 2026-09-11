@@ -21,7 +21,7 @@
   padding: 6px 36px;
   justify-content: center;
   gap: 16px 38px;
-  background: rgba(20, 24, 28, .9);
+  background: rgba(20, 24, 28, .82);
   border-bottom: 1px solid rgba(255, 255, 255, .12);
   z-index: 2;
 }
@@ -33,7 +33,12 @@
   text-decoration: none;
 }
 .top-nav a:hover { background: #4b3633; color: #fff; }
-.top-nav .hf-link { border-radius: 7px; }
+.top-nav .hf-link {
+  padding: 6px 12px;
+  border-radius: 7px;
+  background: #363235;
+  color: #f3ac9e;
+}
 .hero-bottom { background: rgba(20, 24, 28, .58); color: #fff; z-index: 2; }
 .hero-bottom a { color: #f3ac9e; }
 .hero-bottom a:hover { color: #fff; }
