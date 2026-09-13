@@ -4,7 +4,7 @@
   <img src="docs/assets/branding/mimicx-full-logo.svg" alt="MimicX" width="680">
 </a>
 
-### Policy-in-the-Loop Supervision Refinement<br>for Video-Driven Humanoid Motion Tracking
+## MimicX: Policy-in-the-Loop Supervision Refinement<br>for Video-Driven Humanoid Motion Tracking
 
 <p>
   <a href="https://nebulis-lab.github.io/MimicX/"><img src="https://img.shields.io/badge/Project-Website-D45B4C?style=flat-square" alt="Project website" height="23"></a>
