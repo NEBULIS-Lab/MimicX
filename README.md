@@ -25,6 +25,20 @@
 </a>
 <p><sub>Recorded G1 tennis policy motion. Successive poses are arranged spatially for visualization.</sub></p>
 
+<p>
+  <img src="docs/assets/media/stage-human.png" alt="Video-reconstructed human motion" width="47%">
+  &nbsp;&nbsp;
+  <img src="docs/assets/media/stage-reference.png" alt="Retargeted G1 motion reference" width="47%">
+</p>
+<p><sub>Video-reconstructed human motion (left) and its retargeted G1 reference (right).</sub></p>
+
+<p>
+  <img src="docs/assets/media/stage-fixed.png" alt="Fixed-supervision policy rollout" width="47%">
+  &nbsp;&nbsp;
+  <img src="docs/assets/media/stage-ours.png" alt="MimicX refined policy rollout" width="47%">
+</p>
+<p><sub>Fixed-supervision policy rollout (left) and the policy after MimicX refinement (right).</sub></p>
+
 </div>
 
 ## Overview
