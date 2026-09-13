@@ -1,6 +1,8 @@
 <div align="center">
 
-# MimicX
+<a href="https://nebulis-lab.github.io/MimicX/">
+  <img src="docs/assets/branding/mimicx-full-logo.svg" alt="MimicX" width="680">
+</a>
 
 ### Policy-in-the-Loop Supervision Refinement<br>for Video-Driven Humanoid Motion Tracking
 

@@ -1,5 +1,10 @@
 # MimicX Brand Assets
 
+`mimicx-full-logo.svg` is the author's complete MimicX wordmark. It is used
+as the primary identity at the beginning of the repository README. Its
+SHA-256 digest is
+`7d2878daeaa47f21378460288e69c1a62c8e315e4d850381628c27b4d92cf0f9`.
+
 `logo-x.png` is the author's original transparent X, formed by a human model
 and a G1 robot. Its bytes are unchanged. It is a project mark, not an
 experimental result, and must not be replaced by generated artwork.
