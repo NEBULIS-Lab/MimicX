@@ -144,9 +144,10 @@ and historical 23-DoF policies use different model layouts.
 | `mimicx/adapters/` | Motion-format bridge |
 | `mimicx/evaluation/` | Metric reduction and experiment evidence utilities |
 | `mimicx/visualization/` | Replay, source-object registration, camera and geometry utilities |
-| `backend_overlay/` | Tracking backend modifications |
+| `dependencies/backend_overlay/` | Tracking backend modifications |
+| `dependencies/assets/` | Attributed third-party visualization assets |
 | `scripts/` | Setup, conversion, training-loop and export entry points |
-| `configs/paper/` | Frozen method settings and checksummed input specification |
+| `mimicx/configs/paper/` | Frozen method settings and checksummed input specification |
 | `docs/` | Project website and reproduction documentation |
 | `tests/` | Portable CPU regression tests |
 

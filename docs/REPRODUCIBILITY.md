@@ -10,10 +10,10 @@ identity are separate from measured results, which live in the website only.
 |---|---|---|
 | Video reconstruction | `scripts/reconstruct_video.py`, pinned GVHMR source | Authorized input video, GVHMR weights, licensed SMPL-X models |
 | Retargeting | GMR wrapper, motion conversion, pinned GMR source | Reconstruction outputs and body models |
-| Tracking and continuation | Pinned Unitree/MjLab backend setup, `backend_overlay/`, PPO configuration | GPU runtime and task warmstart, or train one using the quickstart |
+| Tracking and continuation | Pinned Unitree/MjLab backend setup, `dependencies/backend_overlay/`, PPO configuration | GPU runtime and task warmstart, or train one using the quickstart |
 | Task-aware refinement | Diagnosis, proposals, coordinator, objective/curriculum overlay | Motion and current policy |
 | Repeated execution gate | Verification, accept/protect persistence and resume tests | Recorded or newly generated rollout telemetry |
-| Four-task controlled study | `configs/paper/core_inputs.json`, four method YAMLs, matrix/configuration scripts | Exact registered input bundle described below |
+| Four-task controlled study | `mimicx/configs/paper/core_inputs.json`, four method YAMLs, matrix/configuration scripts | Exact registered input bundle described below |
 | HLoop workload | Real fixed-policy benchmark generator, three executors, report selector | Four registered fixed policies from the same input bundle |
 | SONIC comparison | Motion-format bridge and common metric adapters | Upstream SONIC runtime/weights and deployment records; its machine-specific launcher is not released |
 | Additional video and motion breadth | General task/comparison entry points and website evidence | Authorized source clips/motions and task warmstarts; these are not part of the core input bundle |
@@ -21,7 +21,7 @@ identity are separate from measured results, which live in the website only.
 
 ## Exact Core Input Bundle
 
-`configs/paper/core_inputs.json` records checksums for 22 assets: four original
+`mimicx/configs/paper/core_inputs.json` records checksums for 22 assets: four original
 motions, two pre-registered repaired motions, four warmstarts, eight historical
 parameter dumps, and four fixed-policy HLoop checkpoints. The bundle has been
 assembled and verified by the authors. It is now available through the paired

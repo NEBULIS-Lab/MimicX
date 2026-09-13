@@ -55,4 +55,4 @@ Only load `.pt` and pickle files from trusted sources.
 The repository does not vendor GVHMR/GMR model weights, SMPL-X models, video
 datasets, or simulator binaries. See `sources.json` for pinned source commits
 and `tracking.txt` for the runtime packages. The optional hand meshes under
-`assets/third_party/unitree_dex3_grip` carry their own license and attribution.
+`dependencies/assets/unitree_dex3_grip` carry their own license and attribution.

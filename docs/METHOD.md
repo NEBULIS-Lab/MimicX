@@ -30,7 +30,8 @@ Each candidate continues from the same incumbent with the configured seed,
 learning rate, environment count and iteration budget. Reward terms include
 body/anchor tracking, selected end effectors, linear/angular velocity,
 contact-sensitive foot behavior and action regularization. The exact task
-configurations are in `backend_overlay/unitree_rl_mjlab/src/tasks/tracking/`.
+configurations are in
+`dependencies/backend_overlay/unitree_rl_mjlab/src/tasks/tracking/`.
 
 The backend uses RSL-RL PPO, not a separately implemented RL optimizer.
 `--agent.max-iterations` counts PPO learning iterations; each collects a
@@ -81,6 +82,6 @@ concerns report selection, not a newly retrained policy.
 | Continuation and restart | `mimicx/refinement/closed_loop.py` |
 | Repeated gate | `mimicx/refinement/gate.py` |
 | Atomic persistence | `mimicx/refinement/state.py` |
-| PPO integration | `backend_overlay/unitree_rl_mjlab/scripts/train.py` |
-| Task objectives | `backend_overlay/unitree_rl_mjlab/src/tasks/tracking/mdp/rewards.py` |
+| PPO integration | `dependencies/backend_overlay/unitree_rl_mjlab/scripts/train.py` |
+| Task objectives | `dependencies/backend_overlay/unitree_rl_mjlab/src/tasks/tracking/mdp/rewards.py` |
 | Scheduler and parity | `mimicx/runtime/hloop.py` |

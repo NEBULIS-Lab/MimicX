@@ -73,7 +73,7 @@ def test_results_are_website_only_and_template_has_no_trackers():
 
 
 def test_core_asset_manifest_is_path_free():
-    payload = json.loads((ROOT / "configs/paper/core_inputs.json").read_text())
+    payload = json.loads((ROOT / "mimicx/configs/paper/core_inputs.json").read_text())
     assert len(payload["tasks"]) == 4
     assert len(payload["assets"]) == 22
     assert payload["seeds"] == [101, 202, 303]

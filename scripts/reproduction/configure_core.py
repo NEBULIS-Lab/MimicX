@@ -21,7 +21,7 @@ def main():
     parser.add_argument("--backend", type=Path, default=ROOT / "third_party/unitree_rl_mjlab")
     parser.add_argument("--runtime-python", type=Path, default=Path(sys.executable))
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--spec", type=Path, default=ROOT / "configs/paper/core_inputs.json")
+    parser.add_argument("--spec", type=Path, default=ROOT / "mimicx/configs/paper/core_inputs.json")
     args = parser.parse_args()
     bundle, backend = args.assets.resolve(), args.backend.resolve()
     spec = json.loads(args.spec.read_text())
@@ -54,7 +54,7 @@ def main():
         (args.output / name).write_text(yaml.safe_dump(task, sort_keys=False))
         task_paths.append(name)
     methods = []
-    for source in sorted((ROOT / "configs/paper/methods").glob("*.yaml")):
+    for source in sorted((ROOT / "mimicx/configs/paper/methods").glob("*.yaml")):
         shutil.copy2(source, args.output / source.name)
         methods.append(source.name)
     runtime = {"workdir": str(backend), "python": str(args.runtime_python.absolute()),

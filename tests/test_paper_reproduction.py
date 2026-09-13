@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_configure_and_materialize_actual_paper_contract_with_fixture_bytes(tmp_path):
-    spec = json.loads((ROOT / "configs/paper/core_inputs.json").read_text())
+    spec = json.loads((ROOT / "mimicx/configs/paper/core_inputs.json").read_text())
     bundle = tmp_path / "assets"
     for row in spec["assets"]:
         path = bundle / row["path"]

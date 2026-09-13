@@ -2,7 +2,7 @@ MimicX
 Copyright 2026 MimicX contributors
 
 This distribution includes modified unitree_rl_mjlab tracking source under
-backend_overlay/unitree_rl_mjlab, derived from Unitree Robotics' Apache-2.0
+dependencies/backend_overlay/unitree_rl_mjlab, derived from Unitree Robotics' Apache-2.0
 repository and the tracking infrastructure acknowledged there. Original
 copyright and license notices are retained in the included source and LICENSE.
 MimicX modifications include task-aware objectives, reference-relative actions,
@@ -15,5 +15,5 @@ model weights, third-party datasets or source videos are distributed here.
 
 GMR-related loader/adaptation code acknowledges Yanjie Ze's MIT-licensed GMR
 implementation; its license text is retained in dependencies/GMR_LICENSE.
-Unitree hand visualization assets under assets/third_party/unitree_dex3_grip
+Unitree hand visualization assets under dependencies/assets/unitree_dex3_grip
 retain the BSD-3-Clause license reproduced alongside those files.

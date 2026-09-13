@@ -76,7 +76,7 @@ def test_numerical_release_matches_recorded_checksums():
 
 
 def test_backend_training_has_no_visibility_override():
-    path = ROOT / "backend_overlay/unitree_rl_mjlab/scripts/train.py"
+    path = ROOT / "dependencies/backend_overlay/unitree_rl_mjlab/scripts/train.py"
     tree = ast.parse(path.read_text())
     for node in ast.walk(tree):
         if isinstance(node, ast.Assign):

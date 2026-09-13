@@ -13,7 +13,7 @@ from mimicx.visualization.dex3_grip import (
 def test_production_dex3_grip_contains_palm_and_seven_finger_links() -> None:
     root = Path(__file__).resolve().parents[2]
     visuals = load_closed_grip_visuals(
-        root / "assets/third_party/unitree_dex3_grip/g1_29dof_with_hand_rev_1_0.xml"
+        root / "dependencies/assets/unitree_dex3_grip/g1_29dof_with_hand_rev_1_0.xml"
     )
 
     assert len(visuals) == 8
@@ -44,6 +44,6 @@ def test_power_grasp_matches_public_g1_closed_hand_targets() -> None:
     }
     visuals = load_closed_grip_visuals(
         Path(__file__).resolve().parents[2]
-        / "assets/third_party/unitree_dex3_grip/g1_29dof_with_hand_rev_1_0.xml"
+        / "dependencies/assets/unitree_dex3_grip/g1_29dof_with_hand_rev_1_0.xml"
     )
     assert all(np.isfinite(visual.local_matrix).all() for visual in visuals)

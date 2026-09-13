@@ -22,6 +22,9 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 include = ["mimicx*"]
 
+[tool.setuptools.package-data]
+mimicx = ["configs/paper/*.json", "configs/paper/methods/*.yaml"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]

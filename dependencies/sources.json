@@ -5,7 +5,7 @@
       "url": "https://github.com/unitreerobotics/unitree_rl_mjlab.git",
       "revision": "1425b15f73bd4095f0df53709d7c389c3eb9e790",
       "license": "Apache-2.0",
-      "overlay": "backend_overlay/unitree_rl_mjlab"
+      "overlay": "dependencies/backend_overlay/unitree_rl_mjlab"
     },
     "GVHMR": {
       "url": "https://github.com/zju3dv/GVHMR.git",
