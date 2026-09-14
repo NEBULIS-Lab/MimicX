@@ -90,12 +90,12 @@ def test_core_asset_manifest_is_path_free():
 def test_huggingface_links_are_in_header_and_resources():
     source = (WEBSITE / "index.html").read_text()
     header = source.split('<nav class="top-nav"')[1].split('</nav>')[0]
-    resources = source.split('id="resources"')[1].split('</section>')[0]
+    resources = source.split('id="resources"')[1].split('</footer>')[0]
     for url in ("https://huggingface.co/Shuaijun/MimicX-Policies",
                 "https://huggingface.co/datasets/Shuaijun/MimicX-Assets"):
         assert f'href="{url}"' in header
         assert f'href="{url}"' in resources
-    assert "recommended/README.md" in resources
+    assert 'href="REPRODUCIBILITY.md"' in resources
 
 
 def test_static_hero_clean_workflow_and_four_result_plots():

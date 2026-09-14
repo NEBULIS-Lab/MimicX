@@ -23,13 +23,11 @@
       <img id="hero-image" src="assets/media/hero-tennis.png" fetchpriority="high" alt="Recorded MimicX tennis motion rendered on court; successive poses arranged from left to right">
     </picture>
     <nav class="top-nav" aria-label="Project links">
-      <a href="https://github.com/NEBULIS-Lab/MimicX">Code (GitHub)</a>
-      <a href="https://example.com" title="arXiv paper link coming soon">Paper (arXiv)</a>
-      <a href="REPRODUCIBILITY.md">Reproduce (Docs)</a>
-      <span class="hf-nav-links">
-        <a class="hf-link" href="https://huggingface.co/Shuaijun/MimicX-Policies">Policies (Hugging Face)</a>
-        <a class="hf-link" href="https://huggingface.co/datasets/Shuaijun/MimicX-Assets">Assets (Hugging Face)</a>
-      </span>
+      <a href="https://github.com/NEBULIS-Lab/MimicX"><img src="assets/icons/brands/github.svg" alt="">Code <span class="provider">(GitHub)</span></a>
+      <a href="https://example.com" title="arXiv paper link coming soon"><img src="assets/icons/brands/arxiv.svg" alt="">Paper <span class="provider">(arXiv)</span></a>
+      <a href="REPRODUCIBILITY.md"><img src="assets/icons/brands/readthedocs.svg" alt="">Reproduce <span class="provider">(Docs)</span></a>
+      <a href="https://huggingface.co/Shuaijun/MimicX-Policies"><img src="assets/icons/brands/huggingface.svg" alt="">Policies <span class="provider">(Hugging Face)</span></a>
+      <a href="https://huggingface.co/datasets/Shuaijun/MimicX-Assets"><img src="assets/icons/brands/huggingface.svg" alt="">Assets <span class="provider">(Hugging Face)</span></a>
     </nav>
     <div class="hero-copy">
       <h1 class="brand-wordmark" aria-label="MimicX">
@@ -46,8 +44,7 @@
   <main>
     <section class="section" id="overview">
       <div class="container research-width">
-        <p class="eyebrow">From human videos to executable robot motion</p>
-        <h2>Humanoid motion tracking with execution feedback</h2>
+        <h2>From video to executable humanoid motion</h2>
         <p class="lead"><strong>MimicX</strong> turns video-derived human motion into humanoid tracking policies, then uses policy rollouts to improve training supervision. Failure diagnosis identifies <em>when</em> tracking breaks, <em>where</em> the error concentrates, and <em>which</em> training objectives and curricula to refine.</p>
         <div class="findings">
           <div><strong>100%</strong><span>Tennis strict success<small>Fixed Reference: 11.1%</small></span></div>
@@ -59,9 +56,8 @@
     </section>
     <section class="section quiet-band" id="method">
       <div class="container research-width">
-        <p class="eyebrow">Policy-in-the-loop supervision refinement</p>
-        <h2>A video-to-policy workflow with execution feedback.</h2>
-        <p>A video provides the motion reference. A policy reveals which parts are difficult to execute. MimicX uses those failures to refine supervision, continue training and verify the next policy.</p>
+        <h2>Policy-in-the-loop refinement</h2>
+        <p>A video-derived reference initializes policy learning. Recorded execution then identifies difficult time windows and body regions, which guide bounded supervision updates, policy continuation and repeated verification.</p>
         <!-- Replace this entire figure with the author's hand-drawn overview when supplied. -->
         <figure id="method-overview" class="overview-placeholder" aria-label="Reserved for the author-drawn method overview">
           <span>Method overview</span><small>Illustration in preparation</small>
@@ -84,8 +80,8 @@
     </section>
     <section class="section" id="policies">
       <div class="container research-width">
-        <p class="eyebrow">Recorded policy execution</p>
-        <h2>Fixed Reference and MimicX</h2>
+        <h2>Recorded policy rollouts</h2>
+        <p>Task-matched recordings compare fixed-reference training with the selected MimicX policy.</p>
         <div class="comparison-controls">
           <label for="task-select">Task</label>
           <select id="task-select"><option value="tennis">Tennis Swing</option><option value="football">Football Juggling</option><option value="dance">Dance Sequence</option><option value="kungfu">Kung Fu Sequence</option></select>
@@ -103,8 +99,7 @@
     </section>
     <section class="section quiet-band" id="results">
       <div class="container research-width">
-        <p class="eyebrow">Controlled continuation study</p>
-        <h2>Tracking quality and policy learning</h2>
+        <h2>Controlled continuation study</h2>
         <p>Four tasks, four methods, three continuation seeds and three verification repeats: 48 method-task-seed trials and 144 final evaluation rollouts. The table retains every core task.</p>
         <div class="table-scroll" tabindex="0" role="region" aria-label="Core results table">
           <table class="results-table"><caption>Fixed Reference and MimicX, averaged over continuation seeds</caption>
@@ -143,31 +138,14 @@
     </section>
     <section class="section" id="hloop">
       <div class="container research-width">
-        <p class="eyebrow teal">MimicX-HLoop</p>
-        <h2>CPU/GPU execution with unchanged decisions</h2>
-        <p>GPU rollout jobs feed CPU diagnosis and final report selection. Dependency-ready execution overlaps independent work without changing the frozen policies, inputs or evaluation budget.</p>
+        <h2>MimicX-HLoop</h2>
+        <p>Dependency-ready execution overlaps GPU rollouts, CPU diagnosis and report selection while preserving the frozen policies, inputs, evaluation budget and final decisions.</p>
         <div class="hloop-flow"><span><b>01</b>8 GPU rollouts</span><span><b>02</b>8 CPU diagnoses</span><span><b>03</b>1 report selection</span></div>
         <div class="table-scroll"><table class="results-table"><caption>Five repetitions of a fixed-policy workload</caption><thead><tr><th>Executor</th><th>Median time</th><th>Speedup vs sequential</th></tr></thead><tbody><tr><th>Sequential</th><td>241.221 s</td><td>1.000&times;</td></tr><tr><th>Bulk-synchronous</th><td>122.258 s</td><td>1.973&times;</td></tr><tr class="ours-row"><th>MimicX-HLoop</th><td>124.017 s</td><td>1.945&times;</td></tr></tbody></table></div>
         <p class="metric-note">All modes have matching report selections. This workload performs zero PPO updates; timing measures execution efficiency, not policy convergence.</p>
       </div>
     </section>
-    <section class="section quiet-band" id="resources">
-      <div class="container research-width"><p class="eyebrow">Open-source release</p><h2>Code, pretrained policies and motion assets</h2>
-        <p>The release includes G1 tracking policies for tennis, football, dance and kung fu, along with matching robot references. Reproduction configurations, continuation checkpoints and verification records connect each policy to its experiment.</p>
-        <div class="resource-links">
-          <a class="hf-resource" href="https://huggingface.co/Shuaijun/MimicX-Policies">Hugging Face: Policies</a>
-          <a class="hf-resource" href="https://huggingface.co/datasets/Shuaijun/MimicX-Assets">Hugging Face: Assets</a>
-          <a href="https://huggingface.co/Shuaijun/MimicX-Policies/blob/main/recommended/README.md">Start with a recommended policy</a>
-          <a href="https://github.com/NEBULIS-Lab/MimicX">Code repository</a>
-          <a href="https://github.com/NEBULIS-Lab/shuaijun-ICLR-paper-MimicX">Paper source</a>
-          <a href="QUICKSTART.md">Video-to-policy quickstart</a>
-          <a href="REPRODUCIBILITY.md">Paper reproduction inventory</a>
-          <a href="HLOOP.md">HLoop protocol</a>
-        </div>
-        <p class="metric-note">Download one recommended policy and its matching reference to start. The full Hugging Face release also preserves multi-seed baselines, candidate checkpoints, execution records and HLoop evidence. Training code, pinned backend setup and paper configurations are in the code repository.</p>
-      </div>
-    </section>
   </main>
-  <footer><div class="container research-width"><a class="footer-brand" href="#top">MimicX</a><p>Page structure adapted from <a href="https://yangsizhe.github.io/robosplat/">RoboSplat</a>, <a href="https://nerfies.github.io/">NeRFies</a> and <a href="https://github.com/umi-on-legs/umi-on-legs.github.io/">UMI on Legs</a>. Adapted website template: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Research media retain their respective rights.</p></div></footer>
+  <footer id="resources"><div class="container research-width"><a class="footer-brand" href="#top">MimicX</a><nav class="footer-links" aria-label="Release resources"><a href="https://github.com/NEBULIS-Lab/MimicX">Code</a><a href="https://github.com/NEBULIS-Lab/shuaijun-ICLR-paper-MimicX">Paper</a><a href="REPRODUCIBILITY.md">Reproduce</a><a href="https://huggingface.co/Shuaijun/MimicX-Policies">Policies</a><a href="https://huggingface.co/datasets/Shuaijun/MimicX-Assets">Assets</a></nav><p>Page structure adapted from <a href="https://yangsizhe.github.io/robosplat/">RoboSplat</a>, <a href="https://nerfies.github.io/">NeRFies</a> and <a href="https://github.com/umi-on-legs/umi-on-legs.github.io/">UMI on Legs</a>. Adapted website template: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Research media retain their respective rights.</p></div></footer>
 </body>
 </html>

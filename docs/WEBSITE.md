@@ -14,11 +14,12 @@ backgrounds. The same original X supplies the site's transparent favicon.
 Brand sources, rights notes and resizing provenance are in `assets/branding/`;
 the font and its OFL license are in `assets/fonts/`. `assets/css/brand.css`
 owns the hero branding; the rest of the site's layout remains in `mimicx.css`.
-Top navigation restores the simple dark-bar links and subdued HF pills, with
-wider spacing and providers in parentheses. The arXiv link temporarily points
-to `https://example.com` at the author's request; replace it after upload.
-The paper-source repository remains linked in Resources. The upper bar uses
-90% opacity and the lower strip retains 58%. Only the scene image gently
+Top navigation uses a unified dark-button treatment with unmodified Simple
+Icons brand marks and providers in parentheses. The arXiv link temporarily
+points to `https://example.com` at the author's request; replace it after
+upload. Release links are repeated in the compact footer rather than a
+standalone release section. The upper bar uses 82% opacity and the lower strip
+retains 58%. Only the scene image gently
 desaturates/fades when the pointer leaves the hero; the wordmark and text stay
 unchanged. Touch devices retain full color, keyboard focus restores full
 color, and reduced-motion preferences disable the transition.
@@ -57,7 +58,7 @@ Do not substitute a generated diagram or experimental figure montage.
 
 ## Maintenance
 
-Header and resource links point to the published
+Header and footer links point to the published
 [Policies](https://huggingface.co/Shuaijun/MimicX-Policies) and
 [Assets](https://huggingface.co/datasets/Shuaijun/MimicX-Assets) repositories.
 The recommended-policy entry supports one-task downloads; complete artifacts
