@@ -18,15 +18,19 @@ remains in `mimicx.css`.
 Top navigation uses a unified dark-button treatment with unmodified Simple
 Icons brand marks and providers in parentheses. The arXiv link temporarily
 points to `https://example.com` at the author's request; replace it after
-upload. Release links are repeated in the compact footer rather than a
-standalone release section. The upper bar uses 82% opacity and the lower strip
+upload. Release links and template attribution are consolidated in the dark
+footer rather than a standalone release section. The upper bar uses 82%
+opacity and the lower strip
 retains 58%. Only the scene image gently
 desaturates/fades when the pointer leaves the hero; the wordmark and text stay
 unchanged. Touch devices retain full color, keyboard focus restores full
 color, and reduced-motion preferences disable the transition.
 
 The static image hero, section navigation, method and experiment sequence adapt the
-RoboSplat project page structure. MimicX uses coral `#D45B4C`, pale coral
+RoboSplat project page structure. Content sections use a continuous white
+editorial layout with fine separators instead of alternating background bands.
+Experiment images, plots and videos use a consistent 10 px corner radius.
+MimicX uses coral `#D45B4C`, pale coral
 `#FBECE9`, blue `#3B78A8`, teal `#23866B`, grey `#7A7F87` and ink `#20252B`.
 Solid robots represent executed policies; transparent robots represent the
 reference. Presentation-scene props are not evidence of ball-contact training.
