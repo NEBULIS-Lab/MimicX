@@ -43,6 +43,31 @@
 .hero-bottom a { color: #f3ac9e; }
 .hero-bottom a:hover { color: #fff; }
 
+.findings small {
+  display: block;
+  margin-top: 4px;
+  color: #70777d;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.hloop-flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.hloop-flow span {
+  border-left: 3px solid var(--teal);
+  padding-left: 12px;
+}
+
+.hloop-flow b {
+  display: block;
+  color: #747b81;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
 .hero-copy {
   inset: 50% 24px auto;
   transform: translateY(-50%);
@@ -140,6 +165,7 @@
 @media (max-width: 600px) {
   .top-nav { justify-content: center; gap: 12px 22px; padding: 12px 16px; }
   .top-nav a { font-size: 12px; }
+  .hloop-flow { grid-template-columns: 1fr; gap: 16px; }
 }
 
 /* Fade only the scene, leaving the author's logo and all text untouched. */

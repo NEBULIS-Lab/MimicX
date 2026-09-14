@@ -38,7 +38,7 @@
       </h1>
       <p class="paper-title"><span>MimicX: Policy-in-the-Loop Supervision Refinement</span><br class="desktop-break"> <span>for Video-Driven Humanoid Motion Tracking</span></p>
     </div>
-    <div class="hero-bottom"><span>Tennis Swing &middot; Recorded policy motion</span><a href="#policies">View policy rollouts &darr;</a></div>
+    <div class="hero-bottom"><span>Tennis Swing &middot; Recorded policy motion</span><a href="#policies">View policy rollouts</a></div>
   </header>
   <nav class="section-nav" aria-label="Page sections">
     <a href="#overview">Overview</a><a href="#method">Method</a><a href="#policies">Policy rollouts</a><a href="#results">Results</a><a href="#hloop">HLoop</a><a href="#resources">Resources</a>
@@ -50,9 +50,9 @@
         <h2>Humanoid motion tracking with execution feedback</h2>
         <p class="lead"><strong>MimicX</strong> turns video-derived human motion into humanoid tracking policies, then uses policy rollouts to improve training supervision. Failure diagnosis identifies <em>when</em> tracking breaks, <em>where</em> the error concentrates, and <em>which</em> training objectives and curricula to refine.</p>
         <div class="findings">
-          <div><strong>11.1% <span aria-hidden="true">&rarr;</span> 100%</strong><span>Tennis strict success</span></div>
-          <div><strong>0.241 <span aria-hidden="true">&rarr;</span> 0.157 m</strong><span>Tennis aligned worst-body error</span></div>
-          <div><strong>53.7 <span aria-hidden="true">&rarr;</span> 427.3</strong><span>Football execution horizon, steps</span></div>
+          <div><strong>100%</strong><span>Tennis strict success<small>Fixed Reference: 11.1%</small></span></div>
+          <div><strong>0.157 m</strong><span>Tennis aligned worst-body error<small>Fixed Reference: 0.241 m</small></span></div>
+          <div><strong>427.3</strong><span>Football execution horizon, steps<small>Fixed Reference: 53.7</small></span></div>
         </div>
         <p class="metric-note">Fixed Reference to MimicX in the four-task continuation study. Body error is a temporal mean of aligned worst-body distance; horizon is the worst first-failure step across verification repeats.</p>
       </div>
@@ -146,7 +146,7 @@
         <p class="eyebrow teal">MimicX-HLoop</p>
         <h2>CPU/GPU execution with unchanged decisions</h2>
         <p>GPU rollout jobs feed CPU diagnosis and final report selection. Dependency-ready execution overlaps independent work without changing the frozen policies, inputs or evaluation budget.</p>
-        <div class="hloop-flow"><span>8 GPU rollouts</span><span aria-hidden="true">&rarr;</span><span>8 CPU diagnoses</span><span aria-hidden="true">&rarr;</span><span>1 report selection</span></div>
+        <div class="hloop-flow"><span><b>01</b>8 GPU rollouts</span><span><b>02</b>8 CPU diagnoses</span><span><b>03</b>1 report selection</span></div>
         <div class="table-scroll"><table class="results-table"><caption>Five repetitions of a fixed-policy workload</caption><thead><tr><th>Executor</th><th>Median time</th><th>Speedup vs sequential</th></tr></thead><tbody><tr><th>Sequential</th><td>241.221 s</td><td>1.000&times;</td></tr><tr><th>Bulk-synchronous</th><td>122.258 s</td><td>1.973&times;</td></tr><tr class="ours-row"><th>MimicX-HLoop</th><td>124.017 s</td><td>1.945&times;</td></tr></tbody></table></div>
         <p class="metric-note">All modes have matching report selections. This workload performs zero PPO updates; timing measures execution efficiency, not policy convergence.</p>
       </div>
@@ -155,14 +155,14 @@
       <div class="container research-width"><p class="eyebrow">Open-source release</p><h2>Code, pretrained policies and motion assets</h2>
         <p>The release includes G1 tracking policies for tennis, football, dance and kung fu, along with matching robot references. Reproduction configurations, continuation checkpoints and verification records connect each policy to its experiment.</p>
         <div class="resource-links">
-          <a class="hf-resource" href="https://huggingface.co/Shuaijun/MimicX-Policies">Hugging Face: Policies &nearr;</a>
-          <a class="hf-resource" href="https://huggingface.co/datasets/Shuaijun/MimicX-Assets">Hugging Face: Assets &nearr;</a>
-          <a href="https://huggingface.co/Shuaijun/MimicX-Policies/blob/main/recommended/README.md">Start with a recommended policy &nearr;</a>
-          <a href="https://github.com/NEBULIS-Lab/MimicX">Code repository &nearr;</a>
-          <a href="https://github.com/NEBULIS-Lab/shuaijun-ICLR-paper-MimicX">Paper source &nearr;</a>
-          <a href="QUICKSTART.md">Video-to-policy quickstart &rarr;</a>
-          <a href="REPRODUCIBILITY.md">Paper reproduction inventory &rarr;</a>
-          <a href="HLOOP.md">HLoop protocol &rarr;</a>
+          <a class="hf-resource" href="https://huggingface.co/Shuaijun/MimicX-Policies">Hugging Face: Policies</a>
+          <a class="hf-resource" href="https://huggingface.co/datasets/Shuaijun/MimicX-Assets">Hugging Face: Assets</a>
+          <a href="https://huggingface.co/Shuaijun/MimicX-Policies/blob/main/recommended/README.md">Start with a recommended policy</a>
+          <a href="https://github.com/NEBULIS-Lab/MimicX">Code repository</a>
+          <a href="https://github.com/NEBULIS-Lab/shuaijun-ICLR-paper-MimicX">Paper source</a>
+          <a href="QUICKSTART.md">Video-to-policy quickstart</a>
+          <a href="REPRODUCIBILITY.md">Paper reproduction inventory</a>
+          <a href="HLOOP.md">HLoop protocol</a>
         </div>
         <p class="metric-note">Download one recommended policy and its matching reference to start. The full Hugging Face release also preserves multi-seed baselines, candidate checkpoints, execution records and HLoop evidence. Training code, pinned backend setup and paper configurations are in the code repository.</p>
       </div>
