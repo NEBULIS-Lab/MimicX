@@ -67,7 +67,8 @@ def test_results_are_website_only_and_template_has_no_trackers():
     assert not (ROOT / "results").exists()
     assert "Result Snapshot" not in (ROOT / "README.md").read_text()
     source = (WEBSITE / "index.html").read_text()
-    assert "RoboSplat" in source
+    assert "RoboSplat" in (WEBSITE / "WEBSITE.md").read_text()
+    assert "RoboSplat" not in source
     assert "googletagmanager" not in source
     assert "google-analytics" not in source
 

@@ -18,8 +18,9 @@ remains in `mimicx.css`.
 Top navigation uses a unified dark-button treatment with unmodified Simple
 Icons brand marks and providers in parentheses. The arXiv link temporarily
 points to `https://example.com` at the author's request; replace it after
-upload. Release links and template attribution are consolidated in the dark
-footer rather than a standalone release section. The upper bar uses 82%
+upload. Release links and the project identity are consolidated in the compact
+dark footer rather than a standalone release section. Template provenance is
+kept in this maintenance document instead of the public footer. The upper bar uses 82%
 opacity and the lower strip
 retains 58%. Only the scene image gently
 desaturates/fades when the pointer leaves the hero; the wordmark and text stay
