@@ -93,8 +93,8 @@ main .section:first-child { border-top: 0; }
 .footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 28px;
-  font-size: 14px;
+  gap: 8px 24px;
+  font-size: 13px;
   font-weight: 700;
 }
 .footer-primary {
@@ -104,19 +104,19 @@ main .section:first-child { border-top: 0; }
   gap: 38px;
 }
 footer {
-  padding: 22px 28px;
+  padding: 12px 28px;
   background: #262b30;
   color: #d7dadd;
   border-top: 4px solid #d45b4c;
 }
-footer .footer-brand { color: #f08a7a; }
+footer .footer-brand { color: #f08a7a; font-size: 20px; }
 footer .footer-links a { color: #fff; }
 footer .footer-links a:hover,
 footer .footer-brand:hover { color: #f3ac9e; }
 footer .footer-note {
   max-width: none;
-  margin: 13px 0 0;
-  padding-top: 11px;
+  margin: 7px 0 0;
+  padding-top: 6px;
   border-top: 1px solid rgba(255, 255, 255, .14);
   color: #aeb4b9;
   text-align: center;
@@ -190,8 +190,8 @@ footer .footer-note a { color: #d7dadd; }
   .section-nav a { padding: 9px 4px; }
   main .section { padding-top: 42px; padding-bottom: 42px; }
   .hloop-flow { grid-template-columns: 1fr; gap: 16px; }
-  .footer-primary { align-items: center; flex-direction: column; gap: 8px; }
-  .footer-links { justify-content: center; gap: 8px 18px; }
+  .footer-primary { align-items: center; flex-direction: column; gap: 4px; }
+  .footer-links { justify-content: center; gap: 5px 16px; }
 }
 
 /* Fade only the scene, leaving the author's logo and all text untouched. */
