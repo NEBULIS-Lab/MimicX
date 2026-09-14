@@ -1,11 +1,3 @@
-@font-face {
-  font-family: "MimicX Montserrat";
-  src: url("../fonts/Montserrat-Variable.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-}
-
 .hero-scene {
   width: 100%;
   height: min(720px, 84svh);
@@ -106,40 +98,10 @@ main h2 { margin-bottom: 18px; font-size: 30px; }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
   margin: 0;
-  font-family: "MimicX Montserrat", "Avenir Next", sans-serif;
-  font-size: 156px;
-  font-weight: 700;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: 0;
-  font-kerning: normal;
+  width: min(760px, 78vw);
 }
-.brand-text {
-  color: #71382e;
-  background: linear-gradient(180deg, #292326 25%, #71382e 60%, #df593f 96%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.brand-i {
-  position: relative;
-  display: inline-block;
-  background: inherit;
-  background-clip: text;
-  -webkit-background-clip: text;
-}
-/* Reuse the font's own i dot instead of drawing a mismatched accent. */
-.brand-i::after {
-  content: "i";
-  position: absolute;
-  inset: 0;
-  clip-path: inset(0 0 70% 0);
-  color: #db563e;
-  -webkit-text-fill-color: #db563e;
-}
-.brand-x { flex: none; width: 224px; height: 224px; margin-left: -.17em; object-fit: contain; }
+.brand-full-logo { display: block; width: 100%; height: auto; object-fit: contain; }
 .hero-copy .paper-title {
   max-width: 1020px;
   margin: 0;
@@ -151,8 +113,7 @@ main h2 { margin-bottom: 18px; font-size: 30px; }
 }
 
 @media (max-width: 1000px) {
-  .hero-copy .brand-wordmark { font-size: 122px; }
-  .brand-x { width: 180px; height: 180px; }
+  .hero-copy .brand-wordmark { width: min(650px, 84vw); }
   .hero-copy .paper-title { font-size: 22px; max-width: 720px; }
 }
 @media (max-width: 600px) {
@@ -160,21 +121,18 @@ main h2 { margin-bottom: 18px; font-size: 30px; }
   .hero-scene { height: min(660px, 84svh); }
   .hero-picture { inset: 60px 0 -60px; }
   .hero-copy { inset: 50% 18px auto; gap: 18px; }
-  .hero-copy .brand-wordmark { font-size: 68px; }
-  .brand-x { width: 104px; height: 104px; }
+  .hero-copy .brand-wordmark { width: min(360px, 92vw); }
   .hero-copy .paper-title { font-size: 18px; max-width: 440px; line-height: 1.45; }
 }
 @media (max-width: 360px) {
-  .hero-copy .brand-wordmark { font-size: 60px; }
-  .brand-x { width: 90px; height: 90px; }
+  .hero-copy .brand-wordmark { width: 92vw; }
   .hero-copy .paper-title { font-size: 16px; }
 }
 @media (max-height: 540px) and (min-width: 601px) {
   .top-nav { min-height: 52px; }
   .hero-picture { inset: 52px 0 -52px; }
   .hero-copy { gap: 8px; }
-  .hero-copy .brand-wordmark { font-size: 70px; }
-  .brand-x { width: 110px; height: 110px; }
+  .hero-copy .brand-wordmark { width: min(500px, 65vw); }
   .hero-copy .paper-title { font-size: 17px; max-width: 760px; }
 }
 @media (max-height: 650px) and (max-width: 600px) {

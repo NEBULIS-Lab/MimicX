@@ -131,8 +131,11 @@ def test_author_brand_and_favicons():
         assert hashlib.sha256(payload).hexdigest() == row['sha256']
         assert payload[25] == 6, 'Brand assets must preserve RGBA'
     html = (WEBSITE / 'index.html').read_text()
-    assert 'class="brand-wordmark" aria-label="MimicX"' in html
-    assert html.count('class="brand-i"') == 2
+    assert 'class="brand-full-logo"' in html
+    assert 'assets/branding/mimicx-full-logo.svg' in html
+    assert 'class="brand-text"' not in html
+    assert 'class="brand-i"' not in html
     assert 'MimicX: Policy-in-the-Loop Supervision Refinement' in html
     assert 'assets/branding/favicon-32.png' in html
+    assert 'assets/branding/logo-x.svg' in html
     assert (WEBSITE / 'assets/fonts/Montserrat-OFL.txt').is_file()

@@ -6,14 +6,15 @@ analytics account or runtime data fetch.
 
 ## Layout and Theme
 
-The hero uses the author's human/G1 X mark, combined with self-hosted
-Montserrat Bold text as a centered MimicX wordmark. Charcoal-to-terracotta
-letterforms and coral i dots sit above the bold black full paper title.
+The hero uses the author's complete MimicX SVG wordmark directly; it does not
+reconstruct the wordmark from live text and a separate X. The updated
+charcoal-to-terracotta logo sits above the bold black full paper title.
 Navigation and the bottom image information strip use dark translucent
-backgrounds. The same original X supplies the site's transparent favicon.
-Brand sources, rights notes and resizing provenance are in `assets/branding/`;
-the font and its OFL license are in `assets/fonts/`. `assets/css/brand.css`
-owns the hero branding; the rest of the site's layout remains in `mimicx.css`.
+backgrounds. The updated standalone X SVG is the primary favicon, with PNG
+fallbacks retained for compatibility.
+Brand sources, rights notes and resizing provenance are in `assets/branding/`.
+`assets/css/brand.css` owns the hero branding; the rest of the site's layout
+remains in `mimicx.css`.
 Top navigation uses a unified dark-button treatment with unmodified Simple
 Icons brand marks and providers in parentheses. The arXiv link temporarily
 points to `https://example.com` at the author's request; replace it after

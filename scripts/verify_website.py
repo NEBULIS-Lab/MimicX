@@ -42,10 +42,7 @@ def main():
                     page.on("response", lambda response: errors.append(f"HTTP {response.status} {response.url}") if response.status >= 400 else None)
                     page.goto(f"http://127.0.0.1:{server.server_port}/", wait_until="networkidle")
                     page.wait_for_function("document.querySelector('#hero-image').complete && document.querySelector('#hero-image').naturalWidth > 0")
-                    page.evaluate('document.fonts.ready')
-                    assert page.evaluate('document.fonts.check(\'700 32px "MimicX Montserrat"\')')
-                    assert page.locator('.brand-wordmark').evaluate("e => getComputedStyle(e).fontWeight") == '700'
-                    assert page.locator('.brand-x').get_attribute('src') == 'assets/branding/logo-x.png'
+                    assert page.locator('.brand-full-logo').get_attribute('src') == 'assets/branding/mimicx-full-logo.svg'
                     brand = page.locator('.brand-wordmark').bounding_box()
                     title = page.locator('.hero-copy .paper-title').bounding_box()
                     hero_box = page.locator('#top').bounding_box()
