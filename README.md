@@ -37,8 +37,8 @@ execution checks determine whether to accept a candidate or retain the
 current policy.
 
 <p align="center">
-  <strong>Human video</strong> &rarr; Human reconstruction &rarr; Robot reference &rarr; <strong>Tracking policy</strong><br>
-  Policy rollouts &rarr; Failure diagnosis &rarr; Supervision refinement &rarr; <strong>Verified continuation</strong>
+  <strong>Skill construction:</strong> Human video &middot; Human reconstruction &middot; Robot reference &middot; Tracking policy<br>
+  <strong>Policy feedback:</strong> Policy rollout &middot; Failure diagnosis &middot; Supervision refinement &middot; Verified continuation
 </p>
 
 | Component | What it does |
