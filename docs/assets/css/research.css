@@ -208,6 +208,28 @@
 #research .rx-correspondence { font-size: 12px; color: var(--rx-muted); margin: 0; }
 #research .rx-intro h2 { font-size: 30px; }
 .rx-paper-stages { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 18px; }
+.rx-plot-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 40px 28px; }
+.result-plot-wide { grid-column: 1 / -1; }
+#research .result-plot img { aspect-ratio: auto; }
+#research .result-plot > a { background: var(--rx-band); }
+#research .result-plot figcaption { font-size: 14px; line-height: 1.65; }
+#research .result-plot strong { font-size: 17px; margin-bottom: 8px; }
+#research .rx-legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 10px 0; color: var(--rx-text); }
+.legend-item { display: inline-flex; align-items: center; gap: 7px; }
+.legend-item i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.legend-item .square { border-radius: 1px; }
+.legend-coral { background: var(--rx-accent); }
+.legend-blue { background: var(--rx-blue); }
+.legend-teal { background: var(--rx-teal); }
+.legend-purple { background: #b49ad9; }
+[data-theme="light"] .legend-purple { background: #8266a6; }
+.rx-hloop-layout { grid-template-columns: 56fr 44fr; gap: 38px; align-items: start; }
+.rx-hloop-layout .rx-timing { margin-block: 14px; }
+.rx-executors { margin: 22px 0 28px; border-block: 1px solid var(--rx-line); }
+.rx-executors > div { padding: 13px 0; display: grid; grid-template-columns: 132px 1fr; gap: 18px; }
+.rx-executors > div + div { border-top: 1px solid var(--rx-line); }
+.rx-executors dt { font-size: 14px; font-weight: 600; color: var(--rx-text); }
+.rx-executors dd { font-size: 14px; line-height: 1.65; color: var(--rx-muted); margin: 0; }
 #research .rx-paper-stages img { aspect-ratio: 4/3; object-fit: contain; background: #fff; }
 #research #method-overview { width: 65%; margin-inline: auto; }
 #media-viewer { position: fixed; inset: 0; width: min(94vw, 1600px); max-width: 94vw; max-height: 94dvh; margin: auto; border: 1px solid var(--rx-line); border-radius: 8px; padding: 16px; z-index: 20; }
@@ -226,6 +248,10 @@
   #research #method-overview { width: 100%; }
   #research .rx-intro h2 { font-size: 25px; }
   .rx-paper-stages { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px 14px; }
+  .rx-plot-grid { grid-template-columns: 1fr; gap: 32px; }
+  #research .result-plot figcaption span { font-size: 13px; }
+  .rx-hloop-layout { grid-template-columns: 1fr; }
+  .rx-executors > div { grid-template-columns: 118px 1fr; gap: 14px; }
   .rx-authors { margin-top: -14px; padding-inline: 0; }
   #research .rx-authors > p:first-child { font-size: 14px; }
   .rx-authors span { margin-left: 10px; }

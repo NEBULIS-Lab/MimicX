@@ -105,7 +105,7 @@ def test_static_hero_clean_workflow_and_four_result_plots():
     assert '<video' not in hero
     assert 'id="hero-image"' in hero
     assert 'id="method-overview"' in source
-    assert source.count('class="result-plot"') == 4
+    assert source.count('data-plot=') == 5
     assert 'Inspect the method. Run the loop.' not in source
     assert 'hero-video' not in (WEBSITE / 'assets/js/mimicx.js').read_text()
     for name in ('stage-human.png', 'stage-world.png', 'stage-reference.png'):

@@ -11,6 +11,11 @@
     themeButton.title = themeButton.getAttribute('aria-label');
     themeButton.querySelector('.rx-icon').className = `rx-icon icon-${dark ? 'sun' : 'moon'}`;
     document.getElementById('theme-label').textContent = dark ? 'Dark' : 'Light';
+    document.querySelectorAll('[data-plot]').forEach(img => {
+      const url = `assets/media/evidence/${img.dataset.plot}-${theme}.svg`;
+      img.src = url;
+      img.closest('a').href = url;
+    });
   }
   setTheme(root.dataset.theme === 'light' ? 'light' : 'dark');
   themeButton.addEventListener('click', () => {

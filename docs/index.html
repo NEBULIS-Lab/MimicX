@@ -57,7 +57,7 @@
   <div class="research-nav">
     <div class="research-nav-inner">
       <nav aria-label="Page sections">
-        <a href="#overview">Overview</a><a href="#policies">Rollouts</a><a href="#method">Method</a><a href="#results">Results</a><a href="#hloop">HLoop</a>
+        <a href="#overview">Video to policy</a><a href="#method">Method</a><a href="#policies">Rollouts</a><a href="#results">Results</a><a href="#hloop">HLoop</a>
       </nav>
       <button id="theme-toggle" class="rx-icon-button theme-switch" type="button" aria-label="Switch to light theme" title="Switch to light theme" aria-pressed="true"><span class="rx-icon icon-sun" aria-hidden="true"></span><span id="theme-label">Dark</span></button>
     </div>
@@ -78,6 +78,21 @@
           <li><a data-viewer="image" href="assets/media/showcase/tennis-stage-scene.webp"><img src="assets/media/showcase/tennis-stage-scene.webp" loading="lazy" alt="The same policy motion rendered in the reconstructed tennis scene"></a><span>Reconstructed scene</span><small>Registered policy motion</small></li>
         </ol>
         <p class="rx-source-note">Tennis Swing: the four corresponding stages selected for the paper.</p>
+      </div>
+    </section>
+
+    <section id="method" class="rx-section">
+      <div class="rx-container">
+        <div class="rx-heading"><h2>Execution becomes supervision</h2><p>A registered motion reference establishes the task. Policy feedback determines how that task is practiced and rewarded.</p></div>
+        <figure id="method-overview" class="rx-paper-art">
+          <a href="assets/media/research/refinement.webp" target="_blank" rel="noopener" aria-label="Open the MimicX supervision-refinement diagram"><img src="assets/media/research/refinement.webp" width="2400" loading="lazy" alt="MimicX method: rollout diagnosis conditions training objectives and failure-window practice, followed by verified policy continuation"></a>
+          <figcaption>Policy-in-the-loop supervision refinement. Rollout errors localize difficult motion intervals and affected body regions; bounded candidates coordinate tracking objectives and practice.</figcaption>
+        </figure>
+        <div class="rx-method-notes">
+          <article><span class="rx-step">01</span><h3>Diagnose execution</h3><p>Find difficult time windows and rank local limb, global body and dynamics error channels.</p></article>
+          <article><span class="rx-step">02</span><h3>Refine supervision</h3><p>Continue the accepted policy with coordinated tracking terms and failure-window replay.</p></article>
+          <article><span class="rx-step">03</span><h3>Verify the update</h3><p>Prioritize completion and execution horizon, then tracking fidelity. Retain the current policy when no candidate passes.</p></article>
+        </div>
       </div>
     </section>
 
@@ -112,30 +127,17 @@
       </div>
     </section>
 
-    <section id="method" class="rx-section">
-      <div class="rx-container">
-        <div class="rx-heading"><h2>Execution becomes supervision</h2><p>A registered motion reference establishes the task. Policy feedback determines how that task is practiced and rewarded.</p></div>
-        <figure id="method-overview" class="rx-paper-art">
-          <a href="assets/media/research/refinement.webp" target="_blank" rel="noopener" aria-label="Open the MimicX supervision-refinement diagram"><img src="assets/media/research/refinement.webp" width="2400" loading="lazy" alt="MimicX method: rollout diagnosis conditions training objectives and failure-window practice, followed by verified policy continuation"></a>
-          <figcaption>Policy-in-the-loop supervision refinement. Rollout errors localize difficult motion intervals and affected body regions; bounded candidates coordinate tracking objectives and practice.</figcaption>
-        </figure>
-        <div class="rx-method-notes">
-          <article><span class="rx-step">01</span><h3>Diagnose execution</h3><p>Find difficult time windows and rank local limb, global body and dynamics error channels.</p></article>
-          <article><span class="rx-step">02</span><h3>Refine supervision</h3><p>Continue the accepted policy with coordinated tracking terms and failure-window replay.</p></article>
-          <article><span class="rx-step">03</span><h3>Verify the update</h3><p>Prioritize completion and execution horizon, then tracking fidelity. Retain the current policy when no candidate passes.</p></article>
-        </div>
-      </div>
-    </section>
-
     <section id="results" class="rx-section rx-band">
       <div class="rx-container">
-        <div class="rx-heading"><h2>Tracking quality and execution</h2><p>Matched continuation budgets across four methods and four video tasks: 48 task-method-seed trials, 144 final verification rollouts.</p></div>
+        <div class="rx-heading"><h2>Tracking quality and execution</h2><p>Direct comparisons evaluate learned policies on the same demonstrated motion. Controlled continuation and collision-scene experiments examine how refinement changes execution.</p></div>
         <div class="rx-plot-grid">
-          <figure class="result-plot"><a href="assets/media/tracking-channels.svg" target="_blank" rel="noopener"><img loading="lazy" src="assets/media/tracking-channels.svg" alt="Matched-seed relative changes across seven tracking channels"></a><figcaption><strong>Tracking channels</strong><span>Local, global and dynamic errors</span></figcaption></figure>
-          <figure class="result-plot"><a href="assets/media/execution-horizon.svg" target="_blank" rel="noopener"><img loading="lazy" src="assets/media/execution-horizon.svg" alt="Execution horizons for twelve matched task-seed pairs"></a><figcaption><strong>Reliable motion length</strong><span>Twelve matched task-seed pairs</span></figcaption></figure>
-          <figure class="result-plot"><a href="assets/media/training-body-error.svg" target="_blank" rel="noopener"><img loading="lazy" src="assets/media/training-body-error.svg" alt="Dense tennis body-error learning curves for four supervision methods"></a><figcaption><strong>Learning trajectory</strong><span>Body error during continuation</span></figcaption></figure>
-          <figure class="result-plot"><a href="assets/media/hloop-wall-time.svg" target="_blank" rel="noopener"><img loading="lazy" src="assets/media/hloop-wall-time.svg" alt="Five fixed-workload timings for sequential, bulk-synchronous and MimicX-HLoop execution"></a><figcaption><strong>Feedback time</strong><span>Five repeated fixed-policy workloads</span></figcaption></figure>
+          <figure class="result-plot"><a href="assets/media/evidence/direct-tennis-dark.svg" target="_blank" rel="noopener"><img data-plot="direct-tennis" loading="lazy" src="assets/media/evidence/direct-tennis-dark.svg" alt="Tennis body error: MimicX 5.54 cm, BeyondMimic MjLab 13.65 cm, Fixed Reference 15.14 cm and SONIC 23.60 cm"></a><figcaption><strong>Same motion, closer tracking</strong><span>Tennis Swing, 518 frames at 50 Hz. Points show three runs; diamonds and bars show means and sample SD. Root-local body error is 59.4% lower than BeyondMimic (MjLab).</span></figcaption></figure>
+          <figure class="result-plot"><a href="assets/media/evidence/scene-gains-dark.svg" target="_blank" rel="noopener"><img data-plot="scene-gains" loading="lazy" src="assets/media/evidence/scene-gains-dark.svg" alt="Body and root p95 errors decrease across five collision-scene tasks"></a><figcaption><strong>Refinement across collision scenes</strong><span class="rx-legend"><span class="legend-item"><i class="legend-coral"></i>Body</span><span class="legend-item"><i class="legend-teal square"></i>Root</span></span><span>Error reductions over matched pre-failure prefixes. One training seed, three evaluation seeds per task; equal continuation budgets.</span></figcaption></figure>
+          <figure class="result-plot"><a href="assets/media/evidence/execution-horizon-dark.svg" target="_blank" rel="noopener"><img data-plot="execution-horizon" loading="lazy" src="assets/media/evidence/execution-horizon-dark.svg" alt="First-failure horizon for all twelve paired task and continuation-seed trials"></a><figcaption><strong>Longer execution</strong><span class="rx-legend"><span class="legend-item"><i class="legend-blue"></i>Fixed Reference</span><span class="legend-item"><i class="legend-coral square"></i>MimicX</span></span><span>All twelve matched task-seed pairs. Each point reports the worst repeat; 801 denotes no failure within the 800-step evaluation.</span></figcaption></figure>
+          <figure class="result-plot"><a href="assets/media/evidence/feedback-time-dark.svg" target="_blank" rel="noopener"><img data-plot="feedback-time" loading="lazy" src="assets/media/evidence/feedback-time-dark.svg" alt="Five feedback workload timings per executor, with median markers"></a><figcaption><strong>Shorter feedback cycles</strong><span>Five fixed-policy workloads per executor. Every dot is a measured wall time; ticks show medians. HLoop is 1.945 times faster than sequential execution.</span></figcaption></figure>
+          <figure class="result-plot result-plot-wide"><a href="assets/media/evidence/learning-dark.svg" target="_blank" rel="noopener"><img data-plot="learning" loading="lazy" src="assets/media/evidence/learning-dark.svg" alt="All 3000 unsmoothed body-error measurements across four supervision methods and three seeds"></a><figcaption><strong>How the policy learns</strong><span class="rx-legend"><span class="legend-item"><i class="legend-blue"></i>Fixed Reference</span><span class="legend-item"><i class="legend-purple"></i>Failure Curriculum</span><span class="legend-item"><i class="legend-teal"></i>Task-Aware Refinement</span><span class="legend-item"><i class="legend-coral"></i>MimicX</span></span><span>Tennis continuation, 250 iterations per run. Thin traces show individual seeds, bold traces their means; all 3,000 logged measurements are shown without smoothing. The vertical axis is logarithmic.</span></figcaption></figure>
         </div>
+        <p class="rx-source-note">Direct comparison: common reference and evaluation clock, three continuation seeds for trained trackers and three executions of released SONIC. BeyondMimic uses its MjLab implementation with 250 continuation iterations; MimicX uses the frozen verified output. These execution results are separate from equal-budget core ablations.</p>
         <div class="rx-table-heading"><h3>Four-task comparison</h3><span><span class="rx-dot proposed"></span>MimicX</span></div>
         <div class="rx-table-scroll" tabindex="0" role="region" aria-label="Four-task continuation results">
           <table class="rx-table"><caption>Means over three continuation seeds. Body error is the temporal mean of aligned worst-body distance; horizon is the worst first-failure step across repeats, with H + 1 for an unfailed rollout.</caption>
@@ -155,14 +157,15 @@
         <details class="rx-data"><summary>Numerical data &amp; evaluation protocols</summary><p>All core tasks and component methods are retained in the underlying records. The selected Dance and Kung Fu outputs retain the protected incumbent policy.</p><div id="result-downloads">
 <a href="assets/results/accept_protect_decisions.csv">accept protect decisions (CSV)</a>
 <a href="assets/results/additional_video_tasks.csv">additional video tasks (CSV)</a>
+<a href="assets/results/collision_scene_results.csv">collision scene results (CSV)</a>
 <a href="assets/results/core_method_task_summary.csv">core method task summary (CSV)</a>
 <a href="assets/results/core_trial_results.csv">core trial results (CSV)</a>
+<a href="assets/results/direct_policy_comparison.csv">direct policy comparison (CSV)</a>
 <a href="assets/results/hloop_timings.csv">hloop timings (CSV)</a>
 <a href="assets/results/motion_breadth.csv">motion breadth (CSV)</a>
 <a href="assets/results/reward_higher_regression_rejection.csv">reward higher regression rejection (CSV)</a>
-<a href="assets/results/sonic_comparison.csv">sonic comparison (CSV)</a>
 <a href="assets/results/tennis_training_dynamics_3000_points.csv">tennis training dynamics 3000 points (CSV)</a>
-</div><p><a href="assets/results/PROTOCOL.md">Metric definitions</a><a href="assets/results/provenance.json">Data provenance</a></p></details>
+</div><p><a href="assets/results/PROTOCOL.md">Metric definitions</a><a href="assets/results/provenance.json">Data provenance</a><a href="assets/results/archive/sonic_comparison.csv">Historical adapter comparison</a></p></details>
       </div>
     </section>
 
@@ -172,12 +175,15 @@
         <div class="rx-hloop-layout">
           <figure class="rx-paper-art"><a href="assets/media/research/verification.webp" target="_blank" rel="noopener" aria-label="Open the repeated-verification and HLoop diagram"><img src="assets/media/research/verification.webp" loading="lazy" width="2400" alt="Execution-priority acceptance and heterogeneous scheduling preserve the selected policy"></a><figcaption>Repeated verification selects policy updates; dependency-ready scheduling accelerates the feedback workload.</figcaption></figure>
           <div class="rx-timings">
+            <h3>One feedback workload</h3>
+            <p>Eight rollouts, eight CPU diagnoses and one report-selection step: the same four fixed policies, evaluated with two seeds.</p>
+            <dl class="rx-executors"><div><dt>Sequential</dt><dd>Complete each job before starting the next.</dd></div><div><dt>Bulk-synchronous</dt><dd>Parallel jobs within each stage; barriers between stages.</dd></div><div><dt>MimicX-HLoop</dt><dd>Start each CPU diagnosis when its rollout finishes, overlapping independent jobs.</dd></div></dl>
             <h3>Feedback wall time</h3>
             <div class="rx-timing"><div><span>Sequential</span><strong>241.221 s</strong></div><meter min="0" max="250" value="241.221">241.221 seconds</meter></div>
             <div class="rx-timing"><div><span>Bulk-synchronous</span><strong>122.258 s</strong></div><meter min="0" max="250" value="122.258">122.258 seconds</meter></div>
             <div class="rx-timing rx-ours"><div><span>MimicX-HLoop</span><strong>124.017 s</strong></div><meter min="0" max="250" value="124.017">124.017 seconds</meter></div>
-            <p>All three executors retain the same selection outcomes. Median times across five repetitions.</p>
-            <p class="rx-source-note">Fixed checkpoints; zero PPO updates in this timing study.</p>
+            <p>Selection waits for the complete evidence. All five repetitions preserve the sequential outcome.</p>
+            <p class="rx-source-note">Medians of five runs; two GPUs and CPU workers. Fixed checkpoints and zero PPO updates isolate feedback scheduling from policy learning.</p>
             <a class="rx-text-link" href="HLOOP.md">HLoop protocol <span class="rx-icon icon-arrow-up-right" aria-hidden="true"></span></a>
           </div>
         </div>

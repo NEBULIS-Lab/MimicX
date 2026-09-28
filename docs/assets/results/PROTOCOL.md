@@ -64,9 +64,42 @@ The four additional-video rows and fourteen motion-input rows extend task
 coverage. Motion datasets test reference-to-policy behavior, not monocular
 video reconstruction. See the cohort labels in the files.
 
-`sonic_comparison.csv` compares a released SONIC policy with task-specific
-MimicX outputs using the recorded evaluation adapter. It is a released-policy
-transfer comparison, not equal-budget retraining of both methods.
+## Direct Policy Comparison
+
+`direct_policy_comparison.csv` is the paper's current clock-audited comparison:
+42 eligible recordings use a common reference within each task. Six recordings
+with a different reference are not pooled into these comparisons. The Tennis
+panel uses the same 518-frame reference at 50 Hz for all four methods, without
+resets. Trained trackers use three continuation seeds; released SONIC uses
+three executions. BeyondMimic is evaluated through its MjLab implementation,
+with 250 continuation iterations from the task warmstart; MimicX uses the
+frozen verified output. The direct comparison measures execution quality,
+while the core matrix separately controls continuation budgets.
+
+Body error here is mean root-local FK distance over 14 common tracked bodies.
+It is distinct from the core worst-body tracking metric. Graphs show means
+and sample standard deviations (ddof=1), plus the individual observations.
+The older released-policy adapter aggregate remains in
+`archive/sonic_comparison.csv` for historical traceability.
+
+## Collision Scenes
+
+`collision_scene_results.csv` contains all five paper tasks. Each uses a shared
+3,000-iteration warmstart followed by matched 3,000-iteration fixed or refined
+continuation, one training seed and three evaluation seeds. Completion is
+9/15 for Fixed Reference and 12/15 for MimicX. Body/root p95 reductions are
+computed from paired common pre-first-failure prefixes, then averaged over
+evaluation seeds. Parkour remains incomplete in both methods. This cohort is
+reported separately from the four-task core experiment.
+
+## Website Figures
+
+The larger website plots have separate dark and light palettes, editable SVG
+text and captions outside the image. Source CSVs, denominators and metric
+definitions are unchanged. Learning curves include all 3,000 recorded values
+without smoothing: four methods, three seeds and 250 continuation iterations.
+Thin lines are seed traces; thick lines are means. A logarithmic error axis
+keeps both initialization and later tracking behavior visible.
 
 ## HLoop
 
