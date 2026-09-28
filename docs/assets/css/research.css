@@ -194,7 +194,7 @@
 #research .showcase-heading h2 { margin: 0; }
 .showcase-heading button { width: 36px; min-width: 36px; height: 36px; }
 .showcase-controls { display: flex; gap: 20px; align-items: center; }
-#showcase-count { color: var(--rx-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+#showcase-count { color: var(--rx-muted); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .showcase-viewport { max-width: 1200px; margin: auto; padding: 0 28px; overflow: hidden; }
 .showcase-track { display: grid; position: relative; }
 #research .showcase-track figure { grid-area: 1 / 1; width: 100%; opacity: 0; visibility: hidden; transform: translateX(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1), visibility .7s; pointer-events: none; }
@@ -245,7 +245,8 @@
 .rx-executors > div + div { border-top: 1px solid var(--rx-line); }
 .rx-executors dt { font-size: 14px; font-weight: 600; color: var(--rx-text); }
 .rx-executors dd { font-size: 14px; line-height: 1.65; color: var(--rx-muted); margin: 0; }
-#research .rx-paper-stages img { aspect-ratio: 4/3; object-fit: contain; background: #fff; }
+.rx-paper-stages a { display: block; line-height: 0; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+#research .rx-paper-stages img { aspect-ratio: auto; height: auto; width: 100%; background: transparent; margin: 0; }
 .rx-method-layout { display: grid; grid-template-columns: 64fr 36fr; gap: 38px; align-items: stretch; }
 #research #method-overview { width: 100%; margin: 0; }
 .rx-method-layout .rx-method-notes { display: flex; flex-direction: column; justify-content: space-between; gap: 24px; margin: 0; padding: 0; border: 0; }
@@ -272,7 +273,7 @@ html:has(#media-viewer[open]) { overflow: hidden; }
   .rx-method-layout { grid-template-columns: 60fr 40fr; gap: 24px; }
 }
 @media (max-width: 700px) {
-  #research #showcase { --media-height: 210px; padding-top: 24px; }
+  #research #showcase { --media-height: 160px; padding-top: 24px; }
   .showcase-heading { padding-inline: 20px; }
   .showcase-viewport { padding-inline: 20px; }
   .showcase-pagination { padding-inline: 20px; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }

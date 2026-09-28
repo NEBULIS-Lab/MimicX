@@ -27,12 +27,12 @@
     "file": "forest-stage-policy.webp",
     "source": "POLICY__FOREST__SELECTED__NO_GHOST.mp4",
     "source_sha256": "8a8ddafaf571db277db5a71f1880070814685466ec15d0e55230edf83b0871d6",
-    "sha256": "cfb05b1bb34a8784b36fa4041d2782b91a78c978f101bd094e46f75f07a90bb8",
+    "sha256": "037abf2d138c65584ba1d7ef511fb1d0e9fa1445fe588036a9720c19be973a30",
     "frame": 202,
     "crop": [
-      530,
+      398,
       160,
-      1440,
+      1572,
       820
     ]
   },
