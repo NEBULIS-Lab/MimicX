@@ -1,0 +1,180 @@
+[
+  {
+    "file": "parkour-sequence.webp",
+    "source": "EVOLUTION__PARKOUR__SOURCE_COORDINATES__QA.png",
+    "source_sha256": "e05e253169ea9cb9ac6b906f540640428b5d99e5beb8fce662e3c239eb5a00e2",
+    "sha256": "1a1a565eae7f784f58bce8fc6667037fcb839cc06792219ee31de246cfbe2c46",
+    "stage": "Motion sequence",
+    "width": 3300,
+    "height": 1200
+  },
+  {
+    "file": "parkour-reference.webp",
+    "source": "PARKOUR__SCENE_REPAIRED_REFERENCE__SCENE_FK__FRAME000025__1080P.png",
+    "source_sha256": "68f8a4e3150d484c01a92a4e88aed69dafa4eb61be5b60a537334ad646c018a4",
+    "sha256": "9ca117511936c79dcacccb91185f9d70a2a32b344c3ea27b85e70822f3b207a6",
+    "stage": "Robot reference",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "forest.mp4",
+    "source": "PAPER_COLLISION__POLICY__FOREST__REFINED_CONTINUATION__SEED2002.mp4",
+    "source_sha256": "0b72547509f82e661c26541d7f5d165d9dab7920c663bf8dd6bcf4fb6e0246e7",
+    "sha256": "1f0c14bb6f55eabcddf17510fe29bc36650c54894258718c5ad804536d3c9b21",
+    "stage": "Policy rollout",
+    "transform": "720p; full duration; original timebase; no audio"
+  },
+  {
+    "file": "forest.webp",
+    "source": "PAPER_COLLISION__POLICY__FOREST__REFINED_CONTINUATION__SEED2002.mp4",
+    "source_sha256": "0b72547509f82e661c26541d7f5d165d9dab7920c663bf8dd6bcf4fb6e0246e7",
+    "sha256": "d7a4d0cd2512e5e1d1e51473ee978b6b0d01ab5ed3e1d9838fe1dcba2d1665f3",
+    "stage": "Policy rollout",
+    "frame": 202
+  },
+  {
+    "file": "stairs.mp4",
+    "source": "PAPER_COLLISION__POLICY__STAIRS__SELECTED__NO_GHOST.mp4",
+    "source_sha256": "5da0e29178a755806bfd52b81d819135168ec83b4561cc4ef6eb1de92e108af7",
+    "sha256": "3055ea04dc6447d1fb6e223ebabb121a96e789db656bff3da50ee450e5d4f078",
+    "stage": "Policy rollout",
+    "transform": "720p; full duration; original timebase; no audio"
+  },
+  {
+    "file": "stairs.webp",
+    "source": "PAPER_COLLISION__POLICY__STAIRS__SELECTED__NO_GHOST.mp4",
+    "source_sha256": "5da0e29178a755806bfd52b81d819135168ec83b4561cc4ef6eb1de92e108af7",
+    "sha256": "629c817511b77a75feb6483aa27d0183e9e9eded432e8f6434be7eccbe0ad35e",
+    "stage": "Policy rollout",
+    "frame": 0
+  },
+  {
+    "file": "track.mp4",
+    "source": "PAPER_COLLISION__POLICY__TRACK__SELECTED__NO_GHOST.mp4",
+    "source_sha256": "f20ef70343951dc8d96b4992746771d18dcd9849e0a5320cf7eb5eb9a2079739",
+    "sha256": "8276caf747a4aba84781d62e7802d6176d66292b0106dbb222b3ceeb60955d6a",
+    "stage": "Policy rollout",
+    "transform": "720p; full duration; original timebase; no audio"
+  },
+  {
+    "file": "track.webp",
+    "source": "PAPER_COLLISION__POLICY__TRACK__SELECTED__NO_GHOST.mp4",
+    "source_sha256": "f20ef70343951dc8d96b4992746771d18dcd9849e0a5320cf7eb5eb9a2079739",
+    "sha256": "dc27067b045ca4908d425441ec945107ae0abbf0234118076ee639179f62e326",
+    "stage": "Policy rollout",
+    "frame": 0
+  },
+  {
+    "file": "platform.mp4",
+    "source": "PAPER_COLLISION__POLICY__BENCH__SELECTED__NO_GHOST.mp4",
+    "source_sha256": "ee32d03c3be190ac53b71b0eb866fb0d3d933e47cc734211a47ceb57ecce6f9c",
+    "sha256": "2b070640040f2218606b246768fe9145f5cf7e031cdc2e5f87460460d3dde2c3",
+    "stage": "Policy rollout",
+    "transform": "720p; full duration; original timebase; no audio"
+  },
+  {
+    "file": "platform.webp",
+    "source": "PAPER_COLLISION__POLICY__BENCH__SELECTED__NO_GHOST.mp4",
+    "source_sha256": "ee32d03c3be190ac53b71b0eb866fb0d3d933e47cc734211a47ceb57ecce6f9c",
+    "sha256": "ff727ffce4aa0125f534e97a4ab5c77fc3308e61b878cd4c89f18f2775faea9b",
+    "stage": "Policy rollout",
+    "frame": 28
+  },
+  {
+    "file": "tennis-scene.mp4",
+    "source": "VIDEO_SCENE__TENNIS__MIMICX__SOURCE_REGISTERED.mp4",
+    "source_sha256": "0e49f9b53d393612ab3ee865c356fce88cad088edcf37a0131f9e80a8b8530fd",
+    "sha256": "71b8732fdce5fd3efd12d528e947e99fbb08da0f37ee8823121f318007484c03",
+    "stage": "Policy rollout",
+    "transform": "720p; full duration; original timebase; no audio"
+  },
+  {
+    "file": "tennis-scene.webp",
+    "source": "VIDEO_SCENE__TENNIS__MIMICX__SOURCE_REGISTERED.mp4",
+    "source_sha256": "0e49f9b53d393612ab3ee865c356fce88cad088edcf37a0131f9e80a8b8530fd",
+    "sha256": "9dfca696ca4cf440c324a878d91a212aee9018dde175828e98569085b3931d8f",
+    "stage": "Policy rollout",
+    "frame": 196
+  },
+  {
+    "file": "football-scene.mp4",
+    "source": "VIDEO_SCENE__FOOTBALL_JUGGLING__MIMICX__SOURCE_REGISTERED.mp4",
+    "source_sha256": "b041d57eafcf79ed9f58fbdf33db64fd3632bdcc184c0adf6d6cd54ea52ea8af",
+    "sha256": "5d883b2ae0af204758c6ae3943d7efa84f257a149ae6f287b444589fc3c9258b",
+    "stage": "Policy rollout",
+    "transform": "720p; full duration; original timebase; no audio"
+  },
+  {
+    "file": "football-scene.webp",
+    "source": "VIDEO_SCENE__FOOTBALL_JUGGLING__MIMICX__SOURCE_REGISTERED.mp4",
+    "source_sha256": "b041d57eafcf79ed9f58fbdf33db64fd3632bdcc184c0adf6d6cd54ea52ea8af",
+    "sha256": "b1ee784b3e3475070eb6a12e4c01762434b1be3407c7f8570cf1d881285c3015",
+    "stage": "Policy rollout",
+    "frame": 0
+  },
+  {
+    "file": "tennis-stage-input.webp",
+    "source": "registered_scene_stages.pdf",
+    "source_sha256": "c0f99dbd253c4d3f1d3cb369d5aab12bea727e87a44232bc9598fcd34cf8bd5b",
+    "sha256": "2f46714819b82143ec0332c7a1da8173a9a5c1eeb10afda51458b45cce201f37",
+    "stage": "input",
+    "crop": [
+      40,
+      125,
+      1672,
+      1574
+    ],
+    "width": 1126,
+    "height": 1000,
+    "selection": "Unchanged paper-selected four-stage correspondence"
+  },
+  {
+    "file": "tennis-stage-human.webp",
+    "source": "registered_scene_stages.pdf",
+    "source_sha256": "c0f99dbd253c4d3f1d3cb369d5aab12bea727e87a44232bc9598fcd34cf8bd5b",
+    "sha256": "6224f90e17739c1a47bcd353b297c1a209659427f955c252c20059462991b65d",
+    "stage": "human",
+    "crop": [
+      1713,
+      125,
+      3345,
+      1574
+    ],
+    "width": 1126,
+    "height": 1000,
+    "selection": "Unchanged paper-selected four-stage correspondence"
+  },
+  {
+    "file": "tennis-stage-simulation.webp",
+    "source": "registered_scene_stages.pdf",
+    "source_sha256": "c0f99dbd253c4d3f1d3cb369d5aab12bea727e87a44232bc9598fcd34cf8bd5b",
+    "sha256": "03d11c809071c863654ef475038fc67c97d4cacdf72d85064808ed1f2ffab2f0",
+    "stage": "simulation",
+    "crop": [
+      3385,
+      125,
+      5017,
+      1574
+    ],
+    "width": 1126,
+    "height": 1000,
+    "selection": "Unchanged paper-selected four-stage correspondence"
+  },
+  {
+    "file": "tennis-stage-scene.webp",
+    "source": "registered_scene_stages.pdf",
+    "source_sha256": "c0f99dbd253c4d3f1d3cb369d5aab12bea727e87a44232bc9598fcd34cf8bd5b",
+    "sha256": "fb791b590ee30ddbf36df6093ad00cbb9e40ff3595c709aba4d97c98a624cd86",
+    "stage": "scene",
+    "crop": [
+      5057,
+      125,
+      6689,
+      1574
+    ],
+    "width": 1126,
+    "height": 1000,
+    "selection": "Unchanged paper-selected four-stage correspondence"
+  }
+]

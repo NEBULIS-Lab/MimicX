@@ -18,6 +18,7 @@
     try { document.documentElement.dataset.theme = localStorage.getItem('mimicx-theme') === 'light' ? 'light' : 'dark'; } catch (_) {}
   </script>
   <script src="assets/js/mimicx.js" defer></script>
+  <script src="assets/js/showcase.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#overview">Skip to research overview</a>
@@ -38,6 +39,21 @@
     </div>
     <div class="hero-bottom"><span>Tennis Swing &middot; Recorded policy motion</span><a href="#policies">View policy rollouts</a></div>
   </header>
+  <section id="showcase" aria-label="Motions and scenes">
+    <div class="showcase-heading"><p>Motions &amp; scenes</p><button id="showcase-toggle" class="rx-icon-button" type="button" title="Pause showcase" aria-label="Pause showcase" aria-pressed="true"><span class="rx-icon icon-pause" aria-hidden="true"></span></button></div>
+    <div class="showcase-viewport" tabindex="0" aria-label="Browse recorded motions and reference scenes">
+      <div class="showcase-track">
+        <figure style="--ratio:2.75"><a href="assets/media/showcase/parkour-sequence.webp" data-viewer="image"><img src="assets/media/showcase/parkour-sequence.webp" width="3300" height="1200" alt="Human and G1 parkour motion across an outdoor collision scene" loading="lazy"></a><figcaption>Parkour <span>Motion sequence</span></figcaption></figure>
+        <figure style="--ratio:1.777778"><a href="assets/media/showcase/forest.mp4" data-viewer="video"><video data-src="assets/media/showcase/forest.mp4" poster="assets/media/showcase/forest.webp" muted playsinline loop preload="none" aria-label="Recorded Forest Traversal policy"></video></a><figcaption>Forest Traversal <span>Policy rollout</span></figcaption></figure>
+        <figure style="--ratio:1.777778"><a href="assets/media/showcase/stairs.mp4" data-viewer="video"><video data-src="assets/media/showcase/stairs.mp4" poster="assets/media/showcase/stairs.webp" muted playsinline loop preload="none" aria-label="Recorded Stair Ascent policy"></video></a><figcaption>Stair Ascent <span>Policy rollout</span></figcaption></figure>
+        <figure style="--ratio:1.777778"><a href="assets/media/showcase/tennis-scene.mp4" data-viewer="video"><video data-src="assets/media/showcase/tennis-scene.mp4" poster="assets/media/showcase/tennis-scene.webp" muted playsinline loop preload="none" aria-label="Recorded Tennis Swing in the registered court scene"></video></a><figcaption>Tennis Swing <span>Registered policy motion</span></figcaption></figure>
+        <figure style="--ratio:1.777778"><a href="assets/media/showcase/parkour-reference.webp" data-viewer="image"><img src="assets/media/showcase/parkour-reference.webp" width="1920" height="1080" alt="G1 reference articulated over parkour scene platforms" loading="lazy"></a><figcaption>Parkour <span>Scene-repaired reference</span></figcaption></figure>
+        <figure style="--ratio:1.777778"><a href="assets/media/showcase/track.mp4" data-viewer="video"><video data-src="assets/media/showcase/track.mp4" poster="assets/media/showcase/track.webp" muted playsinline loop preload="none" aria-label="Recorded Track Run policy"></video></a><figcaption>Track Run <span>Policy rollout</span></figcaption></figure>
+        <figure style="--ratio:1.777778"><a href="assets/media/showcase/platform.mp4" data-viewer="video"><video data-src="assets/media/showcase/platform.mp4" poster="assets/media/showcase/platform.webp" muted playsinline loop preload="none" aria-label="Recorded Platform Jump policy"></video></a><figcaption>Platform Jump <span>Policy rollout</span></figcaption></figure>
+        <figure style="--ratio:1.777778"><a href="assets/media/showcase/football-scene.mp4" data-viewer="video"><video data-src="assets/media/showcase/football-scene.mp4" poster="assets/media/showcase/football-scene.webp" muted playsinline loop preload="none" aria-label="Recorded Football Juggling in its registered scene"></video></a><figcaption>Football Juggling <span>Registered policy motion</span></figcaption></figure>
+      </div>
+    </div>
+  </section>
   <div class="research-nav">
     <div class="research-nav-inner">
       <nav aria-label="Page sections">
@@ -49,17 +65,19 @@
   <main id="research">
     <section id="overview" class="rx-section rx-intro">
       <div class="rx-container">
-        <div class="rx-intro-copy">
-          <h2>Learning the motion.<br>Refining how it is learned.</h2>
-          <div><p>MimicX learns humanoid motion from human video. A policy's execution reveals which transitions and body regions need attention, turning tracking failures into targeted changes to training supervision.</p><p>The loop coordinates motion-tracking objectives and practice, then verifies each update through repeated execution. Better execution, not a larger training reward, determines which policy is retained.</p><a class="rx-text-link" href="METHOD.md">Read the method <span class="rx-icon icon-arrow-up-right" aria-hidden="true"></span></a></div>
+        <div class="rx-authors" id="authors">
+          <p>Shuaijun Liu<span>Chenglong Zhang</span><span>Xuhao Liu</span><span>Feiyang You</span><span>Yifan Liao</span><span>Shuyang Hao</span><span>Chaozhe Zhang</span><span>Chengyu Wu</span><span>Zhen Sun</span><span>Ningxin Su<sup>*</sup></span></p>
+          <p class="rx-affiliation">The Hong Kong University of Science and Technology (Guangzhou)</p>
+          <p class="rx-correspondence">* Corresponding author: <a href="mailto:ningxinsu@hkust-gz.edu.cn">Ningxin Su</a></p>
         </div>
-        <dl class="rx-summary">
-          <div><dt>Lower body-tracking error</dt><dd>25.7<span>%</span></dd><small>Task-averaged reduction</small></div>
-          <div><dt>Longer execution horizon</dt><dd>255.6<span>%</span></dd><small>Task-averaged improvement</small></div>
-          <div><dt>Tennis strict success</dt><dd>9<span>/9</span></dd><small>Final evaluation rollouts</small></div>
-          <div><dt>Faster feedback</dt><dd>1.945<span>&times;</span></dd><small>HLoop vs. sequential, median</small></div>
-        </dl>
-        <p class="rx-source-note">Core continuation study: four video tasks, three training seeds and three verification repeats. Improvements compare MimicX with Fixed Reference. HLoop timing uses a separate fixed-policy workload.</p>
+        <div class="rx-heading"><h2>From human video to robot execution</h2><p>MimicX turns a human demonstration into a humanoid skill, then uses the robot's execution to refine its supervision. Motion reconstruction and retargeting establish a reference; rollout feedback guides what the policy learns next.</p></div>
+        <ol class="rx-stages rx-paper-stages">
+          <li><a data-viewer="image" href="assets/media/showcase/tennis-stage-input.webp"><img src="assets/media/showcase/tennis-stage-input.webp" loading="lazy" alt="Paper-selected original tennis video frame"></a><span>Input video</span><small>Human demonstration</small></li>
+          <li><a data-viewer="image" href="assets/media/showcase/tennis-stage-human.webp"><img src="assets/media/showcase/tennis-stage-human.webp" loading="lazy" alt="Paper-selected human motion reconstruction"></a><span>Human reconstruction</span><small>GVHMR / SMPL-X</small></li>
+          <li><a data-viewer="image" href="assets/media/showcase/tennis-stage-simulation.webp"><img src="assets/media/showcase/tennis-stage-simulation.webp" loading="lazy" alt="Paper-selected learned G1 policy in simulation"></a><span>Policy in simulation</span><small>G1 motion tracking</small></li>
+          <li><a data-viewer="image" href="assets/media/showcase/tennis-stage-scene.webp"><img src="assets/media/showcase/tennis-stage-scene.webp" loading="lazy" alt="The same policy motion rendered in the reconstructed tennis scene"></a><span>Reconstructed scene</span><small>Registered policy motion</small></li>
+        </ol>
+        <p class="rx-source-note">Tennis Swing: the four corresponding stages selected for the paper.</p>
       </div>
     </section>
 
@@ -106,16 +124,6 @@
           <article><span class="rx-step">02</span><h3>Refine supervision</h3><p>Continue the accepted policy with coordinated tracking terms and failure-window replay.</p></article>
           <article><span class="rx-step">03</span><h3>Verify the update</h3><p>Prioritize completion and execution horizon, then tracking fidelity. Retain the current policy when no candidate passes.</p></article>
         </div>
-        <div class="rx-stage-heading"><h3>From human video to robot execution</h3><span>Tennis Swing</span></div>
-        <ol class="rx-stages">
-          <li><img src="assets/media/stage-video.png" loading="lazy" alt="Human tennis demonstration"><span>Input video</span><small>Human demonstration</small></li>
-          <li><img src="assets/media/stage-human.png" loading="lazy" alt="Transparent-background reconstructed human"><span>Human motion</span><small>GVHMR / SMPL-X</small></li>
-          <li><img src="assets/media/stage-world.png" loading="lazy" alt="World-space human motion reconstruction"><span>World motion</span><small>Global trajectory</small></li>
-          <li><img src="assets/media/stage-reference.png" loading="lazy" alt="Retargeted G1 reference"><span>Robot reference</span><small>GMR retargeting</small></li>
-          <li><img src="assets/media/stage-fixed.png" loading="lazy" alt="Recorded fixed-reference policy in the tennis scene"><span>Initial execution</span><small>PPO / MuJoCo</small></li>
-          <li><img src="assets/media/stage-ours.png" loading="lazy" alt="Recorded refined policy at the matched step"><span>Refined execution</span><small>MimicX policy</small></li>
-        </ol>
-        <p class="rx-source-note">Motion-preparation stages illustrate the source sequence. The two policy frames are matched at recorded step 131. Scene props provide presentation context; the task evaluates humanoid motion tracking.</p>
       </div>
     </section>
 
@@ -176,6 +184,7 @@
       </div>
     </section>
   </main>
+  <dialog id="media-viewer" aria-label="Research media viewer"><div class="viewer-toolbar"><p id="viewer-caption"></p><button id="viewer-close" class="rx-icon-button" type="button" aria-label="Close media" title="Close media"><span class="rx-icon icon-x" aria-hidden="true"></span></button></div><div id="viewer-content"></div></dialog>
   <footer id="resources">
     <div class="container research-width">
       <div class="footer-primary">
