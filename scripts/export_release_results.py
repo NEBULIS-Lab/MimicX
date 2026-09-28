@@ -32,12 +32,14 @@ def main():
         # Preserve numeric strings exactly; path-bearing metadata is not public data.
         fields = [key for key in fields if not any(
             str(row.get(key, "")).startswith(("/", "file://")) for row in rows)]
-        target = args.output_dir / name
+        relative = f'archive/{name}' if name == 'sonic_comparison.csv' else name
+        target = args.output_dir / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
         with target.open("w", newline="") as handle:
             writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n", extrasaction="ignore")
             writer.writeheader()
             writer.writerows(rows)
-        records.append({"file": name, "rows": len(rows),
+        records.append({"file": relative, "rows": len(rows),
                         "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
                         "published_sha256": hashlib.sha256(target.read_bytes()).hexdigest(),
                         "omitted_columns": [key for key in reader.fieldnames if key not in fields]})

@@ -31,7 +31,7 @@
     "omitted_columns": []
   },
   {
-    "file": "sonic_comparison.csv",
+    "file": "archive/sonic_comparison.csv",
     "rows": 2,
     "source_sha256": "4d75f4cc0e741382009be3a7221d094ebd39fc9752c5c7d4c56a3a0261dc3792",
     "published_sha256": "55e50938c253ec29d71bf82d9e625dd38a6dfc8e86ef2dbe4fa684078bd38a19",
