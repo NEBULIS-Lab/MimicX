@@ -1,112 +1,97 @@
 # Project Website
 
-Open `index.html` directly in a browser. The static page uses local CSS,
-JavaScript, images and H.264 videos; it does not require a build server, CDN,
-analytics account or runtime data fetch.
+Open `index.html` directly, or visit https://nebulis-lab.com/MimicX.
+The site is static HTML, CSS and JavaScript with local images and recordings.
+No build step, external font, CDN, analytics or runtime data fetch is needed.
 
-## Layout and Theme
+## September 28 research-body rebuild
 
-The hero uses the author's complete MimicX SVG wordmark directly; it does not
-reconstruct the wordmark from live text and a separate X. The updated
-charcoal-to-terracotta logo sits above the bold black full paper title.
-Navigation and the bottom image information strip use dark translucent
-backgrounds. The updated standalone X SVG is the primary favicon, with PNG
-fallbacks retained for compatibility.
-Brand sources, rights notes and resizing provenance are in `assets/branding/`.
-`assets/css/brand.css` owns the hero branding; the rest of the site's layout
-remains in `mimicx.css`.
-Top navigation uses a unified dark-button treatment with unmodified Simple
-Icons brand marks and providers in parentheses. The arXiv link temporarily
-points to `https://example.com` at the author's request; replace it after
-upload. Release links and the project identity are consolidated in the compact
-dark footer rather than a standalone release section. Template provenance is
-kept in this maintenance document instead of the public footer. The upper bar uses 82%
-opacity and the lower strip
-retains 58%. Only the scene image gently
-desaturates/fades when the pointer leaves the hero; the wordmark and text stay
-unchanged. Touch devices retain full color, keyboard focus restores full
-color, and reduced-motion preferences disable the transition.
+The complete region after the hero and before the footer has been rebuilt:
+navigation, overview, policy viewer, method, results and HLoop. This is a new
+markup and component stylesheet, not a reskin of the previous middle sections.
+D-JEPA's research page informed the compact typography, task navigation and
+persistent light/dark presentation; its purple palette and application code
+were not copied.
 
-The static image hero, section navigation, method and experiment sequence adapt the
-RoboSplat project page structure. Content sections use a continuous white
-editorial layout with fine separators instead of alternating background bands.
-Experiment images, plots and videos use a consistent 10 px corner radius.
-MimicX uses coral `#D45B4C`, pale coral
-`#FBECE9`, blue `#3B78A8`, teal `#23866B`, grey `#7A7F87` and ink `#20252B`.
-Solid robots represent executed policies; transparent robots represent the
-reference. Presentation-scene props are not evidence of ball-contact training.
+The approved hero and compact footer are preserved byte-for-byte. Their
+styles remain in `mimicx.css` and `brand.css`. The new research body is owned
+by `research.css`, scoped to `#research` and `.research-nav`. It must not
+override hero/footer styles or their inherited color variables.
 
-Numerical CSVs, provenance and metric definitions live only in `assets/results`.
-The page contains all four core tasks and links every CSV, rather than selecting
-only favorable outcomes. Videos are illustrative recorded trials, not an
-aggregation of verification repeats. Exact source filenames and byte hashes
-are recorded in `assets/media/manifest.json`. Three transparent reconstruction
-and reference assets have web derivatives: trim alpha-only empty margins,
-downsample without changing aspect ratio, and center on a transparent canvas.
-The manifest records both source and derivative hashes and the crop bounds.
-Other displayed images and all plots/videos are byte-identical source copies.
+Dark is the default for the rebuilt body. The navigation's theme control
+switches to light and stores the choice under `mimicx-theme`. It deliberately
+does not recolor the preserved hero, artwork or footer. Storage-denied browsers
+still support switching for the current visit. Semantic colors are coral for
+MimicX, blue for Fixed Reference and teal for complementary mechanisms.
 
-The six workflow images contain no added captions; labels are native HTML.
-The first four stages show input and motion preparation, while the last two
-show Fixed Reference and the verified policy at recorded step 131. The input
-illustrates the source video; it is not claimed to be a frame-synchronous
-six-way comparison. Four square SVG plots share one desktop row: tracking
-channels, paired execution horizons, dense tennis training dynamics and HLoop
-wall time. Each links to its full-size vector original.
+## Research content
 
-## Author-Drawn Overview
+- Overview: task-averaged tracking and horizon improvements, tennis completion,
+  and the separately measured feedback speedup.
+- Recordings: four keyboard-accessible task tabs, paired native video players,
+  shared play/pause/restart and timeline. Readouts come from the generated
+  static results table, not a second numerical dataset.
+- Method: the final author-drawn supervision diagram, diagnosis/refinement/
+  verification descriptions, and six real preparation/execution images.
+- Results: four full-resolution linked vector plots in a desktop row, the
+  complete four-task table, and downloadable numerical data and protocols.
+- HLoop: the final verification/scheduling artwork and measured median timings.
 
-`index.html` reserves `figure#method-overview` before the workflow frames.
-When the author supplies the illustration, replace that figure's placeholder
-contents with an image and descriptive alt text, remove the
-`overview-placeholder` class, and register the new asset in the media manifest.
-Do not substitute a generated diagram or experimental figure montage.
+The initial video posters come from the same recordings at 0.1 seconds.
+Videos use lazy preload; switching tasks replaces both sources and resets
+the shared timeline. Loading failures have a retry message and individual
+native controls remain available. Task tabs support arrow, Home and End keys.
+Playback is never started automatically.
+
+## Evidence and assets
+
+`assets/results/` remains the website-only numerical record. Do not move
+results into the root code repository or change values as part of web design.
+The table retains all four tasks. Videos illustrate individual recorded trials,
+not seed-averaged outcomes. Protected outputs and horizon conventions are
+described alongside the relevant evidence.
+
+`assets/media/manifest.json` records the original experimental media.
+`assets/media/research/manifest.json` records the new poster and final-artwork
+derivatives, their source names and SHA-256 hashes. Paper drawings are exported
+at 2400 pixels wide. Neither source PDFs nor videos are modified.
+`assets/icons/lucide/` contains unmodified official Lucide 0.468.0 control
+icons and their license. Existing resource-button brand icons are unchanged.
+
+Transparent workflow images preserve their alpha channels. Court props supply
+presentation context; the measurements concern humanoid motion tracking.
+Input/motion-preparation images illustrate the sequence; the two rendered
+policy frames use the same recorded step 131.
 
 ## Maintenance
 
-Header and footer links point to the published
-[Policies](https://huggingface.co/Shuaijun/MimicX-Policies) and
-[Assets](https://huggingface.co/datasets/Shuaijun/MimicX-Assets) repositories.
-The recommended-policy entry supports one-task downloads; complete artifacts
-remain on HF, not duplicated in the website. Keep these links synchronized
-when updating release navigation.
+From the repository root:
 
 ```bash
 python scripts/build_website_results.py
 python -m pytest tests/test_website_release.py -q
-```
-
-Run from the repository root. The builder creates the HTML table and download
-links from the website's CSV files. It never writes result data into code or
-training configuration directories. To update approved media, use
-`python scripts/package_website_media.py --source /path/to/approved-media --prompt-source /path/to/prompt-materials`
-(requires Pillow) and review
-desktop/mobile playback before publishing.
-
-For the optional browser audit, install `playwright` in a development
-environment, install its Chromium browser, and run:
-
-```bash
+python scripts/prepare_website_refresh.py --artwork /path/to/final_artwork
 python scripts/verify_website.py --chromium /path/to/chromium --output runs/website-qa
 ```
 
-This check disables GPU rendering, starts a temporary local HTTP server, tests
-all four paired-video controls at desktop/tablet/mobile/landscape sizes, writes screenshots,
-and shuts down the browser and server. It is not required to view the page.
+The media exporter needs PyMuPDF, Pillow and CPU FFmpeg; `--ffmpeg` accepts a
+binary path. The browser audit needs Playwright and Chromium, disables hardware
+acceleration, uses a temporary local server and stops it after the audit.
+It covers six viewport sizes, both themes, persistence, asset loading,
+all task pairs, synchronized controls, table integrity and horizontal overflow.
+Screenshots are review artifacts, not dependencies of the site.
 
-For GitHub Pages, select **Deploy from a branch**, branch **main**, folder
-**/docs** in repository Pages settings. The expected address is
-`https://nebulis-lab.github.io/MimicX/` once Pages is enabled. Pushing the source
-alone does not establish that Pages has been enabled or deployed.
+Header and footer retain the released Code, Policies and Assets links. The
+arXiv button remains the author's approved placeholder until an identifier
+is available. The paper-source link is unchanged. GitHub Pages uses main/docs;
+a push alone is not proof that a hosted deployment has completed.
 
 ## Attribution
 
-Template structure: [RoboSplat](https://yangsizhe.github.io/robosplat/), based on
-[NeRFies](https://nerfies.github.io/) and
+Preserved template structure: [RoboSplat](https://yangsizhe.github.io/robosplat/),
+based on [NeRFies](https://nerfies.github.io/) and
 [UMI on Legs](https://github.com/umi-on-legs/umi-on-legs.github.io/).
-Adapted website template files (`index.html`, `assets/css/mimicx.css` and
-`assets/js/mimicx.js`) use CC BY-SA 4.0. Bulma retains its embedded MIT notice.
-MimicX research code remains Apache-2.0. Research videos, human video frames,
-robot assets and scene imagery retain their respective rights; the template
-license does not relicense those assets. Original analytics and third-party
-tracking scripts were not copied.
+Adapted website template files use CC BY-SA 4.0. Bulma retains its MIT notice.
+Lucide retains its ISC/MIT notices. Research videos, input frames, robot and
+scene imagery retain their respective rights; template licensing does not
+relicense these assets. Research code remains Apache-2.0.

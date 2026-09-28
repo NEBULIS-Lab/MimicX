@@ -17,6 +17,12 @@ class QuietHandler(SimpleHTTPRequestHandler):
     def log_message(self, *args):
         pass
 
+    def copyfile(self, source, outputfile):
+        try:
+            super().copyfile(source, outputfile)
+        except (BrokenPipeError, ConnectionResetError):
+            pass  # Switching tasks intentionally cancels video downloads.
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -51,7 +57,13 @@ def main():
                     assert title['y'] + title['height'] < hero_box['height'] - 35
                     assert page.locator("#top video").count() == 0
                     assert page.locator(".result-plot").count() == 4
-                    assert page.locator("#method-overview").is_visible()
+                    assert page.locator("#method-overview img").count() == 1
+                    assert page.locator('html').get_attribute('data-theme') == 'dark'
+                    assert page.locator('.rx-table thead th').first.evaluate('(n) => getComputedStyle(n).color') == 'rgb(181, 185, 191)'
+                    assert page.locator('#task-error').evaluate('(n) => getComputedStyle(n).color') == 'rgb(241, 240, 238)'
+                    page.click('#pair-toggle')
+                    page.wait_for_function("document.getElementById('fixed-video').currentTime > 0.1 && !document.getElementById('ours-video').paused")
+                    page.click('#pair-toggle')
                     boxes = page.locator('.result-plot').evaluate_all('(nodes) => nodes.map(n => { const b=n.getBoundingClientRect(); return {x:b.x,y:b.y,width:b.width}; })')
                     if width > 1024:
                         assert max(b['y'] for b in boxes) - min(b['y'] for b in boxes) < 1, 'Plots must share one desktop row'
@@ -62,7 +74,9 @@ def main():
                     page.wait_for_function("Array.from(document.images).every(i => i.complete && i.naturalWidth > 0)")
                     assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), (name, page.evaluate("Array.from(document.querySelectorAll('body *')).filter(n => n.getBoundingClientRect().right > innerWidth + 1).map(n => ({tag:n.tagName, id:n.id, cls:n.className, right:n.getBoundingClientRect().right})).slice(0,20)"))
                     for task in ("tennis", "football", "dance", "kungfu"):
-                        page.select_option("#task-select", task)
+                        page.click(f'[data-task="{task}"]')
+                        page.locator('#fixed-video').evaluate('v => {v.preload="auto";v.load()}')
+                        page.locator('#ours-video').evaluate('v => {v.preload="auto";v.load()}')
                         page.wait_for_function("['fixed-video','ours-video'].every(id => document.getElementById(id).readyState >= 2)")
                         page.click("#pair-toggle")
                         page.wait_for_function("document.getElementById('fixed-video').currentTime > 0.1 && !document.getElementById('ours-video').paused")
@@ -70,19 +84,29 @@ def main():
                         page.locator("#pair-seek").evaluate("input => {input.value='500';input.dispatchEvent(new Event('input'));}")
                         page.wait_for_function("Math.abs(document.getElementById('fixed-video').currentTime - document.getElementById('ours-video').currentTime) < 0.2")
                         page.click("#pair-reset")
-                    page.select_option("#task-select", "tennis")
-                    page.wait_for_function("document.getElementById('fixed-video').readyState >= 2")
+                    page.click('[data-task="tennis"]')
                     page.locator("#top").scroll_into_view_if_needed()
                     page.wait_for_timeout(500)
                     page.screenshot(path=str(args.output / f"{name}.png"), full_page=True)
                     # Hide sticky chrome only for section captures, not the full-page audit.
-                    page.add_style_tag(content='.section-nav{visibility:hidden}')
-                    for section in ("top", "method", "policies", "results", "resources"):
+                    page.add_style_tag(content='.research-nav{visibility:hidden}')
+                    for section in ("top", "overview", "method", "policies", "results", "hloop", "resources"):
                         page.locator(f"#{section}").screenshot(path=str(args.output / f"{name}-{section}.png"))
+                    page.add_style_tag(content='.research-nav{visibility:visible}')
+                    page.click('#theme-toggle')
+                    assert page.locator('html').get_attribute('data-theme') == 'light'
+                    page.locator('#top').scroll_into_view_if_needed()
+                    page.screenshot(path=str(args.output / f'{name}-light.png'), full_page=True)
+                    for section in ('overview', 'results'):
+                        page.locator(f'#{section}').screenshot(path=str(args.output / f'{name}-light-{section}.png'))
+                    page.reload(wait_until='networkidle')
+                    assert page.locator('html').get_attribute('data-theme') == 'light'
+                    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                     assert not errors, errors
                     reports.append({"viewport": name, "width": width, "height": height,
                                     "table_rows": 8, "download_csvs": 9, "playback_pairs": 4,
                                     "static_hero": True, "result_plots": 4, "centered_author_logo": True,
+                                    "themes": ["dark", "light"], "theme_persists": True,
                                     "errors": errors, "horizontal_overflow": False})
                     page.close()
             finally:

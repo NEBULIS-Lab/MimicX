@@ -1,0 +1,62 @@
+[
+  {
+    "file": "refinement.webp",
+    "source": "mimicx_refinement.pdf",
+    "source_sha256": "c61fc60d4a47d5410a8b1102a352ce274b3ee11914cbe30ad5cd8227a48ca0c2",
+    "sha256": "1d00ae884983dfe2dde89b434d1088ae6bfd16a7335293c4101f00f613435d3c"
+  },
+  {
+    "file": "verification.webp",
+    "source": "mimicx_verification_hloop.pdf",
+    "source_sha256": "adb4b5940bd0b7fd065018b3a2d855d358fa6f4bc07b8727bdaebdaf531005ea",
+    "sha256": "3dc1572b72567b0878f7faffc5a6bb8e79d5a78c9c1df053c71d1af3169775e9"
+  },
+  {
+    "file": "tennis-fixed.jpg",
+    "source": "tennis-fixed.mp4",
+    "source_sha256": "9c870aee4d55e80c7469c57eb286e6ab63402557fa8d6f3941bcc04d10859ed1",
+    "sha256": "f23c74e8257f0cc49e4e4d869ca2c102bd2dd34d2c38b2738a4f8ecb756e8a23"
+  },
+  {
+    "file": "tennis-ours.jpg",
+    "source": "tennis-ours.mp4",
+    "source_sha256": "7cdd01f2989d652eb9d24ed70176abefbcff21df9bf8377ae92aa5d859d89cdc",
+    "sha256": "218c1f9c1c0ecb78266fd5327007257da90a5aa99e7bc02a865c8c89333def94"
+  },
+  {
+    "file": "football-fixed.jpg",
+    "source": "football-fixed.mp4",
+    "source_sha256": "674a7125af0f4b95966b2bfb46270884ede7d17520c34f5d06efea9eaf733b35",
+    "sha256": "d4ff3395b067efd05e91cd840a1fbe4d5e5892707d348114e841e80e23d1dd2e"
+  },
+  {
+    "file": "football-ours.jpg",
+    "source": "football-ours.mp4",
+    "source_sha256": "07884ea4e6e114e4d7298e03676f0b001ffd1c30628ce502097f69229d92efcc",
+    "sha256": "d8de9f328637ae8b32f4cbf445562fecc88f83187cda5956ee62ade1696e5f12"
+  },
+  {
+    "file": "dance-fixed.jpg",
+    "source": "dance-fixed.mp4",
+    "source_sha256": "c00e436abea372ac644428963c59e2afeb853d0ad75aa6065a02162db0e3388f",
+    "sha256": "79d42e66c2957b1ec07f5410b5ef38fdf753e234d0bdabbe2b128086d9266231"
+  },
+  {
+    "file": "dance-ours.jpg",
+    "source": "dance-ours.mp4",
+    "source_sha256": "a360af2afed14d417fd049e94d95446a1051fbcc81ce335f62a4392b90d718a4",
+    "sha256": "e1e4ce723766e99c2b8eec193206ffb1d79a32d6cd74f7219580da52da1c19a6"
+  },
+  {
+    "file": "kungfu-fixed.jpg",
+    "source": "kungfu-fixed.mp4",
+    "source_sha256": "3944c5bdc9f9104e16eb683a874bdd109b4eae892477f4c49c85cdda75f83fb1",
+    "sha256": "b606b31394f6f3fc873eba37ea391b5d3ede7110c3996acb3bdcb8efb1564b8e"
+  },
+  {
+    "file": "kungfu-ours.jpg",
+    "source": "kungfu-ours.mp4",
+    "source_sha256": "77247687a04559969177246016a5a62bfc14833abf78aebb0a5198f86668e55d",
+    "sha256": "9b5ba169e0174310cd71a9837ad3b976aa0861fae3b9158bea41e0bb9293590f"
+  }
+]

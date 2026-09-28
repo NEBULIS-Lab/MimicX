@@ -140,3 +140,30 @@ def test_author_brand_and_favicons():
     assert 'assets/branding/favicon-32.png' in html
     assert 'assets/branding/logo-x.svg' in html
     assert (WEBSITE / 'assets/fonts/Montserrat-OFL.txt').is_file()
+
+
+def test_rebuild_preserves_approved_hero_and_footer():
+    source = (WEBSITE / 'index.html').read_text()
+    for start, end, expected in (
+        ('<header', '</header>', '949376a2e2ee88ac201b3959454bfa62d88833061b8c91a7051b194cc43a0ce8'),
+        ('<footer', '</footer>', 'aba683588e371d4cc0beaf2af5a9ecb20a6b39e91a07f88026e87f560c52700c'),
+    ):
+        section = source.split(start, 1)[1].split(end, 1)[0]
+        assert hashlib.sha256(section.encode()).hexdigest() == expected
+
+
+def test_research_themes_and_real_method_artwork():
+    html = (WEBSITE / 'index.html').read_text()
+    assert 'data-theme="dark"' in html
+    assert 'id="theme-toggle"' in html
+    assert 'overview-placeholder' not in html
+    assert 'Illustration in preparation' not in html
+    assert html.count('role="tab"') == 4
+    css = (WEBSITE / 'assets/css/research.css').read_text()
+    assert '[data-theme="light"]' in css
+    assert '.hero-scene' not in css and 'footer {' not in css
+    directory = WEBSITE / 'assets/media/research'
+    for row in json.loads((directory / 'manifest.json').read_text()):
+        assert hashlib.sha256((directory / row['file']).read_bytes()).hexdigest() == row['sha256']
+    for name in ('sun', 'moon', 'play', 'pause', 'rotate-ccw', 'arrow-up-right'):
+        assert '<svg' in (WEBSITE / f'assets/icons/lucide/{name}.svg').read_text()
