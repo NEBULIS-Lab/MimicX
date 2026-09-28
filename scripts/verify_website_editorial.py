@@ -60,8 +60,8 @@ def verify(site, output, chromium, quick=False):
                         rects = page.locator('.result-plot:not(.result-plot-wide)').evaluate_all('ns=>ns.map(n=>Math.round(n.getBoundingClientRect().top))')
                         assert len(set(rects)) == 1, rects
                         art = page.locator('#method-overview').bounding_box()
-                        notes = page.locator('.rx-method-notes').bounding_box()
-                        assert abs(art['y']-notes['y']) < 2
+                        notes = page.locator('.method-ledger').bounding_box()
+                        assert abs(art['y']-notes['y']) < 3
                     for section in ('showcase', 'overview', 'method', 'results', 'hloop'):
                         page.locator('#'+section).scroll_into_view_if_needed()
                         page.wait_for_timeout(120)

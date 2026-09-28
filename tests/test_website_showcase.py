@@ -24,13 +24,27 @@ def test_showcase_order_and_media_inventory():
 
 
 def test_showcase_accessibility_and_preserved_dimensions():
-    js = (SITE / 'assets/js/showcase.js').read_text()
+    js = (SITE / 'assets/js/showcase.js').read_text() + (SITE / 'assets/js/media-viewer.js').read_text()
     css = (SITE / 'assets/css/research.css').read_text()
     for behavior in ('prefers-reduced-motion', 'visibilitychange', 'dialog.close()', 'aria-hidden', 'preventScroll', 'IntersectionObserver'):
         assert behavior in js
     assert 'object-fit: contain' in css
     assert 'grid-template-columns: 64fr 36fr' in css
     assert '#method-overview { width: 100%' in css
+
+
+def test_album_zoom_and_author_placement():
+    html = (SITE / 'index.html').read_text()
+    assert 'embla-carousel.umd.js' in html and 'panzoom.min.js' in html
+    assert 'maximum-scale' not in html and 'user-scalable=no' not in html
+    assert 'data-viewer="table"' in html
+    assert 'class="method-ledger"' in html
+    if 'id="authors"' in html:
+        assert html.index('class="hero-bottom"') < html.index('id="authors"') < html.index('</header>')
+    css = (SITE / 'assets/css/experience.css').read_text()
+    assert 'pan-y pinch-zoom' in css
+    for library in ('embla', 'panzoom'):
+        assert 'MIT' in (SITE / f'assets/vendor/{library}-LICENSE.txt').read_text()
 
 
 def test_gallery_sources_remain_uncropped():

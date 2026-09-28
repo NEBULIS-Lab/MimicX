@@ -14,11 +14,15 @@
   <link rel="stylesheet" href="assets/css/mimicx.css">
   <link rel="stylesheet" href="assets/css/brand.css">
   <link rel="stylesheet" href="assets/css/research.css">
+  <link rel="stylesheet" href="assets/css/experience.css">
   <script>
     try { document.documentElement.dataset.theme = localStorage.getItem('mimicx-theme') === 'light' ? 'light' : 'dark'; } catch (_) {}
   </script>
+  <script src="assets/vendor/embla-carousel.umd.js" defer></script>
+  <script src="assets/vendor/panzoom.min.js" defer></script>
   <script src="assets/js/mimicx.js" defer></script>
   <script src="assets/js/showcase.js" defer></script>
+  <script src="assets/js/media-viewer.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#overview">Skip to research overview</a>
@@ -37,7 +41,14 @@
       <h1 class="brand-wordmark"><img class="brand-full-logo" src="assets/branding/mimicx-full-logo.svg" width="4657" height="1696" alt="MimicX"></h1>
       <p class="paper-title"><span>MimicX: Policy-in-the-Loop Supervision Refinement</span><br class="desktop-break"> <span>for Video-Driven Humanoid Motion Tracking</span></p>
     </div>
-    <div class="hero-bottom"><span>Tennis Swing &middot; Recorded policy motion</span><a href="#policies">View policy rollouts</a></div>
+    <div class="hero-bottom">
+        <div class="rx-authors" id="authors">
+          <p>Shuaijun Liu<span>Chenglong Zhang</span><span>Xuhao Liu</span><span>Feiyang You</span><span>Yifan Liao</span><span>Shuyang Hao</span><span>Chaozhe Zhang</span><span>Chengyu Wu</span><span>Zhen Sun</span><span>Ningxin Su<sup>*</sup></span></p>
+          <p class="rx-affiliation">The Hong Kong University of Science and Technology (Guangzhou)</p>
+          <p class="rx-correspondence">* Corresponding author: <a href="mailto:ningxinsu@hkust-gz.edu.cn">Ningxin Su</a></p>
+        </div>
+      <div class="hero-context"><span>Tennis Swing &middot; Recorded policy motion</span><a href="#policies">View policy rollouts</a><a class="hero-expand" href="assets/media/hero-tennis.png" data-viewer="image" title="View full scene" aria-label="View and zoom the full hero scene"><span class="rx-icon icon-maximize" aria-hidden="true"></span></a></div>
+    </div>
   </header>
   <div class="research-nav">
     <div class="research-nav-inner">
@@ -48,15 +59,8 @@
     </div>
   </div>
   <main id="research">
-    <div class="rx-container rx-identity">
-        <div class="rx-authors" id="authors">
-          <p>Shuaijun Liu<span>Chenglong Zhang</span><span>Xuhao Liu</span><span>Feiyang You</span><span>Yifan Liao</span><span>Shuyang Hao</span><span>Chaozhe Zhang</span><span>Chengyu Wu</span><span>Zhen Sun</span><span>Ningxin Su<sup>*</sup></span></p>
-          <p class="rx-affiliation">The Hong Kong University of Science and Technology (Guangzhou)</p>
-          <p class="rx-correspondence">* Corresponding author: <a href="mailto:ningxinsu@hkust-gz.edu.cn">Ningxin Su</a></p>
-        </div>
-    </div>
   <section id="showcase" aria-label="Motions and scenes">
-    <div class="showcase-heading"><h2>Motions &amp; scenes</h2><div class="showcase-controls"><output id="showcase-count">01 / 08</output><button id="showcase-toggle" class="rx-icon-button" type="button" title="Pause showcase" aria-label="Pause showcase" aria-pressed="true"><span class="rx-icon icon-pause" aria-hidden="true"></span></button></div></div>
+    <div class="showcase-heading"><h2>Motions &amp; scenes</h2><div class="showcase-controls"><output id="showcase-count">01 / 08</output><button id="showcase-prev" class="rx-icon-button" type="button" title="Previous image" aria-label="Previous image"><span class="rx-icon icon-chevron-left" aria-hidden="true"></span></button><button id="showcase-toggle" class="rx-icon-button" type="button" title="Pause showcase" aria-label="Pause showcase" aria-pressed="true"><span class="rx-icon icon-pause" aria-hidden="true"></span></button><button id="showcase-next" class="rx-icon-button" type="button" title="Next image" aria-label="Next image"><span class="rx-icon icon-chevron-right" aria-hidden="true"></span></button></div></div>
     <div class="showcase-viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Motion and scene figures">
       <div class="showcase-track" id="showcase-slides">
         <figure style="--ratio:2.75"><a href="assets/media/showcase/parkour-sequence.webp" data-viewer="image"><img src="assets/media/showcase/parkour-sequence.webp" width="3300" height="1200" alt="Human and G1 parkour motion across an outdoor collision scene" loading="lazy"></a><figcaption>Parkour <span>Motion sequence</span></figcaption></figure>
@@ -134,10 +138,14 @@
           <a href="assets/media/research/refinement.webp" data-viewer="image" aria-label="Open the MimicX supervision-refinement diagram"><img src="assets/media/research/refinement.webp" width="2400" loading="lazy" alt="MimicX method: rollout diagnosis conditions training objectives and failure-window practice, followed by verified policy continuation"></a>
           <figcaption>Policy-in-the-loop supervision refinement. Rollout errors localize difficult motion intervals and affected body regions; bounded candidates coordinate tracking objectives and practice.</figcaption>
         </figure>
-        <div class="rx-method-notes">
-          <article><span class="rx-step">01</span><h3>Diagnose execution</h3><p>Find difficult time windows and rank local limb, global body and dynamics error channels.</p></article>
-          <article><span class="rx-step">02</span><h3>Refine supervision</h3><p>Continue the accepted policy with coordinated tracking terms and failure-window replay.</p></article>
-          <article><span class="rx-step">03</span><h3>Verify the update</h3><p>Prioritize completion and execution horizon, then tracking fidelity. Retain the current policy when no candidate passes.</p></article>
+        <div class="method-ledger">
+          <h3>One refinement pass</h3>
+          <ol>
+            <li><span class="ledger-icon"><span class="rx-icon icon-locate-fixed" aria-hidden="true"></span></span><div><h4>Read the rollout</h4><p>Localize where execution departs from the demonstration.</p><dl class="ledger-fields"><dt>When</dt><dd>Failure windows</dd><dt>Where</dt><dd>Root, limbs and contacts</dd><dt>What</dt><dd>Pose and dynamics errors</dd></dl></div></li>
+            <li><span class="ledger-icon"><span class="rx-icon icon-sliders-horizontal" aria-hidden="true"></span></span><div><h4>Change the supervision</h4><p>Coordinate task-aware tracking objectives and targeted practice; continue from the current policy.</p></div></li>
+            <li><span class="ledger-icon"><span class="rx-icon icon-shield-check" aria-hidden="true"></span></span><div><h4>Keep verified progress</h4><p>Repeated execution decides the update. Completion, failure horizon and tracking quality take priority over reward.</p></div></li>
+          </ol>
+          <div class="ledger-return"><span class="rx-icon icon-rotate-ccw" aria-hidden="true"></span><span>The selected policy starts the next pass.</span></div>
         </div>
         </div>
       </div>
@@ -154,7 +162,7 @@
           <figure class="result-plot result-plot-wide"><a href="assets/media/evidence/learning-dark.svg" data-viewer="image"><picture><source media="(max-width: 700px)" data-plot-mobile="learning-mobile" srcset="assets/media/evidence/learning-mobile-dark.svg"><img data-plot="learning" loading="lazy" src="assets/media/evidence/learning-dark.svg" alt="All 3000 unsmoothed body-error measurements across four supervision methods and three seeds"></picture></a><figcaption><strong>How the policy learns</strong><span class="rx-legend"><span class="legend-item"><i class="legend-blue"></i>Fixed Reference</span><span class="legend-item"><i class="legend-purple"></i>Failure Curriculum</span><span class="legend-item"><i class="legend-teal"></i>Task-Aware Refinement</span><span class="legend-item"><i class="legend-coral"></i>MimicX</span></span><span>Tennis continuation, 250 iterations per run. Thin traces show individual seeds, bold traces their means; all 3,000 logged measurements are shown without smoothing. The vertical axis is logarithmic.</span></figcaption></figure>
         </div>
         <p class="rx-source-note">Direct comparison: common reference and evaluation clock, three continuation seeds for trained trackers and three executions of released SONIC. BeyondMimic uses its MjLab implementation with 250 continuation iterations; MimicX uses the frozen verified output. These execution results are separate from equal-budget core ablations.</p>
-        <div class="rx-table-heading"><h3>Four-task comparison</h3><span><span class="rx-dot proposed"></span>MimicX</span></div>
+        <div class="rx-table-heading"><h3>Four-task comparison</h3><div><span><span class="rx-dot proposed"></span>MimicX</span><button id="table-expand" class="rx-icon-button" type="button" data-viewer="table" title="Expand and zoom table" aria-label="Expand and zoom comparison table"><span class="rx-icon icon-maximize" aria-hidden="true"></span></button></div></div>
         <div class="rx-table-scroll" tabindex="0" role="region" aria-label="Four-task continuation results">
           <table class="rx-table"><caption>Means over three continuation seeds. Body error is the temporal mean of aligned worst-body distance; horizon is the worst first-failure step across repeats, with H + 1 for an unfailed rollout.</caption>
             <thead><tr><th scope="col">Task</th><th scope="col">Method</th><th scope="col">Strict success</th><th scope="col">Horizon, steps</th><th scope="col">Body error</th></tr></thead>
@@ -207,7 +215,7 @@
     </section>
   </main>
   <script type="application/json" id="direct-evidence">{"tennis":{"fixed":{"body_mean":0.15144222965677137,"frames":518,"reference_sha256":"4fd30044cd047e7137dda191436a8b18ea73faa3feeb7ab650a8f31ff4d5791a","display_seed":202},"beyond":{"body_mean":0.13654216575036665,"frames":518,"reference_sha256":"4fd30044cd047e7137dda191436a8b18ea73faa3feeb7ab650a8f31ff4d5791a","display_seed":202},"sonic":{"body_mean":0.23601551891783767,"frames":518,"reference_sha256":"4fd30044cd047e7137dda191436a8b18ea73faa3feeb7ab650a8f31ff4d5791a","display_seed":202},"ours":{"body_mean":0.05543216096477766,"frames":518,"reference_sha256":"4fd30044cd047e7137dda191436a8b18ea73faa3feeb7ab650a8f31ff4d5791a","display_seed":202}},"football":{"fixed":{"body_mean":0.18998621092038573,"frames":454,"reference_sha256":"9b58b814cd186b70e7a29d56732a61d79362cf0cb212ef6dd6c27c1eae9faaae","display_seed":202},"beyond":{"body_mean":0.16603144916139445,"frames":454,"reference_sha256":"9b58b814cd186b70e7a29d56732a61d79362cf0cb212ef6dd6c27c1eae9faaae","display_seed":202},"sonic":{"body_mean":0.21552384267180444,"frames":454,"reference_sha256":"9b58b814cd186b70e7a29d56732a61d79362cf0cb212ef6dd6c27c1eae9faaae","display_seed":202},"ours":{"body_mean":0.07035507151047371,"frames":454,"reference_sha256":"9b58b814cd186b70e7a29d56732a61d79362cf0cb212ef6dd6c27c1eae9faaae","display_seed":202}}}</script>
-  <dialog id="media-viewer" aria-label="Research media viewer"><div class="viewer-toolbar"><p id="viewer-caption"></p><button id="viewer-close" class="rx-icon-button" type="button" aria-label="Close media" title="Close media"><span class="rx-icon icon-x" aria-hidden="true"></span></button></div><div id="viewer-content"></div></dialog>
+  <dialog id="media-viewer" aria-label="Research media viewer"><div class="viewer-toolbar"><p id="viewer-caption"></p><div class="viewer-zoom" hidden><button id="viewer-minus" class="rx-icon-button" type="button" title="Zoom out" aria-label="Zoom out"><span class="rx-icon icon-zoom-out" aria-hidden="true"></span></button><output id="viewer-scale">100%</output><button id="viewer-plus" class="rx-icon-button" type="button" title="Zoom in" aria-label="Zoom in"><span class="rx-icon icon-zoom-in" aria-hidden="true"></span></button><button id="viewer-reset" class="rx-icon-button" type="button" title="Fit to view" aria-label="Fit to view"><span class="rx-icon icon-maximize" aria-hidden="true"></span></button></div><button id="viewer-close" class="rx-icon-button" type="button" aria-label="Close media" title="Close media"><span class="rx-icon icon-x" aria-hidden="true"></span></button></div><div id="viewer-content"></div></dialog>
   <footer id="resources">
     <div class="container research-width">
       <div class="footer-primary">

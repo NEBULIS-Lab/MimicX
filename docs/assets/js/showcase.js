@@ -5,7 +5,6 @@
   const track = document.querySelector('.showcase-track');
   const toggle = document.getElementById('showcase-toggle');
   const dialog = document.getElementById('media-viewer');
-  const content = document.getElementById('viewer-content');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const pagination = document.querySelector('.showcase-pagination');
   let enabled = !reduced.matches;
@@ -15,7 +14,6 @@
   let last = 0;
   let elapsed = 0;
   let index = 0;
-  let origin;
   const originals = [...track.children];
   const workflow = {
     tennis: [
@@ -56,21 +54,45 @@
     figure.setAttribute('role', 'group');
     figure.setAttribute('aria-roledescription', 'slide');
     figure.setAttribute('aria-label', `${i + 1} of ${originals.length}: ${button.textContent}`);
+    figure.querySelector('a').addEventListener('click', event => {
+      if (i !== index) {
+        event.preventDefault(); event.stopImmediatePropagation(); select(i);
+      }
+    });
   });
-  function select(next) {
-    index = (next + originals.length) % originals.length;
+  const carousel = EmblaCarousel(rail, {loop:true, align:'center', duration:32});
+  function fitPhotos() {
+    originals.forEach(figure => {
+      const link = figure.querySelector('a'), img = figure.querySelector('img');
+      figure.style.setProperty('--neighbor-shift', `${Math.max(0,(link.clientWidth-img.clientWidth)/2)}px`);
+    });
+  }
+  originals.forEach(figure => figure.querySelector('img').addEventListener('load', fitPhotos));
+  function updateSelection() {
+    index = carousel.selectedScrollSnap();
     elapsed = 0;
     originals.forEach((figure, i) => {
       figure.classList.toggle('is-active', i === index);
+      figure.classList.toggle('is-previous', i === (index + originals.length - 1) % originals.length);
+      figure.classList.toggle('is-next', i === (index + 1) % originals.length);
       figure.setAttribute('aria-hidden', String(i !== index));
-      figure.inert = i !== index;
+      figure.querySelector('a').tabIndex = i === index ? 0 : -1;
       const button = pagination.children[i];
       button.setAttribute('aria-pressed', String(i === index));
       button.style.setProperty('--progress', '0');
     });
     track.dataset.active = String(index);
     document.getElementById('showcase-count').textContent = `${String(index + 1).padStart(2, '0')} / ${String(originals.length).padStart(2, '0')}`;
+    fitPhotos();
   }
+  function select(next) {
+    carousel.scrollTo((next + originals.length) % originals.length, reduced.matches);
+    elapsed = 0;
+  }
+  carousel.on('select', updateSelection).on('reInit', updateSelection);
+  carousel.on('pointerDown', () => { elapsed = 0; });
+  document.getElementById('showcase-prev').addEventListener('click', () => select(index - 1));
+  document.getElementById('showcase-next').addEventListener('click', () => select(index + 1));
   function controls() {
     toggle.setAttribute('aria-pressed', String(enabled));
     toggle.setAttribute('aria-label', enabled ? 'Pause showcase' : 'Play showcase');
@@ -97,49 +119,10 @@
       event.preventDefault(); select(index + (event.key === 'ArrowRight' ? 1 : -1));
     }
   });
-  let touchX;
-  rail.addEventListener('touchstart', event => { touchX = event.changedTouches[0].clientX; }, {passive: true});
-  rail.addEventListener('touchend', event => {
-    const delta = event.changedTouches[0].clientX - touchX;
-    if (Math.abs(delta) > 50) select(index + (delta < 0 ? 1 : -1));
-  }, {passive: true});
   new IntersectionObserver(entries => { visible = entries[0].isIntersecting; }, {threshold: .3}).observe(rail);
   document.addEventListener('visibilitychange', () => { last = 0; });
   reduced.addEventListener('change', () => { if (reduced.matches) { enabled = false; controls(); } });
-  document.querySelectorAll('[data-viewer]').forEach(link => {
-    link.setAttribute('aria-haspopup', 'dialog');
-    link.setAttribute('aria-controls', 'media-viewer');
-    link.addEventListener('click', event => {
-    if (event.ctrlKey || event.metaKey || event.shiftKey) return;
-    event.preventDefault();
-    origin = link;
-    document.dispatchEvent(new Event('mimicx-media-open'));
-    document.querySelectorAll('#research video').forEach(video => video.pause());
-    content.replaceChildren();
-    const media = document.createElement(link.dataset.viewer === 'video' ? 'video' : 'img');
-    media.src = link.href;
-    const caption = link.closest('figure')?.querySelector('figcaption strong')?.textContent || link.closest('figure')?.querySelector('figcaption')?.textContent || link.closest('li')?.querySelector('span')?.textContent || 'MimicX research media';
-    if (media.tagName === 'VIDEO') { media.controls = true; media.playsInline = true; media.muted = true; }
-    else media.alt = link.querySelector('img')?.alt || caption;
-    document.getElementById('viewer-caption').textContent = caption;
-    content.append(media);
-    media.addEventListener('error', () => {
-      const message = document.createElement('p');
-      message.textContent = 'This media could not be loaded. Close the viewer and try again.';
-      content.replaceChildren(message);
-    }, {once:true});
-    dialog.showModal();
-    document.getElementById('viewer-close').focus({preventScroll:true});
-    if (media.tagName === 'VIDEO') media.play().catch(() => {});
-    });
-  });
-  document.getElementById('viewer-close').addEventListener('click', () => dialog.close());
-  dialog.addEventListener('click', event => {
-    const r = dialog.getBoundingClientRect();
-    if (event.target === dialog && (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom)) dialog.close();
-  });
-  dialog.addEventListener('close', () => { content.querySelector('video')?.pause(); content.replaceChildren(); origin?.focus({preventScroll: true}); });
   controls();
-  select(0);
+  updateSelection();
   requestAnimationFrame(frame);
 })();

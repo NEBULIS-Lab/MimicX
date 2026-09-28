@@ -26,13 +26,14 @@ MimicX, blue for Fixed Reference and teal for complementary mechanisms.
 
 ## Research content
 
-- Navigation and public authors sit between the hero and showcase, centered;
-  the anonymous version omits the identity block. The navigation includes
+- Public authors sit inside the hero's lower translucent band, above the
+  section navigation. The anonymous version omits the identity block. Navigation includes
   Motions & scenes as well as direct anchors to the remaining sections.
 - Showcase: eight naturally proportioned images, including the reviewed
   parkour, track, stairs, platform and forest evolution figures. An automatic
-  4.8-second sequence uses a fade/slide transition and per-image progress.
-  Named selectors, keyboard navigation and touch swipes support manual browsing.
+  4.8-second sequence uses a centered looping album with visible previous/next
+  images, gentle depth transitions and per-image progress. Embla handles drag,
+  loop continuity and resize. Named selectors, arrows and touch swipes support browsing.
   Hover, focus, an open dialog or an offscreen stage pauses progression;
   reduced-motion settings default to manual playback.
 - Overview: paper-selected input, human reconstruction, simulated policy and
@@ -43,8 +44,9 @@ MimicX, blue for Fixed Reference and teal for complementary mechanisms.
   of the showcase, followed by exactly four collision-scene recordings:
   Parkour, Stairs, Platform and Forest. Parkour is a diagnostic tracking
   rollout, not a claim of full-horizon completion. Other showcase items are stills.
-- Method: the final hand-drawn supervision diagram and mechanism notes form
-  a top-aligned 64:36 desktop row, stacked at full width on mobile.
+- Method: the final hand-drawn supervision diagram and compact refinement
+  ledger form a top-aligned 64:36 row, stacked on mobile. The ledger connects
+  rollout localization, coordinated updates and repeated verification.
 - Results: four compact charts in one desktop row, plus a full-row dense
   training curve. Tablet uses two columns and mobile one. Compact exports
   preserve label readability; dialogs open the large vector originals.
@@ -59,7 +61,10 @@ native controls remain available. Task tabs support arrow, Home and End keys.
 Paired comparisons never autoplay. No videos play in the image carousel.
 All research figures and scene videos open inside a dismissible page dialog,
 with a fixed close control, Escape/backdrop dismissal and return of keyboard
-focus. Video playback stops when its viewer closes. The paired player pauses
+focus. Images support Panzoom pinch, pan, zoom buttons and fit-to-view. The
+hero scene has an expand button; the numerical table has the same zoomable
+viewer, keeping its original cells and values. Native page pinch zoom is not
+disabled. Video playback stops when its viewer closes. The paired player pauses
 when scrolled out of view, when the document is hidden or a dialog opens.
 
 ## Evidence and assets
@@ -127,6 +132,7 @@ python scripts/build_website_evidence.py --paper /path/to/paper-source
 python scripts/build_website_results.py
 python -m pytest tests/test_website_release.py tests/test_website_showcase.py tests/test_website_evidence.py tests/test_website_cases.py -q
 python scripts/verify_website_editorial.py --chromium /path/to/chromium --output /tmp/website-qa
+python scripts/verify_website_mobile.py --site docs --chromium /path/to/chromium --output /tmp/mobile-qa
 ```
 
 `assets/media/showcase/manifest.json` records the approved source frames,
