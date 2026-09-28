@@ -1,0 +1,167 @@
+[
+  {
+    "file": "forest-stage-input.webp",
+    "source": "INPUT__FOREST__SELECTED.mp4",
+    "source_sha256": "0c69737985d4ff7c6125fbc1c5a9384040d8eba5118c1c8c2951342fbed81d41",
+    "sha256": "29ccc3cdc836730a76bc877974863d41f9d9a6112c2cfd66f04a8c253053b98e",
+    "frame": 122,
+    "crop": null
+  },
+  {
+    "file": "forest-stage-human.webp",
+    "source": "HUMAN__FOREST__1_incam.mp4",
+    "source_sha256": "3135df13f75eb93a326294d3a0b2274f6ac30e4f53ccddd9f855b5d1e5399e02",
+    "sha256": "807831e7400c78a36dc091e01cd58a70db9d3b077abaa7dec23576fd13561299",
+    "frame": 122,
+    "crop": null
+  },
+  {
+    "file": "forest-stage-reference.webp",
+    "source": "REFERENCE__FOREST__G1_SOURCE_CAMERA.mp4",
+    "source_sha256": "8395e4b661ee005505b99c4acae16ef51d4648e309ba9fad0c1b52066f36be97",
+    "sha256": "9abeedd3bac7ef735bee358efbb4106f775b331548adface6b9acb69d277fbb6",
+    "frame": 122,
+    "crop": null
+  },
+  {
+    "file": "forest-stage-policy.webp",
+    "source": "POLICY__FOREST__SELECTED__NO_GHOST.mp4",
+    "source_sha256": "8a8ddafaf571db277db5a71f1880070814685466ec15d0e55230edf83b0871d6",
+    "sha256": "cfb05b1bb34a8784b36fa4041d2782b91a78c978f101bd094e46f75f07a90bb8",
+    "frame": 202,
+    "crop": [
+      530,
+      160,
+      1440,
+      820
+    ]
+  },
+  {
+    "file": "direct-tennis-fixed.mp4",
+    "source": "rollout.mp4",
+    "source_sha256": "2d124e9a3c2767865ef50fe7e3200910f09ed239f15af62628b0ffbdc2152793",
+    "sha256": "e479012db6e1af218cc70b990630fd354d3358f5e909c29a5428b056b52a605a",
+    "frame": null,
+    "crop": null
+  },
+  {
+    "file": "direct-tennis-fixed.webp",
+    "source": "rollout.mp4",
+    "source_sha256": "2d124e9a3c2767865ef50fe7e3200910f09ed239f15af62628b0ffbdc2152793",
+    "sha256": "a2a9e3c20f75ab83513774cc3b0f9a141017dea649408d2e5dcc0062d354070e",
+    "frame": 259,
+    "crop": null
+  },
+  {
+    "file": "direct-tennis-beyond.mp4",
+    "source": "rollout.mp4",
+    "source_sha256": "e37d7770f4a96e773fb1d5b61334df41d1f349f517894355969ca3b899af1a8f",
+    "sha256": "8af422e973137b5c4816f4b97830c792d2c859a98214c2950b157e45b2e1a99e",
+    "frame": null,
+    "crop": null
+  },
+  {
+    "file": "direct-tennis-beyond.webp",
+    "source": "rollout.mp4",
+    "source_sha256": "e37d7770f4a96e773fb1d5b61334df41d1f349f517894355969ca3b899af1a8f",
+    "sha256": "b5ab445233e99d65ac24a5109d2970c792ccb109ed1f01aaac44f43600d99aff",
+    "frame": 259,
+    "crop": null
+  },
+  {
+    "file": "direct-tennis-sonic.mp4",
+    "source": "rollout.mp4",
+    "source_sha256": "d15659bfb88717a0aed2bc744d9e75cc35c1e24b96bbc3c6135c3f73df9a71c7",
+    "sha256": "b1376ea99fe9b1f650bb3f1c6d9b0611ddda06a6572e6f5872dd3163d94744c4",
+    "frame": null,
+    "crop": null
+  },
+  {
+    "file": "direct-tennis-sonic.webp",
+    "source": "rollout.mp4",
+    "source_sha256": "d15659bfb88717a0aed2bc744d9e75cc35c1e24b96bbc3c6135c3f73df9a71c7",
+    "sha256": "828be8291f67b9c42a58e40de351aa57e2dcad65dd94d34fdb59a809ca803151",
+    "frame": 259,
+    "crop": null
+  },
+  {
+    "file": "direct-tennis-ours.mp4",
+    "source": "rollout.mp4",
+    "source_sha256": "6482ddfc79d1706f5c79e11bcb15704e8aef2506f6a8f6bfcc8f1c5c6fd0d709",
+    "sha256": "d866c6621177e211852ad9021da7bdc2a1d2f39e37bd568ec817062c3f60de47",
+    "frame": null,
+    "crop": null
+  },
+  {
+    "file": "direct-tennis-ours.webp",
+    "source": "rollout.mp4",
+    "source_sha256": "6482ddfc79d1706f5c79e11bcb15704e8aef2506f6a8f6bfcc8f1c5c6fd0d709",
+    "sha256": "e9598de9b7ac68852aaf927d7e4322fb07c9e3fe0e7888d7413ea6b4e8b20ef8",
+    "frame": 259,
+    "crop": null
+  },
+  {
+    "file": "direct-football-fixed.mp4",
+    "source": "rollout.mp4",
+    "source_sha256": "b2b3fd4d6c659a3134ccc18cc53f39fc718f6d68fe489e5156eeec252db5976e",
+    "sha256": "905d9dea094c331d22285bffd3705cda6116565cb362ae64522bde0c2bf3127c",
+    "frame": null,
+    "crop": null
+  },
+  {
+    "file": "direct-football-fixed.webp",
+    "source": "rollout.mp4",
+    "source_sha256": "b2b3fd4d6c659a3134ccc18cc53f39fc718f6d68fe489e5156eeec252db5976e",
+    "sha256": "27f636e2d9eb1fd6b9c071f9c0b3cdeaad51e1f395217dc2625ec066c5feeccd",
+    "frame": 227,
+    "crop": null
+  },
+  {
+    "file": "direct-football-beyond.mp4",
+    "source": "rollout.mp4",
+    "source_sha256": "2248cff7b14022afc0077f8c6167826b1894d239cfd4a7ae44186d714b43520f",
+    "sha256": "084fedc8b6e174e568dbcf76973a31c4616e4dd234308fac9bffe5674e016e00",
+    "frame": null,
+    "crop": null
+  },
+  {
+    "file": "direct-football-beyond.webp",
+    "source": "rollout.mp4",
+    "source_sha256": "2248cff7b14022afc0077f8c6167826b1894d239cfd4a7ae44186d714b43520f",
+    "sha256": "cd4d9473a3ce8b8c3413c9a0a406c80aba0e756e63f9cc1860e4b475eec7b977",
+    "frame": 227,
+    "crop": null
+  },
+  {
+    "file": "direct-football-sonic.mp4",
+    "source": "rollout.mp4",
+    "source_sha256": "a260995c58674062c99f224ff384fd2246ca23ce37a1c74ce9421fd11e2fb2ac",
+    "sha256": "08694ce644eca89233d340aab387d24cfdfad2ffb2d1924735b5ba51dadca5c9",
+    "frame": null,
+    "crop": null
+  },
+  {
+    "file": "direct-football-sonic.webp",
+    "source": "rollout.mp4",
+    "source_sha256": "a260995c58674062c99f224ff384fd2246ca23ce37a1c74ce9421fd11e2fb2ac",
+    "sha256": "919f9f9ff93f81a8b170e9ea01dd18949876e6f7474f5354415cc2bcf6a5db88",
+    "frame": 227,
+    "crop": null
+  },
+  {
+    "file": "direct-football-ours.mp4",
+    "source": "rollout.mp4",
+    "source_sha256": "e85dce8da5785b09f7836bfcb1d5f837d1a9ad1e8e0e40045401b55bd5668db1",
+    "sha256": "b21190df5fd4b862f70a2eaf98690c354bba02bd9025f7517d933bcd094cb74f",
+    "frame": null,
+    "crop": null
+  },
+  {
+    "file": "direct-football-ours.webp",
+    "source": "rollout.mp4",
+    "source_sha256": "e85dce8da5785b09f7836bfcb1d5f837d1a9ad1e8e0e40045401b55bd5668db1",
+    "sha256": "d753a57154d0bd33a68c707146159d972135a803ca46be5ec035d9784a5f0957",
+    "frame": 227,
+    "crop": null
+  }
+]

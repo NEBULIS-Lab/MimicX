@@ -72,8 +72,17 @@ def build(directory, output):
             stem = f'{name}-{theme}'
             fig.savefig(output/f'{stem}.svg', metadata={'Date': None, 'Creator': 'MimicX'})
             fig.savefig(output/f'{stem}.png', dpi=180, metadata={'Software': 'MimicX'})
-            plt.close(fig)
             manifest.append(dict(file=stem+'.svg', sha256=hashlib.sha256((output/f'{stem}.svg').read_bytes()).hexdigest(), sources=sources, contract=contract))
+            if not name.startswith('learning'):
+                fig.set_size_inches(5, 5.4)
+                fig.subplots_adjust(left=.38, right=.96, top=.94, bottom=.20)
+                if name == 'execution-horizon':
+                    fig.axes[0].set_xlabel('Failure horizon (steps)')
+                mobile_stem = f'{name}-mobile-{theme}'
+                fig.savefig(output/f'{mobile_stem}.svg', metadata={'Date': None, 'Creator': 'MimicX'})
+                fig.savefig(output/f'{mobile_stem}.png', dpi=180, metadata={'Software': 'MimicX'})
+                manifest.append(dict(file=mobile_stem+'.svg', sha256=hashlib.sha256((output/f'{mobile_stem}.svg').read_bytes()).hexdigest(), sources=sources, contract=contract+'; mobile layout'))
+            plt.close(fig)
 
         fig, ax = canvas()
         order = [('m0_open_loop', 'Fixed\nReference', colors[0]), ('BeyondMimic_MjLab', 'BeyondMimic\n(MjLab)', colors[1]), ('SONIC', 'SONIC', colors[2]), ('m3_full_mimicx', 'MimicX', colors[3])]
@@ -151,6 +160,28 @@ def build(directory, output):
         ax.set_xlabel('Continuation iteration')
         ax.set_ylabel('Body error (m; log scale)')
         save(fig, 'learning', ['tennis_training_dynamics_3000_points.csv'], 'All 3,000 logged values, unsmoothed; thin lines individual seeds, thick lines three-seed means')
+        # A narrow-screen derivative changes layout, never the sampled data.
+        fig, ax = canvas()
+        fig.set_size_inches(5, 5.4)
+        fig.subplots_adjust(left=.23, right=.96, bottom=.17)
+        ax.spines['left'].set_visible(True)
+        ax.grid(axis='y', color=grid, lw=.7)
+        for method, color in zip(METHODS, colors):
+            traces = []
+            for seed in ['101', '202', '303']:
+                trace = sorted([r for r in dynamics if r['method']==method and r['train_seed']==seed], key=lambda r:int(r['relative_iteration']))
+                x = [int(r['relative_iteration']) for r in trace]
+                y = [float(r['error_body_pos']) for r in trace]
+                ax.plot(x, y, lw=.7, alpha=.2, color=color)
+                traces.append(y)
+            ax.plot(x, np.mean(traces,axis=0), color=color, lw=2)
+        ax.set_yscale('log')
+        ax.set_yticks([.1,.2,.5,1], ['0.1','0.2','0.5','1.0'])
+        ax.set_ylim(.07,1.2)
+        ax.set_xlim(0,249)
+        ax.set_xlabel('Continuation iteration')
+        ax.set_ylabel('Body error (m; log scale)')
+        save(fig, 'learning-mobile', ['tennis_training_dynamics_3000_points.csv'], 'Same unsmoothed 3,000 observations; mobile layout')
     (output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 
 

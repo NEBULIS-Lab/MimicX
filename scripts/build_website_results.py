@@ -2,6 +2,7 @@
 """Render website-owned CSV evidence into static HTML; no browser fetch needed."""
 
 import csv
+import json
 from html import escape
 from pathlib import Path
 import re
@@ -33,6 +34,12 @@ def build(page, results):
     html, count = re.subn(r'(<div id="result-downloads">).*?(</div>)',
                          lambda m: m[1] + "\n" + "\n".join(links) + "\n" + m[2], html, flags=re.S)
     assert count == 1, "Expected exactly one downloads block"
+    comparisons = ROOT / 'docs/assets/media/cases/comparison.json'
+    if comparisons.is_file():
+        payload = json.dumps(json.loads(comparisons.read_text()), separators=(',', ':'))
+        html, count = re.subn(r'(<script type="application/json" id="direct-evidence">).*?(</script>)',
+                             lambda m: m[1] + payload + m[2], html, flags=re.S)
+        assert count == 1
     page.write_text(html)
 
 

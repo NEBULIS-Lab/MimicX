@@ -1,16 +1,8 @@
 #!/usr/bin/env python3
-"""Optional CPU-only Playwright audit of local assets, layout and video controls."""
-
+"""Compatibility entry point for the current CPU-only website browser audit."""
 import argparse
-from functools import partial
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-import json
+from http.server import SimpleHTTPRequestHandler
 from pathlib import Path
-import threading
-
-from playwright.sync_api import sync_playwright
-
-ROOT = Path(__file__).resolve().parents[1]
 
 
 class QuietHandler(SimpleHTTPRequestHandler):
@@ -21,103 +13,15 @@ class QuietHandler(SimpleHTTPRequestHandler):
         try:
             super().copyfile(source, outputfile)
         except (BrokenPipeError, ConnectionResetError):
-            pass  # Switching tasks intentionally cancels video downloads.
+            pass
 
 
-def main():
+if __name__ == '__main__':
+    from verify_website_editorial import verify
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--chromium", required=True)
-    parser.add_argument("--output", type=Path, default=ROOT / "runs/website-qa")
+    parser.add_argument('--chromium', required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--site', type=Path, default=Path(__file__).resolve().parents[1]/'docs')
+    parser.add_argument('--quick', action='store_true')
     args = parser.parse_args()
-    args.output.mkdir(parents=True, exist_ok=True)
-    server = ThreadingHTTPServer(("127.0.0.1", 0), partial(QuietHandler, directory=str(ROOT / "docs")))
-    worker = threading.Thread(target=server.serve_forever, daemon=True)
-    worker.start()
-    reports = []
-    try:
-        with sync_playwright() as driver:
-            browser = driver.chromium.launch(executable_path=args.chromium, headless=True,
-                                             args=["--disable-gpu", "--disable-dev-shm-usage",
-                                                   "--disable-accelerated-video-decode", "--disable-accelerated-video-encode"])
-            try:
-                for name, width, height in (("desktop", 1440, 1000), ("tablet", 820, 1180), ("mobile", 390, 844),
-                                            ("wide", 1920, 1080), ("small-mobile", 320, 568), ("landscape", 844, 390)):
-                    page = browser.new_page(viewport={"width": width, "height": height})
-                    errors = []
-                    page.on("pageerror", lambda error: errors.append(str(error)))
-                    page.on("response", lambda response: errors.append(f"HTTP {response.status} {response.url}") if response.status >= 400 else None)
-                    page.goto(f"http://127.0.0.1:{server.server_port}/", wait_until="networkidle")
-                    page.wait_for_function("document.querySelector('#hero-image').complete && document.querySelector('#hero-image').naturalWidth > 0")
-                    assert page.locator('.brand-full-logo').get_attribute('src') == 'assets/branding/mimicx-full-logo.svg'
-                    brand = page.locator('.brand-wordmark').bounding_box()
-                    title = page.locator('.hero-copy .paper-title').bounding_box()
-                    hero_box = page.locator('#top').bounding_box()
-                    assert abs(brand['x'] + brand['width'] / 2 - width / 2) < 2
-                    assert title['y'] >= brand['y'] + brand['height']
-                    assert title['y'] + title['height'] < hero_box['height'] - 35
-                    assert page.locator("#top video").count() == 0
-                    assert page.locator(".result-plot").count() == 4
-                    assert page.locator("#method-overview img").count() == 1
-                    assert page.locator('html').get_attribute('data-theme') == 'dark'
-                    assert page.locator('.rx-table thead th').first.evaluate('(n) => getComputedStyle(n).color') == 'rgb(181, 185, 191)'
-                    assert page.locator('#task-error').evaluate('(n) => getComputedStyle(n).color') == 'rgb(241, 240, 238)'
-                    page.click('#pair-toggle')
-                    page.wait_for_function("document.getElementById('fixed-video').currentTime > 0.1 && !document.getElementById('ours-video').paused")
-                    page.click('#pair-toggle')
-                    boxes = page.locator('.result-plot').evaluate_all('(nodes) => nodes.map(n => { const b=n.getBoundingClientRect(); return {x:b.x,y:b.y,width:b.width}; })')
-                    if width > 1024:
-                        assert max(b['y'] for b in boxes) - min(b['y'] for b in boxes) < 1, 'Plots must share one desktop row'
-                    assert page.locator("#core-results tr").count() == 8
-                    assert page.locator("#result-downloads a").count() == 9
-                    for selector in ("#method", "#policies", "#results", "#resources"):
-                        page.locator(selector).scroll_into_view_if_needed()
-                    page.wait_for_function("Array.from(document.images).every(i => i.complete && i.naturalWidth > 0)")
-                    assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), (name, page.evaluate("Array.from(document.querySelectorAll('body *')).filter(n => n.getBoundingClientRect().right > innerWidth + 1).map(n => ({tag:n.tagName, id:n.id, cls:n.className, right:n.getBoundingClientRect().right})).slice(0,20)"))
-                    for task in ("tennis", "football", "dance", "kungfu"):
-                        page.click(f'[data-task="{task}"]')
-                        page.locator('#fixed-video').evaluate('v => {v.preload="auto";v.load()}')
-                        page.locator('#ours-video').evaluate('v => {v.preload="auto";v.load()}')
-                        page.wait_for_function("['fixed-video','ours-video'].every(id => document.getElementById(id).readyState >= 2)")
-                        page.click("#pair-toggle")
-                        page.wait_for_function("document.getElementById('fixed-video').currentTime > 0.1 && !document.getElementById('ours-video').paused")
-                        page.click("#pair-toggle")
-                        page.locator("#pair-seek").evaluate("input => {input.value='500';input.dispatchEvent(new Event('input'));}")
-                        page.wait_for_function("Math.abs(document.getElementById('fixed-video').currentTime - document.getElementById('ours-video').currentTime) < 0.2")
-                        page.click("#pair-reset")
-                    page.click('[data-task="tennis"]')
-                    page.locator("#top").scroll_into_view_if_needed()
-                    page.wait_for_timeout(500)
-                    page.screenshot(path=str(args.output / f"{name}.png"), full_page=True)
-                    # Hide sticky chrome only for section captures, not the full-page audit.
-                    page.add_style_tag(content='.research-nav{visibility:hidden}')
-                    for section in ("top", "overview", "method", "policies", "results", "hloop", "resources"):
-                        page.locator(f"#{section}").screenshot(path=str(args.output / f"{name}-{section}.png"))
-                    page.add_style_tag(content='.research-nav{visibility:visible}')
-                    page.click('#theme-toggle')
-                    assert page.locator('html').get_attribute('data-theme') == 'light'
-                    page.locator('#top').scroll_into_view_if_needed()
-                    page.screenshot(path=str(args.output / f'{name}-light.png'), full_page=True)
-                    for section in ('overview', 'results'):
-                        page.locator(f'#{section}').screenshot(path=str(args.output / f'{name}-light-{section}.png'))
-                    page.reload(wait_until='networkidle')
-                    assert page.locator('html').get_attribute('data-theme') == 'light'
-                    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
-                    assert not errors, errors
-                    reports.append({"viewport": name, "width": width, "height": height,
-                                    "table_rows": 8, "download_csvs": 9, "playback_pairs": 4,
-                                    "static_hero": True, "result_plots": 4, "centered_author_logo": True,
-                                    "themes": ["dark", "light"], "theme_persists": True,
-                                    "errors": errors, "horizontal_overflow": False})
-                    page.close()
-            finally:
-                browser.close()
-    finally:
-        server.shutdown()
-        server.server_close()
-        worker.join()
-    (args.output / "report.json").write_text(json.dumps(reports, indent=2) + "\n")
-    print(json.dumps(reports, indent=2))
-
-
-if __name__ == "__main__":
-    main()
+    verify(args.site, args.output, args.chromium, args.quick)

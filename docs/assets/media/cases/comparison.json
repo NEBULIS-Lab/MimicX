@@ -1,0 +1,54 @@
+{
+  "tennis": {
+    "fixed": {
+      "body_mean": 0.15144222965677137,
+      "frames": 518,
+      "reference_sha256": "4fd30044cd047e7137dda191436a8b18ea73faa3feeb7ab650a8f31ff4d5791a",
+      "display_seed": 202
+    },
+    "beyond": {
+      "body_mean": 0.13654216575036665,
+      "frames": 518,
+      "reference_sha256": "4fd30044cd047e7137dda191436a8b18ea73faa3feeb7ab650a8f31ff4d5791a",
+      "display_seed": 202
+    },
+    "sonic": {
+      "body_mean": 0.23601551891783767,
+      "frames": 518,
+      "reference_sha256": "4fd30044cd047e7137dda191436a8b18ea73faa3feeb7ab650a8f31ff4d5791a",
+      "display_seed": 202
+    },
+    "ours": {
+      "body_mean": 0.05543216096477766,
+      "frames": 518,
+      "reference_sha256": "4fd30044cd047e7137dda191436a8b18ea73faa3feeb7ab650a8f31ff4d5791a",
+      "display_seed": 202
+    }
+  },
+  "football": {
+    "fixed": {
+      "body_mean": 0.18998621092038573,
+      "frames": 454,
+      "reference_sha256": "9b58b814cd186b70e7a29d56732a61d79362cf0cb212ef6dd6c27c1eae9faaae",
+      "display_seed": 202
+    },
+    "beyond": {
+      "body_mean": 0.16603144916139445,
+      "frames": 454,
+      "reference_sha256": "9b58b814cd186b70e7a29d56732a61d79362cf0cb212ef6dd6c27c1eae9faaae",
+      "display_seed": 202
+    },
+    "sonic": {
+      "body_mean": 0.21552384267180444,
+      "frames": 454,
+      "reference_sha256": "9b58b814cd186b70e7a29d56732a61d79362cf0cb212ef6dd6c27c1eae9faaae",
+      "display_seed": 202
+    },
+    "ours": {
+      "body_mean": 0.07035507151047371,
+      "frames": 454,
+      "reference_sha256": "9b58b814cd186b70e7a29d56732a61d79362cf0cb212ef6dd6c27c1eae9faaae",
+      "display_seed": 202
+    }
+  }
+}

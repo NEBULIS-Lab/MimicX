@@ -1,0 +1,60 @@
+[
+  {
+    "file": "track-evolution.webp",
+    "source": "EVOLUTION__TRACK__CLEAN.png",
+    "source_sha256": "84c1c6e23f02d9e8191872c76184c3ce7ced0c49fe28a1cc77e6ec0aa3669424",
+    "sha256": "3912e5ea0181e254a31e25a705664b75ff31ac69daa9470e80ecdda6d839a529",
+    "stage": "Source, reconstruction and retargeted reference",
+    "width": 3300,
+    "height": 1200,
+    "crop": null
+  },
+  {
+    "file": "stairs-evolution.webp",
+    "source": "EVOLUTION__STAIRS__CLEAN.png",
+    "source_sha256": "23384e2d3ea269f217edadfe757ca47c4a04a739b80f64e5734598f8b7821428",
+    "sha256": "208ae8e58b6c214b789f7c0c6f4dc4949961c29946e1238c922037b36fabe7e9",
+    "stage": "Source, reconstruction and retargeted reference",
+    "width": 3300,
+    "height": 1200,
+    "crop": null
+  },
+  {
+    "file": "bench-evolution.webp",
+    "source": "EVOLUTION__BENCH__CLEAN.png",
+    "source_sha256": "539bd00606518efcb8d815feb19808dfad74d49d224e4a175ab0cb121a401825",
+    "sha256": "6b4572a17db6af1af8bb4ecd52eee388428971dd7de9da1238c2b4086c08d8ea",
+    "stage": "Source, reconstruction and retargeted reference",
+    "width": 3300,
+    "height": 1200,
+    "crop": null
+  },
+  {
+    "file": "forest-evolution.webp",
+    "source": "EVOLUTION__FOREST__CLEAN.png",
+    "source_sha256": "4743ba2142ea0b114064b2fe1404abb86261349c09a1b1271994185efb91e98d",
+    "sha256": "6b88b7a7e0564b4ade8682a435b836d59711d7a2beb48fa9b3f0af76e97e93b1",
+    "stage": "Source, reconstruction and retargeted reference",
+    "width": 3300,
+    "height": 1200,
+    "crop": null
+  },
+  {
+    "file": "parkour-policy.mp4",
+    "source": "PAPER_COLLISION__DIAGNOSTIC__POLICY__PARKOUR__SELECTED__NO_GHOST.mp4",
+    "source_sha256": "a358444ab2d035e137b1bdf8d5ef3a6c18a136a9582bd25f66737f4c82db6e01",
+    "sha256": "60d33404ef2dce7b028f7470269b82b1e4f7925de9d0ed4776000cb84f795efb",
+    "stage": "Recorded diagnostic policy rollout",
+    "full_horizon_success": false,
+    "frame": null
+  },
+  {
+    "file": "parkour-policy.webp",
+    "source": "PAPER_COLLISION__DIAGNOSTIC__POLICY__PARKOUR__SELECTED__NO_GHOST.mp4",
+    "source_sha256": "a358444ab2d035e137b1bdf8d5ef3a6c18a136a9582bd25f66737f4c82db6e01",
+    "sha256": "c6b4573d36d00b429eb3ee3fc5339435f7d92a7e44864f53889d72fe1750b944",
+    "stage": "Recorded diagnostic policy rollout",
+    "full_horizon_success": false,
+    "frame": 80
+  }
+]

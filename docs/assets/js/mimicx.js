@@ -16,6 +16,9 @@
       img.src = url;
       img.closest('a').href = url;
     });
+    document.querySelectorAll('[data-plot-mobile]').forEach(source => {
+      source.srcset = `assets/media/evidence/${source.dataset.plotMobile}-${theme}.svg`;
+    });
   }
   setTheme(root.dataset.theme === 'light' ? 'light' : 'dark');
   themeButton.addEventListener('click', () => {
@@ -40,6 +43,9 @@
   const status = document.getElementById('playback-status');
   const output = document.getElementById('pair-time');
   const tabs = Array.from(document.querySelectorAll('[data-task]'));
+  const baselineSelector = document.getElementById('baseline-select');
+  const direct = JSON.parse(document.getElementById('direct-evidence').textContent);
+  let selectedTask = 'tennis';
   let generation = 0;
   let playingTogether = false;
   let starting = false;
@@ -61,6 +67,14 @@
     updatePlayButton(false);
   }
   function selectTask(task, focus = false) {
+    selectedTask = task;
+    baselineSelector.querySelectorAll('option[value^="direct-"]').forEach(option => { option.disabled = !direct[task]; });
+    if (!direct[task]) baselineSelector.value = 'core';
+    const comparison = baselineSelector.value !== 'core';
+    const baseline = comparison ? baselineSelector.value.replace('direct-', '') : 'fixed';
+    const baselineName = {fixed:'Fixed Reference', beyond:'BeyondMimic (MjLab)', sonic:'SONIC (released)'}[baseline];
+    document.getElementById('fixed-method-name').textContent = baselineName;
+    document.getElementById('comparison-cohort').textContent = comparison ? 'Common reference' : 'Fixed supervision';
     generation += 1;
     stopPair();
     starting = false;
@@ -74,15 +88,26 @@
     });
     document.getElementById('policy-panel').setAttribute('aria-labelledby', `task-${task}`);
     videos.forEach((video, index) => {
-      const method = index === 0 ? 'fixed' : 'ours';
-      video.poster = `assets/media/research/${task}-${method}.jpg`;
-      video.src = `assets/media/${task}-${method}.mp4`;
-      video.setAttribute('aria-label', `${index === 0 ? 'Fixed Reference' : 'MimicX'} ${taskNames[task]} rollout`);
+      const method = index === 0 ? baseline : 'ours';
+      video.poster = comparison ? `assets/media/cases/direct-${task}-${method}.webp` : `assets/media/research/${task}-${method}.jpg`;
+      video.src = comparison ? `assets/media/cases/direct-${task}-${method}.mp4` : `assets/media/${task}-${method}.mp4`;
+      video.setAttribute('aria-label', `${index === 0 ? baselineName : 'MimicX'} ${taskNames[task]} rollout`);
       video.load();
     });
     seek.value = '0';
     output.value = '0.0 s';
     document.getElementById('task-note').textContent = notes[task];
+    document.getElementById('error-label').textContent = comparison ? 'Root-local body error' : 'Body error';
+    document.getElementById('horizon-label').textContent = comparison ? 'Reference length' : 'Execution horizon';
+    if (comparison) {
+      const pair = [direct[task][baseline], direct[task].ours];
+      document.getElementById('task-error').textContent = pair.map(row => row.body_mean.toFixed(3)).join(' / ') + ' m';
+      document.getElementById('task-horizon').textContent = `${pair[0].frames} frames`;
+      document.getElementById('task-note').textContent = 'Common-reference execution at 50 Hz. Each video uses the paper-selected seed 202; readouts summarize the three recorded runs.';
+      document.getElementById('policy-protocol').textContent = `${baselineName} / MimicX, same registered motion and evaluation clock. Root-local FK error uses 14 common bodies. Released SONIC and BeyondMimic (MjLab) follow their documented evaluation protocols; this is separate from the controlled continuation cohort.`;
+      return;
+    }
+    document.getElementById('policy-protocol').textContent = 'Readouts show Fixed Reference / MimicX averages over three seeds. Videos show a selected recorded trial. Solid robots are policy execution; translucent robots are motion references.';
     const rows = Array.from(document.querySelectorAll('#core-results tr')).filter(row => row.cells[0].textContent === taskRows[task]);
     if (rows.length === 2) {
       document.getElementById('task-error').textContent = rows.map(row => row.cells[4].textContent.replace(' m', '')).join(' / ') + ' m';
@@ -100,6 +125,7 @@
       if (target !== undefined) { event.preventDefault(); selectTask(tabs[target].dataset.task, true); }
     });
   });
+  baselineSelector.addEventListener('change', () => selectTask(selectedTask));
   function ready(video) {
     if (video.readyState >= 1) return Promise.resolve();
     return new Promise((resolve, reject) => {
@@ -175,6 +201,19 @@
       status.textContent = 'This recording could not be loaded. Please retry.';
     });
   });
+  function suspendPair() {
+    if (!starting && !playingTogether && videos.every(video => video.paused)) return;
+    generation += 1;
+    starting = false;
+    playButton.disabled = false;
+    status.textContent = '';
+    stopPair();
+  }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) suspendPair(); });
+  document.addEventListener('mimicx-media-open', suspendPair);
+  new IntersectionObserver(entries => {
+    if (!entries[0].isIntersecting) suspendPair();
+  }).observe(document.getElementById('policy-panel'));
   const links = Array.from(document.querySelectorAll('.research-nav nav a'));
   const observer = new IntersectionObserver(entries => {
     const current = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];

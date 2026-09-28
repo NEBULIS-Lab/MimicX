@@ -10,7 +10,7 @@ SITE = Path(__file__).resolve().parents[1] / 'docs'
 def test_themed_figures_and_sources():
     folder = SITE / 'assets/media/evidence'
     records = json.loads((folder/'manifest.json').read_text())
-    assert len(records) == 10
+    assert len(records) == 20
     for row in records:
         path = folder / row['file']
         assert hashlib.sha256(path.read_bytes()).hexdigest() == row['sha256']

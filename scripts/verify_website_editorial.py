@@ -28,23 +28,46 @@ def verify(site, output, chromium, quick=False):
                 page.evaluate('document.querySelectorAll("img").forEach(i => i.loading="eager")')
                 page.wait_for_function('Array.from(document.images).every(i => i.complete && i.naturalWidth > 0)')
                 assert page.locator('#showcase-toggle').get_attribute('aria-pressed') == 'false'
-                assert page.locator('[data-clone]').count() == 8
-                assert page.locator('[data-clone] a[tabindex="-1"]').count() == 8
+                assert page.locator('.showcase-track figure').count() == 8
+                assert page.locator('.showcase-track figure[aria-hidden="false"]').count() == 1
+                assert page.locator('.showcase-track video').count() == 0
+                assert page.locator('#showcase #policies').count() == 1
+                assert page.locator('.rx-scene-grid [data-viewer="video"]').count() == 4
+                if width >= 1440 and page.locator('#authors').count():
+                    assert page.locator('#authors > p:first-child span').evaluate_all('ns=>new Set(ns.map(n=>Math.round(n.getBoundingClientRect().top))).size') <= 2
                 page.locator('#overview [data-viewer]').first.click()
                 assert page.locator('#media-viewer').evaluate('n=>n.open')
                 page.keyboard.press('Escape')
                 assert not page.locator('#media-viewer').evaluate('n=>n.open')
+                page.click('[data-workflow="forest"]')
+                page.wait_for_function('Array.from(document.querySelectorAll("#workflow-stages img")).every(i=>i.complete && i.naturalWidth>0)')
+                page.locator('#overview').screenshot(path=str(output/f'{width}-dark-forest-stages.png'))
+                page.click('[data-workflow="tennis"]')
                 for theme in ('dark', 'light'):
                     if theme == 'light': page.locator('#theme-toggle').click()
                     assert page.locator('html').get_attribute('data-theme') == theme
+                    page.wait_for_function('(theme)=>Array.from(document.querySelectorAll("[data-plot]")).every(n=>n.complete && n.naturalWidth>0 && n.currentSrc.endsWith(`-${theme}.svg`))', arg=theme)
                     assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), (width, theme, 'overflow')
-                    if width >= 1024:
+                    plots = page.locator('[data-plot]').evaluate_all('(ns)=>ns.map(n=>({src:n.currentSrc, width:n.getBoundingClientRect().width}))')
+                    assert len(plots)==5
+                    for plot in plots:
+                        assert f'-{theme}.svg' in plot['src']
+                        if width <= 700:
+                            assert '-mobile-' in plot['src']
+                    if width >= 1100:
                         fraction = page.locator('#method-overview').bounding_box()['width'] / page.locator('#method .rx-container').evaluate('n=>n.clientWidth-56')
-                        assert .64 < fraction < .66, fraction
+                        assert .60 < fraction < .65, fraction
+                        rects = page.locator('.result-plot:not(.result-plot-wide)').evaluate_all('ns=>ns.map(n=>Math.round(n.getBoundingClientRect().top))')
+                        assert len(set(rects)) == 1, rects
+                        art = page.locator('#method-overview').bounding_box()
+                        notes = page.locator('.rx-method-notes').bounding_box()
+                        assert abs(art['y']-notes['y']) < 2
                     for section in ('showcase', 'overview', 'method', 'results', 'hloop'):
                         page.locator('#'+section).scroll_into_view_if_needed()
                         page.wait_for_timeout(120)
+                        page.locator('.research-nav').evaluate('n=>n.style.visibility="hidden"')
                         page.locator('#'+section).screenshot(path=str(output / f'{width}-{theme}-{section}.png'))
+                        page.locator('.research-nav').evaluate('n=>n.style.visibility=""')
                     page.locator('#top').scroll_into_view_if_needed()
                     page.screenshot(path=str(output / f'{width}-{theme}-full.png'), full_page=True)
                 page.reload(wait_until='networkidle')
@@ -55,23 +78,48 @@ def verify(site, output, chromium, quick=False):
                     page.wait_for_function('document.getElementById("ours-video").currentTime > .1')
                     page.click('#pair-toggle')
                     page.click('#pair-reset')
+                page.click('[data-task="tennis"]')
+                for baseline in ['direct-fixed', 'direct-beyond', 'direct-sonic']:
+                    page.select_option('#baseline-select', baseline)
+                    page.click('#pair-toggle')
+                    page.wait_for_function('document.getElementById("ours-video").currentTime > .1')
+                    assert 'Root-local' in page.locator('#error-label').inner_text()
+                    page.click('#pair-toggle')
+                    page.click('#pair-reset')
+                page.select_option('#baseline-select','core')
+                for link in page.locator('.rx-scene-grid [data-viewer]').all():
+                    link.click()
+                    page.wait_for_function('document.querySelector("#viewer-content video")?.currentTime > .1')
+                    page.click('#viewer-close')
+                for selector in ('#method-overview a', '#hloop figure a', '.result-plot a'):
+                    page.locator(selector).first.click()
+                    assert page.locator('#media-viewer').evaluate('n=>n.open')
+                    page.wait_for_function('document.querySelector("#viewer-content img")?.naturalWidth > 0')
+                    page.keyboard.press('Escape')
                 assert not errors, errors
-                reports.append(dict(width=width, themes=['dark', 'light'], playback_pairs=4, overflow=False, errors=errors))
+                reports.append(dict(width=width, themes=['dark', 'light'], playback_pairs=7, scene_videos=4, overflow=False, errors=errors))
                 page.close()
-            # Motion is enabled only on desktop without the accessibility preference.
+            # Autoplay advances one image at a time and respects a manual pause.
             page = browser.new_page(viewport={'width': 1440, 'height': 960})
             page.goto(f'http://127.0.0.1:{server.server_port}/', wait_until='networkidle')
-            page.locator('#showcase').scroll_into_view_if_needed()
+            page.locator('.showcase-viewport').scroll_into_view_if_needed()
             page.mouse.move(0, 0)
-            left = page.locator('.showcase-viewport').evaluate('n=>n.scrollLeft')
-            page.wait_for_timeout(1500)
-            assert page.locator('.showcase-viewport').evaluate('n=>n.scrollLeft') > left
-            assert page.locator('.showcase-track video').evaluate_all('vs=>vs.filter(v=>!v.paused).length') <= 1
+            active = page.locator('.showcase-track').get_attribute('data-active')
+            page.wait_for_timeout(5200)
+            assert page.locator('.showcase-track').get_attribute('data-active') != active
             page.click('#showcase-toggle')
-            left = page.locator('.showcase-viewport').evaluate('n=>n.scrollLeft')
+            active = page.locator('.showcase-track').get_attribute('data-active')
             page.mouse.move(0, 0)
             page.wait_for_timeout(600)
-            assert page.locator('.showcase-viewport').evaluate('n=>n.scrollLeft') == left
+            assert page.locator('.showcase-track').get_attribute('data-active') == active
+            page.locator('.showcase-pagination button').nth(3).click()
+            assert page.locator('.showcase-track').get_attribute('data-active') == '3'
+            page.close()
+            page = browser.new_page(viewport={'width': 844, 'height': 390}, reduced_motion='reduce')
+            page.goto(f'http://127.0.0.1:{server.server_port}/', wait_until='networkidle')
+            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+            page.locator('#showcase').scroll_into_view_if_needed()
+            page.screenshot(path=str(output/'landscape-showcase.png'))
             page.close()
             browser.close()
     finally:

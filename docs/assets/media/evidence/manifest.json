@@ -8,12 +8,28 @@
     "contract": "Three recorded runs per method; mean and sample SD; common reference; lower is better"
   },
   {
+    "file": "direct-tennis-mobile-light.svg",
+    "sha256": "4226dcafbd47e766a4c33ea9836d22dff379cb94402d2bab078a4e191c28fc1c",
+    "sources": [
+      "direct_policy_comparison.csv"
+    ],
+    "contract": "Three recorded runs per method; mean and sample SD; common reference; lower is better; mobile layout"
+  },
+  {
     "file": "scene-gains-light.svg",
     "sha256": "90a2f68ec346ea5d212204145e67aa571e53789491d3eb22b5741749c8d05a11",
     "sources": [
       "collision_scene_results.csv"
     ],
     "contract": "Body circle / root square; paired pre-failure prefixes; one training seed and three evaluation seeds"
+  },
+  {
+    "file": "scene-gains-mobile-light.svg",
+    "sha256": "7bb79933f3c613c12693db0697ec1b507d9e3c7ab279fb42fa92a5cc617b6d20",
+    "sources": [
+      "collision_scene_results.csv"
+    ],
+    "contract": "Body circle / root square; paired pre-failure prefixes; one training seed and three evaluation seeds; mobile layout"
   },
   {
     "file": "execution-horizon-light.svg",
@@ -24,12 +40,28 @@
     "contract": "All twelve paired task-seed results, worst repeat per trial; H+1 encodes no failure"
   },
   {
+    "file": "execution-horizon-mobile-light.svg",
+    "sha256": "253138d155a95f4534c7ef54c8bd8c649988140d50904000c36c5e40b95d2380",
+    "sources": [
+      "core_trial_results.csv"
+    ],
+    "contract": "All twelve paired task-seed results, worst repeat per trial; H+1 encodes no failure; mobile layout"
+  },
+  {
     "file": "feedback-time-light.svg",
     "sha256": "1774db6505873816728c561006f918b0a3655f20639157a20a5e38c032de18d5",
     "sources": [
       "hloop_timings.csv"
     ],
     "contract": "Five measured workloads per executor; vertical tick is median; no PPO updates"
+  },
+  {
+    "file": "feedback-time-mobile-light.svg",
+    "sha256": "0eeaed96e71b9518faac42bf88a0a66e623b1c87f0629b0fac08d8ea75ff96b9",
+    "sources": [
+      "hloop_timings.csv"
+    ],
+    "contract": "Five measured workloads per executor; vertical tick is median; no PPO updates; mobile layout"
   },
   {
     "file": "learning-light.svg",
@@ -40,12 +72,28 @@
     "contract": "All 3,000 logged values, unsmoothed; thin lines individual seeds, thick lines three-seed means"
   },
   {
+    "file": "learning-mobile-light.svg",
+    "sha256": "3e661bcb881fda180e8fa895a15e5031ae993e3a50211fdc8ad291bbf64b2cd7",
+    "sources": [
+      "tennis_training_dynamics_3000_points.csv"
+    ],
+    "contract": "Same unsmoothed 3,000 observations; mobile layout"
+  },
+  {
     "file": "direct-tennis-dark.svg",
     "sha256": "3a3d6775928b026a1eba9010338a82e4851f9177265a3773fe1dea75582fffb9",
     "sources": [
       "direct_policy_comparison.csv"
     ],
     "contract": "Three recorded runs per method; mean and sample SD; common reference; lower is better"
+  },
+  {
+    "file": "direct-tennis-mobile-dark.svg",
+    "sha256": "d1b622795740c5c0bff696a49428ac147d444d6164e3b488659874a661f6cce3",
+    "sources": [
+      "direct_policy_comparison.csv"
+    ],
+    "contract": "Three recorded runs per method; mean and sample SD; common reference; lower is better; mobile layout"
   },
   {
     "file": "scene-gains-dark.svg",
@@ -56,12 +104,28 @@
     "contract": "Body circle / root square; paired pre-failure prefixes; one training seed and three evaluation seeds"
   },
   {
+    "file": "scene-gains-mobile-dark.svg",
+    "sha256": "da13c993fd3e0579d9343ad72de04dd43311ee864125e2af6f58d07969fd2623",
+    "sources": [
+      "collision_scene_results.csv"
+    ],
+    "contract": "Body circle / root square; paired pre-failure prefixes; one training seed and three evaluation seeds; mobile layout"
+  },
+  {
     "file": "execution-horizon-dark.svg",
     "sha256": "4af9f22b14a028e2daa7a10d324b8117039f7fb765443de4e1742af519da8407",
     "sources": [
       "core_trial_results.csv"
     ],
     "contract": "All twelve paired task-seed results, worst repeat per trial; H+1 encodes no failure"
+  },
+  {
+    "file": "execution-horizon-mobile-dark.svg",
+    "sha256": "2e38503fd141e4e3c7e210461e1cffe4836b7ec42fe5a19aaf3c2c4dc647f7de",
+    "sources": [
+      "core_trial_results.csv"
+    ],
+    "contract": "All twelve paired task-seed results, worst repeat per trial; H+1 encodes no failure; mobile layout"
   },
   {
     "file": "feedback-time-dark.svg",
@@ -72,11 +136,27 @@
     "contract": "Five measured workloads per executor; vertical tick is median; no PPO updates"
   },
   {
+    "file": "feedback-time-mobile-dark.svg",
+    "sha256": "cf014785585dfc173cc0bbea56ec39795402790b15c58666d67c7704d6812bd9",
+    "sources": [
+      "hloop_timings.csv"
+    ],
+    "contract": "Five measured workloads per executor; vertical tick is median; no PPO updates; mobile layout"
+  },
+  {
     "file": "learning-dark.svg",
     "sha256": "fd23ed688b6c2a2f3d84ed38560bacad0ca983b2a994ce901dc3da04b4947de3",
     "sources": [
       "tennis_training_dynamics_3000_points.csv"
     ],
     "contract": "All 3,000 logged values, unsmoothed; thin lines individual seeds, thick lines three-seed means"
+  },
+  {
+    "file": "learning-mobile-dark.svg",
+    "sha256": "c72c21ac530edbdb66acafbe3d42e595dd3871d597b4301f429b90b162c1068e",
+    "sources": [
+      "tennis_training_dynamics_3000_points.csv"
+    ],
+    "contract": "Same unsmoothed 3,000 observations; mobile layout"
   }
 ]
