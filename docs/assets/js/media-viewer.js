@@ -11,6 +11,35 @@
   let origin;
   let fitScale = 1;
   let request = 0;
+  let mediaSize;
+
+  function sizeViewer() {
+    if (!mediaSize || !dialog.open) return;
+    const padding = getComputedStyle(content);
+    const gutterX = parseFloat(padding.paddingLeft) + parseFloat(padding.paddingRight);
+    const gutterY = parseFloat(padding.paddingTop) + parseFloat(padding.paddingBottom);
+    const maxWidth = Math.min(innerWidth <= 700 ? innerWidth - 12 : innerWidth * .94, 1280);
+    const maxHeight = Math.min(innerHeight - 12, innerHeight * .94);
+    let width = maxWidth;
+    let mediaWidth;
+    let mediaHeight;
+    // The toolbar can wrap on a narrow portrait image, so include its measured height.
+    for (let pass = 0; pass < 4; pass += 1) {
+      dialog.style.setProperty('--viewer-width', `${width}px`);
+      dialog.classList.toggle('viewer-compact', width < 620 || innerWidth <= 700);
+      const toolbarHeight = dialog.querySelector('.viewer-toolbar').offsetHeight;
+      const scale = Math.min((maxWidth - gutterX - 2) / mediaSize.width,
+        Math.max(80, maxHeight - toolbarHeight - gutterY - 2) / mediaSize.height);
+      mediaWidth = mediaSize.width * scale;
+      mediaHeight = mediaSize.height * scale;
+      width = Math.min(maxWidth, Math.max(280, mediaWidth + gutterX + 2));
+    }
+    dialog.style.setProperty('--viewer-width', `${width}px`);
+    dialog.style.setProperty('--viewer-height', `${mediaHeight}px`);
+    const stage = content.querySelector('.viewer-stage') || content.querySelector('video');
+    stage.style.width = `${mediaWidth}px`;
+    stage.style.marginInline = 'auto';
+  }
 
   function fit() {
     if (!panzoom || !surface) return;
@@ -23,6 +52,10 @@
   }
   function enableZoom(target) {
     surface = target;
+    const img = target.querySelector('img');
+    mediaSize = img ? {width:img.naturalWidth, height:img.naturalHeight}
+      : {width:target.offsetWidth, height:target.offsetHeight};
+    sizeViewer();
     panzoom = Panzoom(surface, {maxScale:5, minScale:.1, cursor:'grab', step:.3});
     surface.addEventListener('panzoomchange', event => {
       scaleLabel.textContent = `${Math.round(event.detail.scale / fitScale * 100)}%`;
@@ -47,7 +80,10 @@
   }
   function clear() {
     request += 1;
-    panzoom?.destroy(); panzoom = null; surface = null;
+    panzoom?.destroy(); panzoom = null; surface = null; mediaSize = null;
+    dialog.style.removeProperty('--viewer-width');
+    dialog.style.removeProperty('--viewer-height');
+    dialog.classList.remove('viewer-compact');
     content.querySelector('video')?.pause();
     content.replaceChildren();
     delete content.dataset.scale;
@@ -66,15 +102,20 @@
       const type = link.dataset.viewer;
       document.dispatchEvent(new Event('mimicx-media-open'));
       document.querySelectorAll('#research video').forEach(video => video.pause());
-      const caption = type === 'table' ? 'Four-task comparison'
+      const caption = link.dataset.caption || (type === 'table' ? 'Four-task comparison'
         : link.closest('figure')?.querySelector('figcaption strong')?.textContent
           || link.closest('figure')?.querySelector('figcaption')?.textContent
           || link.closest('li')?.querySelector('span')?.textContent
-          || link.getAttribute('title') || 'MimicX research media';
+          || link.getAttribute('title') || 'MimicX research media');
       document.getElementById('viewer-caption').textContent = caption;
       zoomTools.hidden = type === 'video';
       if (type === 'video') {
         const video = document.createElement('video');
+        video.addEventListener('loadedmetadata', () => {
+          if (current !== request || !dialog.open) return;
+          mediaSize = {width:video.videoWidth, height:video.videoHeight};
+          sizeViewer();
+        }, {once:true});
         video.src = link.href; video.controls = true; video.playsInline = true; video.muted = true;
         content.append(video);
         dialog.showModal();
@@ -113,5 +154,7 @@
     if (event.target === dialog && (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom)) dialog.close();
   });
   dialog.addEventListener('close', () => { clear(); origin?.focus({preventScroll:true}); });
-  window.addEventListener('resize', () => { if (dialog.open) requestAnimationFrame(fit); });
+  window.addEventListener('resize', () => {
+    if (dialog.open) requestAnimationFrame(() => { sizeViewer(); fit(); });
+  });
 })();

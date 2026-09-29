@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 from pathlib import Path
 
 SITE = Path(__file__).resolve().parents[1] / 'docs'
@@ -54,3 +55,16 @@ def test_gallery_sources_remain_uncropped():
         path = SITE / 'assets/media/gallery' / row['file']
         assert hashlib.sha256(path.read_bytes()).hexdigest() == row['sha256']
         assert row.get('crop') is None
+
+
+def test_author_line_and_inline_policy_summary():
+    html = (SITE / 'index.html').read_text()
+    authors = re.search(r'<div class="rx-authors"[^>]*>\s*<p>(.*?)</p>', html, re.S)
+    if authors:
+        assert authors[1].startswith('<span>')
+        assert authors[1].count('<span>') == 10
+    summary = re.search(r'<p class="rx-policy-summary">(.*?)</p>', html, re.S)
+    assert summary
+    for field in ('task-error', 'task-horizon', 'task-note', 'policy-protocol'):
+        assert f'id="{field}"' in summary[1]
+    assert 'class="rx-task-results"' not in html

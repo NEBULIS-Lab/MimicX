@@ -98,16 +98,16 @@
     output.value = '0.0 s';
     document.getElementById('task-note').textContent = notes[task];
     document.getElementById('error-label').textContent = comparison ? 'Root-local body error' : 'Body error';
-    document.getElementById('horizon-label').textContent = comparison ? 'Reference length' : 'Execution horizon';
+    document.getElementById('horizon-label').textContent = comparison ? 'reference length' : 'execution horizon';
     if (comparison) {
       const pair = [direct[task][baseline], direct[task].ours];
       document.getElementById('task-error').textContent = pair.map(row => row.body_mean.toFixed(3)).join(' / ') + ' m';
       document.getElementById('task-horizon').textContent = `${pair[0].frames} frames`;
-      document.getElementById('task-note').textContent = 'Common-reference execution at 50 Hz. Each video uses the paper-selected seed 202; readouts summarize the three recorded runs.';
+      document.getElementById('task-note').textContent = 'Common-reference execution at 50 Hz. Each video uses the paper-selected seed 202; values summarize the three recorded runs.';
       document.getElementById('policy-protocol').textContent = `${baselineName} / MimicX, same registered motion and evaluation clock. Root-local FK error uses 14 common bodies. Released SONIC and BeyondMimic (MjLab) follow their documented evaluation protocols; this is separate from the controlled continuation cohort.`;
       return;
     }
-    document.getElementById('policy-protocol').textContent = 'Readouts show Fixed Reference / MimicX averages over three seeds. Videos show a selected recorded trial. Solid robots are policy execution; translucent robots are motion references.';
+    document.getElementById('policy-protocol').textContent = 'Values show Fixed Reference / MimicX averages over three seeds. Videos show a selected recorded trial. Solid robots are policy execution; translucent robots are motion references.';
     const rows = Array.from(document.querySelectorAll('#core-results tr')).filter(row => row.cells[0].textContent === taskRows[task]);
     if (rows.length === 2) {
       document.getElementById('task-error').textContent = rows.map(row => row.cells[4].textContent.replace(' m', '')).join(' / ') + ' m';

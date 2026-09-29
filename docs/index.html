@@ -43,7 +43,7 @@
     </div>
     <div class="hero-bottom">
         <div class="rx-authors" id="authors">
-          <p>Shuaijun Liu<span>Chenglong Zhang</span><span>Xuhao Liu</span><span>Feiyang You</span><span>Yifan Liao</span><span>Shuyang Hao</span><span>Chaozhe Zhang</span><span>Chengyu Wu</span><span>Zhen Sun</span><span>Ningxin Su<sup>*</sup></span></p>
+          <p><span>Shuaijun Liu</span><span>Chenglong Zhang</span><span>Xuhao Liu</span><span>Feiyang You</span><span>Yifan Liao</span><span>Shuyang Hao</span><span>Chaozhe Zhang</span><span>Chengyu Wu</span><span>Zhen Sun</span><span>Ningxin Su<sup>*</sup></span></p>
           <p class="rx-affiliation">The Hong Kong University of Science and Technology (Guangzhou)</p>
           <p class="rx-correspondence">* Corresponding author: <a href="mailto:ningxinsu@hkust-gz.edu.cn">Ningxin Su</a></p>
         </div>
@@ -76,7 +76,7 @@
     <div class="showcase-pagination" role="group" aria-label="Select a motion figure"></div>
     <section id="policies" class="rx-section rx-band">
       <div class="rx-container">
-        <div class="rx-heading"><h2>Recorded execution</h2><p>The same motion reference, with fixed or execution-guided supervision.</p></div>
+        <div class="rx-heading"><h2>Recorded execution</h2><p class="rx-policy-summary">The same motion reference, with fixed or execution-guided supervision. <span id="policy-readout" aria-live="polite"><span id="error-label">Body error</span> is <span id="task-error">0.241 / 0.157 m</span>, and <span id="horizon-label">execution horizon</span> is <span id="task-horizon">322.0 / 801.0 steps</span>. <span id="task-note">Tennis reaches strict success in all nine MimicX evaluation rollouts, compared with one of nine for Fixed Reference.</span> <span id="policy-protocol">Values show Fixed Reference / MimicX averages over three seeds. Videos show a selected recorded trial. Solid robots are policy execution; translucent robots are motion references.</span></span></p></div>
         <div class="rx-task-tabs" role="tablist" aria-label="Motion task">
           <button id="task-tennis" role="tab" aria-selected="true" aria-controls="policy-panel" tabindex="0" data-task="tennis">Tennis Swing</button>
           <button id="task-football" role="tab" aria-selected="false" aria-controls="policy-panel" tabindex="-1" data-task="football">Football Juggling</button>
@@ -96,12 +96,6 @@
             <output id="pair-time">0.0 s</output>
           </div>
           <p id="playback-status" class="rx-source-note" role="status"></p>
-          <div class="rx-task-results" aria-live="polite">
-            <div><span id="error-label">Body error</span><strong id="task-error">0.241 / 0.157 m</strong></div>
-            <div><span id="horizon-label">Execution horizon</span><strong id="task-horizon">322.0 / 801.0 steps</strong></div>
-            <p id="task-note">Tennis reaches strict success in all nine MimicX evaluation rollouts, compared with one of nine for Fixed Reference.</p>
-          </div>
-          <p class="rx-source-note" id="policy-protocol">Readouts show Fixed Reference / MimicX averages over three seeds. Videos show a selected recorded trial. Solid robots are policy execution; translucent robots are motion references.</p>
         </div>
         <div class="rx-scene-recordings">
           <h3>Execution in collision scenes</h3>
@@ -135,7 +129,7 @@
         <div class="rx-heading"><h2>Execution becomes supervision</h2><p>A registered motion reference establishes the task. Policy feedback determines how that task is practiced and rewarded.</p></div>
         <div class="rx-method-layout">
         <figure id="method-overview" class="rx-paper-art">
-          <a href="assets/media/research/refinement.webp" data-viewer="image" aria-label="Open the MimicX supervision-refinement diagram"><img src="assets/media/research/refinement.webp" width="2400" loading="lazy" alt="MimicX method: rollout diagnosis conditions training objectives and failure-window practice, followed by verified policy continuation"></a>
+          <a href="assets/media/research/refinement.webp" data-viewer="image" data-caption="Policy-in-the-loop supervision refinement" aria-label="Open the MimicX supervision-refinement diagram"><img src="assets/media/research/refinement.webp" width="2400" loading="lazy" alt="MimicX method: rollout diagnosis conditions training objectives and failure-window practice, followed by verified policy continuation"></a>
           <figcaption>Policy-in-the-loop supervision refinement. Rollout errors localize difficult motion intervals and affected body regions; bounded candidates coordinate tracking objectives and practice.</figcaption>
         </figure>
         <div class="method-ledger">
@@ -195,9 +189,9 @@
 
     <section id="hloop" class="rx-section">
       <div class="rx-container">
-        <div class="rx-heading"><h2>Faster feedback. The same decision.</h2><p>MimicX-HLoop overlaps GPU rollout and CPU diagnosis along a dependency graph. Selection uses the complete evaluation evidence, regardless of execution order.</p></div>
+        <div class="rx-heading"><h2>Faster feedback. The same decision.</h2><p>MimicX-HLoop overlaps GPU rollout and CPU diagnosis along a dependency graph. Selection uses all evaluation evidence, independent of execution order.</p></div>
         <div class="rx-hloop-layout">
-          <figure class="rx-paper-art"><a href="assets/media/research/verification.webp" data-viewer="image" aria-label="Open the repeated-verification and HLoop diagram"><img src="assets/media/research/verification.webp" loading="lazy" width="2400" alt="Execution-priority acceptance and heterogeneous scheduling preserve the selected policy"></a><figcaption>Repeated verification selects policy updates; dependency-ready scheduling accelerates the feedback workload.</figcaption></figure>
+          <figure class="rx-paper-art"><a href="assets/media/research/verification.webp" data-viewer="image" aria-label="Open the repeated-verification and HLoop diagram" data-caption="Repeated verification and MimicX-HLoop"><img src="assets/media/research/verification.webp" loading="lazy" width="2400" alt="Execution-priority acceptance and heterogeneous scheduling preserve the selected policy"></a><figcaption>Candidate policies are repeatedly evaluated against the current policy. Selection prioritizes task completion, the failure frontier and tracking guards: accepted candidates start the next refinement pass, while rejected candidates leave the current policy unchanged. HLoop overlaps independent GPU rollouts and CPU diagnosis as their dependencies are satisfied, then assembles the complete evidence before applying the same selection rule.</figcaption></figure>
           <div class="rx-timings">
             <h3>One feedback workload</h3>
             <p>Eight rollouts, eight CPU diagnoses and one report-selection step: the same four fixed policies, evaluated with two seeds.</p>

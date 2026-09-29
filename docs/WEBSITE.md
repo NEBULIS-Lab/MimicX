@@ -13,10 +13,10 @@ D-JEPA's research page informed the compact typography, task navigation and
 persistent light/dark presentation; its purple palette and application code
 were not copied.
 
-The approved hero and compact footer are preserved byte-for-byte. Their
-styles remain in `mimicx.css` and `brand.css`. The new research body is owned
-by `research.css`, scoped to `#research` and `.research-nav`. It must not
-override hero/footer styles or their inherited color variables.
+The approved hero artwork, full logo and compact footer are preserved. The
+author band and narrow-screen layout are refined in `experience.css`; base
+styles remain in `mimicx.css` and `brand.css`. The research body is owned by
+`research.css`, scoped to `#research` and `.research-nav`.
 
 Dark is the default for the rebuilt body. The navigation's theme control
 switches to light and stores the choice under `mimicx-theme`. It deliberately
@@ -29,6 +29,8 @@ MimicX, blue for Fixed Reference and teal for complementary mechanisms.
 - Public authors sit inside the hero's lower translucent band, above the
   section navigation. The anonymous version omits the identity block. Navigation includes
   Motions & scenes as well as direct anchors to the remaining sections.
+  All names use identical inline elements and aligned text baselines; the
+  correspondence marker does not change their line height.
 - Showcase: eight naturally proportioned images, including the reviewed
   parkour, track, stairs, platform and forest evolution figures. An automatic
   4.8-second sequence uses a centered looping album with visible previous/next
@@ -39,8 +41,10 @@ MimicX, blue for Fixed Reference and teal for complementary mechanisms.
 - Overview: paper-selected input, human reconstruction, simulated policy and
   reconstructed-scene frames, with Tennis and Forest example selection.
 - Recordings: four keyboard-accessible task tabs, paired native video players,
-  shared play/pause/restart and timeline. Readouts come from the generated
-  static results table, not a second numerical dataset. This player is part
+  shared play/pause/restart and timeline. Metrics and protocol form one paragraph
+  immediately after the introductory sentence, updating with the selected
+  task and baseline. Values come from the generated static results table,
+  not a second numerical dataset. This player is part
   of the showcase, followed by exactly four collision-scene recordings:
   Parkour, Stairs, Platform and Forest. Parkour is a diagnostic tracking
   rollout, not a claim of full-horizon completion. Other showcase items are stills.
@@ -61,7 +65,10 @@ native controls remain available. Task tabs support arrow, Home and End keys.
 Paired comparisons never autoplay. No videos play in the image carousel.
 All research figures and scene videos open inside a dismissible page dialog,
 with a fixed close control, Escape/backdrop dismissal and return of keyboard
-focus. Images support Panzoom pinch, pan, zoom buttons and fit-to-view. The
+focus. Dialog dimensions follow the actual media aspect ratio, constrained by
+the available viewport and measured toolbar height. Panoramas, square charts
+and portrait frames therefore do not share a fixed-height canvas. Images
+support Panzoom pinch, pan, zoom buttons and fit-to-view. The
 hero scene has an expand button; the numerical table has the same zoomable
 viewer, keeping its original cells and values. Native page pinch zoom is not
 disabled. Video playback stops when its viewer closes. The paired player pauses
@@ -97,6 +104,7 @@ python scripts/build_website_results.py
 python -m pytest tests/test_website_release.py -q
 python scripts/prepare_website_refresh.py --artwork /path/to/final_artwork
 python scripts/verify_website.py --chromium /path/to/chromium --output runs/website-qa
+python scripts/verify_website_details.py --site docs --chromium /path/to/chromium --output runs/website-details
 ```
 
 The media exporter needs PyMuPDF, Pillow and CPU FFmpeg; `--ffmpeg` accepts a
