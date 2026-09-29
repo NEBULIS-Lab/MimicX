@@ -68,3 +68,15 @@ def test_author_line_and_inline_policy_summary():
     for field in ('task-error', 'task-horizon', 'task-note', 'policy-protocol'):
         assert f'id="{field}"' in summary[1]
     assert 'class="rx-task-results"' not in html
+
+
+def test_clean_hero_and_scroll_linked_album():
+    html = (SITE / 'index.html').read_text()
+    hero = html.split('<header', 1)[1].split('</header>', 1)[0]
+    assert 'hero-context' not in hero
+    assert 'hero-expand' not in hero
+    assert 'View policy rollouts' not in hero
+    assert '<html lang="en" data-theme="dark">' in html
+    js = (SITE / 'assets/js/showcase.js').read_text()
+    assert 'const AUTOPLAY_MS = 4000' in js
+    assert "on('scroll', requestPaint)" in js

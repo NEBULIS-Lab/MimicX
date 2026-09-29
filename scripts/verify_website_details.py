@@ -69,7 +69,7 @@ def verify(site, output, chromium):
                         full.crop((x,y,x+round(box['width']),y+round(box['height']))).save(output/f'{width}-{theme}-{section}.png')
                     page.locator('.research-nav').evaluate('n=>n.style.visibility=""')
                 dialogs = []
-                for selector, name in [('.hero-expand', 'panorama'), ('#overview li:first-child a', 'source'),
+                for selector, name in [('.showcase-track .is-active a', 'panorama'), ('#overview li:first-child a', 'source'),
                                        ('#method-overview a', 'method'), ('.result-plot a', 'plot'),
                                        ('.result-plot-wide a', 'trace'), ('#hloop figure a', 'hloop'),
                                        ('#table-expand', 'table')]:

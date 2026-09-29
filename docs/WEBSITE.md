@@ -33,8 +33,10 @@ MimicX, blue for Fixed Reference and teal for complementary mechanisms.
   correspondence marker does not change their line height.
 - Showcase: eight naturally proportioned images, including the reviewed
   parkour, track, stairs, platform and forest evolution figures. An automatic
-  4.8-second sequence uses a centered looping album with visible previous/next
-  images, gentle depth transitions and per-image progress. Embla handles drag,
+  4-second sequence uses a centered looping album with visible previous/next
+  images and per-image progress. Scale, opacity, angle and image positioning
+  follow the actual scroll position, with smooth interpolation instead of
+  separate selection-triggered transitions. Embla handles drag,
   loop continuity and resize. Named selectors, arrows and touch swipes support browsing.
   Hover, focus, an open dialog or an offscreen stage pauses progression;
   reduced-motion settings default to manual playback.
@@ -69,8 +71,9 @@ focus. Dialog dimensions follow the actual media aspect ratio, constrained by
 the available viewport and measured toolbar height. Panoramas, square charts
 and portrait frames therefore do not share a fixed-height canvas. Images
 support Panzoom pinch, pan, zoom buttons and fit-to-view. The
-hero scene has an expand button; the numerical table has the same zoomable
-viewer, keeping its original cells and values. Native page pinch zoom is not
+numerical table has the same zoomable viewer, keeping its original cells and
+values. The hero no longer includes a scene label, rollout shortcut or expand
+button; its author band remains in the public edition. Native page pinch zoom is not
 disabled. Video playback stops when its viewer closes. The paired player pauses
 when scrolled out of view, when the document is hidden or a dialog opens.
 

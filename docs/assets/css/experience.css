@@ -11,8 +11,7 @@
 .rx-scene-grid figcaption .rx-source-note { display: block; margin-top: 4px; }
 .hero-bottom .rx-affiliation { margin-top: 6px !important; color: #e0dede; font-size: 12px; line-height: 1.6; }
 .hero-bottom .rx-correspondence { font-size: 11px; color: #c8c7c8; line-height: 1.6; }
-.hero-context { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: 8px; font-size: 11px; color: #c6c9cb; }
-.hero-context .hero-expand { display: inline-grid; place-items: center; width: 30px; height: 30px; border: 1px solid #ffffff50; border-radius: 6px; background: #1b1e2370; color: #f3ac9e; }
+.hero-bottom:not(:has(*)) { display: none; }
 .hero-copy { top: 44%; }
 .icon-chevron-left { --icon: url('../icons/lucide/chevron-left.svg'); }
 .icon-chevron-right { --icon: url('../icons/lucide/chevron-right.svg'); }
@@ -29,15 +28,9 @@
 .showcase-viewport { max-width: none; padding: 0; overflow: hidden; touch-action: pan-y pinch-zoom; }
 .showcase-track { display: flex; position: relative; touch-action: pan-y pinch-zoom; }
 #research .showcase-track figure { grid-area: auto; flex: 0 0 min(78%,1100px); min-width: 0; padding: 0 14px; width: auto; opacity: 1; visibility: visible; transform: none; transition: none; pointer-events: auto; }
-.showcase-track a { height: var(--media-height); transition: transform .55s cubic-bezier(.2,.65,.25,1), opacity .55s; transform: perspective(1200px) scale(.87); opacity: .5; overflow: visible; }
-.showcase-track .is-previous a { transform: perspective(1200px) rotateY(4deg) scale(.87); }
-.showcase-track .is-next a { transform: perspective(1200px) rotateY(-4deg) scale(.87); }
-.showcase-track .is-active a { transform: perspective(1200px) scale(1); opacity: 1; }
-#research .showcase-track img { width: auto; height: 100%; max-width: 100%; object-fit: contain; border-radius: 10px; transform: translateX(0); transition: transform .55s cubic-bezier(.2,.65,.25,1); }
-#research .showcase-track .is-previous img { transform: translateX(var(--neighbor-shift,0px)); }
-#research .showcase-track .is-next img { transform: translateX(calc(-1 * var(--neighbor-shift,0px))); }
-.showcase-track figcaption { opacity: .45; transition: opacity .4s; padding-inline: 4px; }
-.showcase-track .is-active figcaption { opacity: 1; }
+.showcase-track a { height: var(--media-height); transition: none; transform: perspective(1200px) rotateY(var(--album-tilt,0deg)) scale(var(--album-scale,.9)); opacity: var(--album-opacity,.55); overflow: visible; will-change: transform,opacity; }
+#research .showcase-track img { width: auto; height: 100%; max-width: 100%; object-fit: contain; border-radius: 10px; transform: translateX(var(--album-shift,0px)); transition: none; }
+.showcase-track figcaption { opacity: var(--album-opacity,.55); transition: none; padding-inline: 4px; }
 .showcase-pagination { margin-top: 24px; }
 .showcase-controls { gap: 10px; }
 .showcase-controls button { border-radius: 50%; }
@@ -103,16 +96,10 @@
   .hero-bottom .rx-authors p:first-child { font-size: 12px; column-gap: 12px; row-gap: 3px; line-height: 1.6; }
   .hero-bottom .rx-affiliation { font-size: 11px; max-width: 400px; margin-inline: auto !important; }
   .hero-bottom .rx-correspondence { font-size: 10px; }
-  .hero-context { gap: 10px; font-size: 10px; flex-wrap: wrap; margin-top: 7px; }
-  .hero-context > a:not(.hero-expand) { display: none; }
-  .hero-context .hero-expand { width: 28px; height: 28px; }
   .research-nav-inner { gap: 10px; padding-inline: 14px; }
   .research-nav nav { gap: 20px; }
   #research #showcase { --media-height: 180px; padding-top: 28px; }
   #research .showcase-track figure { flex-basis: 72%; padding-inline: 6px; }
-  .showcase-track a { transform: scale(.9); }
-  .showcase-track .is-previous a { transform: perspective(1200px) rotateY(4deg) scale(.94); }
-  .showcase-track .is-next a { transform: perspective(1200px) rotateY(-4deg) scale(.94); }
   .showcase-track figcaption { align-items: start; flex-direction: column; gap: 1px; min-height: 46px; padding-top: 8px; }
   .showcase-controls { gap: 6px; }
   .showcase-heading { gap: 12px; }

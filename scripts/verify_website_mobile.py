@@ -33,7 +33,8 @@ def verify(site, output, chromium):
                 bar = page.locator('.hero-bottom').bounding_box()
                 nav = page.locator('.top-nav').bounding_box()
                 assert copy['y'] >= nav['y'] + nav['height'] - 2, (width, 'hero/header overlap')
-                assert copy['y'] + copy['height'] <= bar['y'] + 2, (width, 'hero/author overlap')
+                if page.locator('#authors').count():
+                    assert copy['y'] + copy['height'] <= bar['y'] + 2, (width, 'hero/author overlap')
                 if page.locator('#authors').count():
                     assert page.locator('.hero-bottom #authors').count() == 1
                 for theme in ('dark', 'light'):
@@ -54,7 +55,7 @@ def verify(site, output, chromium):
                 page.wait_for_function('document.querySelector(".showcase-track").dataset.active==="1"')
                 page.click('#showcase-prev')
                 page.wait_for_function('document.querySelector(".showcase-track").dataset.active==="0"')
-                for selector, name in [('.hero-expand','hero'), ('.result-plot a','plot'), ('#table-expand','table')]:
+                for selector, name in [('.showcase-track .is-active a','panorama'), ('.result-plot a','plot'), ('#table-expand','table')]:
                     page.locator(selector).first.click()
                     page.wait_for_function('document.querySelector("#viewer-content").dataset.ready === "true"')
                     initial = float(page.locator('#viewer-content').get_attribute('data-scale'))
@@ -87,7 +88,7 @@ def verify(site, output, chromium):
                     page.click('#viewer-close')
                     assert not page.locator('#media-viewer').evaluate('n=>n.open')
                 assert not errors, errors
-                reports.append(dict(width=width,height=height,neighbors=visible,zoom=['hero','plot','table'],errors=errors))
+                reports.append(dict(width=width,height=height,neighbors=visible,zoom=['panorama','plot','table'],errors=errors))
                 page.close()
             browser.close()
     finally:
