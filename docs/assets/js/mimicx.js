@@ -2,6 +2,7 @@
 
 (() => {
   const root = document.documentElement;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const themeButton = document.getElementById('theme-toggle');
   function setTheme(theme) {
     root.dataset.theme = theme;
@@ -94,6 +95,9 @@
       video.setAttribute('aria-label', `${index === 0 ? baselineName : 'MimicX'} ${taskNames[task]} rollout`);
       video.load();
     });
+    const videoGrid = document.querySelector('.rx-video-grid');
+    videoGrid.getAnimations().forEach(animation => animation.cancel());
+    if (!reduced.matches) videoGrid.animate([{opacity:.5}, {opacity:1}], {duration:200, easing:'ease-out'});
     seek.value = '0';
     output.value = '0.0 s';
     document.getElementById('task-note').textContent = notes[task];
@@ -215,13 +219,38 @@
     if (!entries[0].isIntersecting) suspendPair();
   }).observe(document.getElementById('policy-panel'));
   const links = Array.from(document.querySelectorAll('.research-nav nav a'));
-  const observer = new IntersectionObserver(entries => {
-    const current = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-    if (!current) return;
+  const nav = document.querySelector('.research-nav nav');
+  const sections = links.map(link => document.querySelector(link.hash));
+  let navigationFrame = 0;
+  let activeSection;
+  function updateNavigation() {
+    navigationFrame = 0;
+    const threshold = document.querySelector('.research-nav').offsetHeight + 48;
+    // Include the nested rollout section; navigation order differs from DOM order.
+    const positions = sections.map(section => ({section, top:section.getBoundingClientRect().top}));
+    const passed = positions.filter(item => item.top <= threshold).sort((a,b) => b.top-a.top);
+    const current = passed[0]?.section;
+    if (current === activeSection) return;
+    activeSection = current;
     links.forEach(link => {
-      if (link.hash === '#' + current.target.id) link.setAttribute('aria-current', 'location');
+      if (current && link.hash === '#' + current.id) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     });
-  }, {rootMargin: '-15% 0px -60% 0px'});
-  document.querySelectorAll('#research > section').forEach(section => observer.observe(section));
+    const link = links.find(item => item.getAttribute('aria-current'));
+    if (!link) return;
+    const box = link.getBoundingClientRect(), container = nav.getBoundingClientRect();
+    if (box.left < container.left || box.right > container.right) nav.scrollTo({
+      left:nav.scrollLeft + box.left - container.left - (container.width - box.width) / 2,
+      behavior:reduced.matches ? 'instant' : 'smooth'
+    });
+  }
+  function requestNavigation() {
+    if (!navigationFrame) navigationFrame = requestAnimationFrame(updateNavigation);
+  }
+  window.addEventListener('scroll', requestNavigation, {passive:true});
+  window.addEventListener('resize', requestNavigation);
+  requestNavigation();
+  reduced.addEventListener('change', () => {
+    if (reduced.matches) document.querySelector('.rx-video-grid').getAnimations().forEach(animation => animation.cancel());
+  });
 })();

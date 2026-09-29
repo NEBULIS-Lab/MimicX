@@ -15,11 +15,16 @@
   let focused = false;
   let dragging = false;
   let paintFrame = 0;
+  let autoplayFrame = 0;
   let last = 0;
   let elapsed = 0;
   let index = 0;
   const originals = [...track.children];
   const photoGaps = originals.map(() => 0);
+  let workflowRequest = 0;
+  let shownWorkflow = 'tennis';
+  const workflowStages = document.getElementById('workflow-stages');
+  const workflowButtons = [...document.querySelectorAll('[data-workflow]')];
   const workflow = {
     tennis: [
       ['showcase/tennis-stage-input.webp', 'Input video', 'Human demonstration'],
@@ -34,17 +39,42 @@
       ['cases/forest-stage-policy.webp', 'Policy execution', 'Collision-scene rollout']
     ]
   };
-  document.querySelectorAll('[data-workflow]').forEach(button => button.addEventListener('click', () => {
-    document.querySelectorAll('[data-workflow]').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
-    document.querySelectorAll('#workflow-stages li').forEach((li, i) => {
-      const [file, label, detail] = workflow[button.dataset.workflow][i];
+  workflowButtons.forEach(button => button.addEventListener('click', async () => {
+    const current = ++workflowRequest;
+    const key = button.dataset.workflow;
+    workflowButtons.forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+    workflowStages.setAttribute('aria-busy', 'true');
+    // Commit all four decoded frames together; a newer selection always wins.
+    try {
+      await Promise.all(workflow[key].map(async ([file]) => {
+        const image = new Image();
+        image.src = `assets/media/${file}`;
+        await image.decode();
+      }));
+    } catch (_) {
+      if (current !== workflowRequest) return;
+      workflowStages.setAttribute('aria-busy', 'false');
+      workflowButtons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.workflow === shownWorkflow)));
+      document.getElementById('workflow-note').textContent = 'These frames could not be loaded. Please try again.';
+      return;
+    }
+    if (current !== workflowRequest) return;
+    workflowStages.querySelectorAll('li').forEach((li, i) => {
+      const [file, label, detail] = workflow[key][i];
       li.querySelector('a').href = `assets/media/${file}`;
       li.querySelector('img').src = `assets/media/${file}`;
       li.querySelector('img').alt = `${button.textContent}: ${label}, paper-selected frame`;
       li.querySelector('span').textContent = label;
       li.querySelector('small').textContent = detail;
+      const image = li.querySelector('a');
+      image.getAnimations().forEach(animation => animation.cancel());
+      if (!reduced.matches && shownWorkflow !== key) image.animate(
+        [{opacity:.4, transform:'translateY(6px)'}, {opacity:1, transform:'translateY(0)'}],
+        {duration:260, delay:i * 35, easing:'cubic-bezier(.2,.7,.2,1)', fill:'backwards'});
     });
-    document.getElementById('workflow-note').textContent = button.dataset.workflow === 'tennis'
+    workflowStages.setAttribute('aria-busy', 'false');
+    shownWorkflow = key;
+    document.getElementById('workflow-note').textContent = key === 'tennis'
       ? 'Tennis Swing: the four corresponding stages selected for the paper.'
       : 'Forest Traversal: paper-selected midpoint frames from each stage, not a shared physical timestamp.';
   }));
@@ -111,14 +141,20 @@
     track.dataset.active = String(index);
     document.getElementById('showcase-count').textContent = `${String(index + 1).padStart(2, '0')} / ${String(originals.length).padStart(2, '0')}`;
     fitPhotos();
+    const button = pagination.children[index];
+    const box = button.getBoundingClientRect(), container = pagination.getBoundingClientRect();
+    if (box.left < container.left || box.right > container.right) pagination.scrollTo({
+      left:pagination.scrollLeft + box.left - container.left - (container.width - box.width) / 2,
+      behavior:reduced.matches ? 'instant' : 'smooth'
+    });
   }
   function select(next) {
     carousel.scrollTo((next + originals.length) % originals.length, reduced.matches);
     elapsed = 0;
   }
   carousel.on('select', updateSelection).on('reInit', updateSelection).on('scroll', requestPaint).on('settle', requestPaint);
-  carousel.on('pointerDown', () => { dragging = true; elapsed = 0; });
-  carousel.on('pointerUp', () => { dragging = false; elapsed = 0; });
+  carousel.on('pointerDown', () => { dragging = true; elapsed = 0; syncAutoplay(); });
+  carousel.on('pointerUp', () => { dragging = false; elapsed = 0; syncAutoplay(); });
   document.getElementById('showcase-prev').addEventListener('click', () => select(index - 1));
   document.getElementById('showcase-next').addEventListener('click', () => select(index + 1));
   function controls() {
@@ -127,30 +163,53 @@
     toggle.title = toggle.getAttribute('aria-label');
     toggle.querySelector('span').className = `rx-icon icon-${enabled ? 'pause' : 'play'}`;
   }
+  function canAdvance() {
+    return enabled && visible && !hovered && !focused && !dragging && !document.hidden && !dialog.open;
+  }
+  function syncAutoplay() {
+    if (canAdvance()) {
+      if (!autoplayFrame) autoplayFrame = requestAnimationFrame(frame);
+    } else {
+      cancelAnimationFrame(autoplayFrame);
+      autoplayFrame = 0;
+      last = 0;
+    }
+    rail.dataset.playing = String(canAdvance());
+  }
   function frame(now) {
+    autoplayFrame = 0;
+    if (!canAdvance()) { syncAutoplay(); return; }
     const delta = last ? Math.min(now-last, 100) : 0;
     last = now;
-    if (enabled && visible && !hovered && !focused && !dragging && !document.hidden && !dialog.open) {
-      elapsed += delta;
-      if (elapsed >= AUTOPLAY_MS) select(index + 1);
-      pagination.children[index].style.setProperty('--progress', String(elapsed / AUTOPLAY_MS));
-    }
-    requestAnimationFrame(frame);
+    elapsed += delta;
+    if (elapsed >= AUTOPLAY_MS) select(index + 1);
+    pagination.children[index].style.setProperty('--progress', String(elapsed / AUTOPLAY_MS));
+    syncAutoplay();
   }
-  toggle.addEventListener('click', () => { enabled = !enabled; controls(); });
-  rail.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') hovered = true; });
-  rail.addEventListener('pointerleave', () => { hovered = false; });
-  rail.addEventListener('focusin', event => { focused = event.target.matches(':focus-visible'); });
-  rail.addEventListener('focusout', event => { focused = rail.contains(event.relatedTarget); });
+  toggle.addEventListener('click', () => { enabled = !enabled; controls(); syncAutoplay(); });
+  rail.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') hovered = true; syncAutoplay(); });
+  rail.addEventListener('pointerleave', () => { hovered = false; syncAutoplay(); });
+  rail.addEventListener('focusin', event => { focused = event.target.matches(':focus-visible'); syncAutoplay(); });
+  rail.addEventListener('focusout', event => {
+    focused = rail.contains(event.relatedTarget) && event.relatedTarget.matches(':focus-visible');
+    syncAutoplay();
+  });
   rail.addEventListener('keydown', event => {
     if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
       event.preventDefault(); select(index + (event.key === 'ArrowRight' ? 1 : -1));
     }
   });
-  new IntersectionObserver(entries => { visible = entries[0].isIntersecting; }, {threshold: .3}).observe(rail);
-  document.addEventListener('visibilitychange', () => { last = 0; });
-  reduced.addEventListener('change', () => { if (reduced.matches) { enabled = false; controls(); } requestPaint(); });
+  new IntersectionObserver(entries => { visible = entries[0].intersectionRatio >= .3; syncAutoplay(); }, {threshold: .3}).observe(rail);
+  document.addEventListener('visibilitychange', syncAutoplay);
+  new MutationObserver(syncAutoplay).observe(dialog, {attributes:true, attributeFilter:['open']});
+  reduced.addEventListener('change', () => {
+    if (reduced.matches) {
+      enabled = false; controls();
+      workflowStages.getAnimations({subtree:true}).forEach(animation => animation.cancel());
+    }
+    syncAutoplay(); requestPaint();
+  });
   controls();
   updateSelection();
-  requestAnimationFrame(frame);
+  syncAutoplay();
 })();

@@ -12,13 +12,36 @@
   let fitScale = 1;
   let request = 0;
   let mediaSize;
+  let closeTimer;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+
+  function openViewer() {
+    const box = origin.getBoundingClientRect();
+    dialog.style.setProperty('--viewer-from-x', `${Math.max(-28, Math.min(28, box.left + box.width / 2 - innerWidth / 2))}px`);
+    dialog.style.setProperty('--viewer-from-y', `${Math.max(-18, Math.min(18, box.top + box.height / 2 - innerHeight / 2))}px`);
+    document.documentElement.classList.add('media-open');
+    dialog.showModal();
+    const thumbnail = origin.querySelector('img');
+    if (thumbnail?.naturalWidth) {
+      mediaSize = {width:thumbnail.naturalWidth, height:thumbnail.naturalHeight};
+      sizeViewer();
+    }
+  }
+  function closeViewer() {
+    if (!dialog.open || dialog.classList.contains('viewer-closing')) return;
+    content.querySelector('video')?.pause();
+    if (reduced.matches) { dialog.close(); return; }
+    dialog.classList.add('viewer-closing');
+    closeTimer = setTimeout(() => dialog.close(), 160);
+  }
 
   function sizeViewer() {
     if (!mediaSize || !dialog.open) return;
     const padding = getComputedStyle(content);
     const gutterX = parseFloat(padding.paddingLeft) + parseFloat(padding.paddingRight);
     const gutterY = parseFloat(padding.paddingTop) + parseFloat(padding.paddingBottom);
-    const maxWidth = Math.min(innerWidth <= 700 ? innerWidth - 12 : innerWidth * .94, 1280);
+    const viewportWidth = document.documentElement.clientWidth;
+    const maxWidth = Math.min(viewportWidth <= 700 ? viewportWidth - 12 : viewportWidth * .94, 1280);
     const maxHeight = Math.min(innerHeight - 12, innerHeight * .94);
     let width = maxWidth;
     let mediaWidth;
@@ -79,6 +102,8 @@
     });
   }
   function clear() {
+    clearTimeout(closeTimer);
+    dialog.classList.remove('viewer-closing');
     request += 1;
     panzoom?.destroy(); panzoom = null; surface = null; mediaSize = null;
     dialog.style.removeProperty('--viewer-width');
@@ -118,7 +143,7 @@
         }, {once:true});
         video.src = link.href; video.controls = true; video.playsInline = true; video.muted = true;
         content.append(video);
-        dialog.showModal();
+        openViewer();
         video.play().catch(() => {});
       } else {
         const stage = document.createElement('div'); stage.className = 'viewer-stage';
@@ -129,7 +154,7 @@
           const table = document.querySelector('#results .rx-table').cloneNode(true);
           table.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
           target.append(table);
-          dialog.showModal(); enableZoom(target);
+          openViewer(); enableZoom(target);
         } else {
           const img = document.createElement('img');
           img.alt = link.querySelector('img')?.alt || caption;
@@ -139,7 +164,7 @@
           img.addEventListener('error', () => {
             if (current === request) { target.textContent = 'Image unavailable. Close the viewer and try again.'; zoomTools.hidden = true; }
           }, {once:true});
-          target.append(img); dialog.showModal(); img.src = link.href;
+          target.append(img); openViewer(); img.src = link.href;
         }
       }
       document.getElementById('viewer-close').focus({preventScroll:true});
@@ -148,12 +173,19 @@
   document.getElementById('viewer-plus').addEventListener('click', () => panzoom?.zoomIn());
   document.getElementById('viewer-minus').addEventListener('click', () => panzoom?.zoomOut());
   document.getElementById('viewer-reset').addEventListener('click', fit);
-  document.getElementById('viewer-close').addEventListener('click', () => dialog.close());
+  document.getElementById('viewer-close').addEventListener('click', closeViewer);
+  dialog.addEventListener('cancel', event => { event.preventDefault(); closeViewer(); });
   dialog.addEventListener('click', event => {
     const r = dialog.getBoundingClientRect();
-    if (event.target === dialog && (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom)) dialog.close();
+    if (event.target === dialog && (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom)) closeViewer();
   });
-  dialog.addEventListener('close', () => { clear(); origin?.focus({preventScroll:true}); });
+  dialog.addEventListener('close', () => {
+    document.documentElement.classList.remove('media-open');
+    clear(); origin?.focus({preventScroll:true});
+  });
+  reduced.addEventListener('change', () => {
+    if (reduced.matches && dialog.classList.contains('viewer-closing')) dialog.close();
+  });
   window.addEventListener('resize', () => {
     if (dialog.open) requestAnimationFrame(() => { sizeViewer(); fit(); });
   });

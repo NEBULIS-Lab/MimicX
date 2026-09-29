@@ -40,8 +40,13 @@ MimicX, blue for Fixed Reference and teal for complementary mechanisms.
   loop continuity and resize. Named selectors, arrows and touch swipes support browsing.
   Hover, focus, an open dialog or an offscreen stage pauses progression;
   reduced-motion settings default to manual playback.
+  On narrow screens, the selected figure name scrolls into view without moving
+  the page. The autoplay clock stops scheduling frames while paused, offscreen,
+  backgrounded or blocked by a media dialog.
 - Overview: paper-selected input, human reconstruction, simulated policy and
   reconstructed-scene frames, with Tennis and Forest example selection.
+  Each selection pre-decodes all four frames and replaces them together with
+  a short staggered fade. Rapid selections cannot mix stages across tasks.
 - Recordings: four keyboard-accessible task tabs, paired native video players,
   shared play/pause/restart and timeline. Metrics and protocol form one paragraph
   immediately after the introductory sentence, updating with the selected
@@ -108,6 +113,7 @@ python -m pytest tests/test_website_release.py -q
 python scripts/prepare_website_refresh.py --artwork /path/to/final_artwork
 python scripts/verify_website.py --chromium /path/to/chromium --output runs/website-qa
 python scripts/verify_website_details.py --site docs --chromium /path/to/chromium --output runs/website-details
+python scripts/verify_website_interactions.py --site docs --chromium /path/to/chromium --output runs/website-interactions
 ```
 
 The media exporter needs PyMuPDF, Pillow and CPU FFmpeg; `--ffmpeg` accepts a
@@ -116,6 +122,11 @@ acceleration, uses a temporary local server and stops it after the audit.
 It covers six viewport sizes, both themes, persistence, asset loading,
 all task pairs, synchronized controls, table integrity and horizontal overflow.
 Screenshots are review artifacts, not dependencies of the site.
+The interaction audit also saves browser recordings. Media dialogs have short
+opening/closing transitions, preload their control icons, retain native media
+proportions and restore focus after closing. All new motion respects reduced-motion
+preferences. Navigation includes the nested rollout section and keeps the active
+link visible on phones. Dataset values and research media are not altered.
 
 Header and footer retain their approved design. Resource links are configured
 per release; anonymous releases use local artifact documentation instead of

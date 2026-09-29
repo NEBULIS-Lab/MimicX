@@ -80,3 +80,16 @@ def test_clean_hero_and_scroll_linked_album():
     js = (SITE / 'assets/js/showcase.js').read_text()
     assert 'const AUTOPLAY_MS = 4000' in js
     assert "on('scroll', requestPaint)" in js
+
+
+def test_motion_lifecycle_and_atomic_workflow():
+    js = (SITE / 'assets/js/showcase.js').read_text()
+    assert 'cancelAnimationFrame(autoplayFrame)' in js
+    assert 'pagination.scrollTo' in js
+    assert 'await Promise.all' in js and 'workflowRequest' in js
+    assert 'aria-busy' in js
+    viewer = (SITE / 'assets/js/media-viewer.js').read_text()
+    assert "addEventListener('cancel'" in viewer
+    assert 'function closeViewer()' in viewer
+    assert 'prefers-reduced-motion' in viewer
+    assert 'viewer-closing' in viewer
