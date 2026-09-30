@@ -33,7 +33,7 @@ html.media-open { overflow: hidden; }
 #research .showcase-track figure { grid-area: auto; flex: 0 0 min(78%,1100px); min-width: 0; padding: 0 14px; width: auto; opacity: 1; visibility: visible; transform: none; transition: none; pointer-events: auto; }
 .showcase-track a { height: var(--media-height); transition: none; transform: perspective(1200px) rotateY(var(--album-tilt,0deg)) scale(var(--album-scale,.9)); opacity: var(--album-opacity,.55); overflow: visible; will-change: transform,opacity; }
 #research .showcase-track img { width: auto; height: 100%; max-width: 100%; object-fit: contain; border-radius: 10px; transform: translateX(var(--album-shift,0px)); transition: none; }
-.showcase-track figcaption { opacity: var(--album-opacity,.55); transition: none; padding-inline: 4px; }
+.showcase-track figcaption { opacity: var(--caption-opacity,.3); transform: translateY(var(--caption-offset,0px)); transition: none; padding-inline: 4px; }
 .showcase-pagination { margin-top: 24px; }
 .showcase-controls { gap: 10px; }
 .showcase-controls button { border-radius: 50%; }
@@ -85,15 +85,10 @@ html.media-open { overflow: hidden; }
 #viewer-content > video { max-height: none; height: auto; }
 
 /* Short transitions keep the media, rather than the interface, in focus. */
-#media-viewer[open] { animation: media-enter 220ms cubic-bezier(.2,.7,.2,1); }
-#media-viewer[open]::backdrop { animation: backdrop-enter 220ms ease-out; }
-#media-viewer.viewer-closing { animation: media-exit 160ms ease-in forwards; pointer-events: none; }
-#media-viewer.viewer-closing::backdrop { animation: backdrop-exit 160ms ease-in forwards; }
-@keyframes media-enter {
-  from { opacity: 0; transform: translate(var(--viewer-from-x,0px),var(--viewer-from-y,10px)) scale(.985); }
-  to { opacity: 1; transform: translate(0,0) scale(1); }
-}
-@keyframes media-exit { to { opacity: 0; transform: translateY(5px) scale(.99); } }
+#media-viewer[open] { transform-origin: center; }
+#media-viewer[open]::backdrop { animation: backdrop-enter 320ms ease-out; }
+#media-viewer.viewer-closing { pointer-events: none; }
+#media-viewer.viewer-closing::backdrop { animation: backdrop-exit 220ms ease-in forwards; }
 @keyframes backdrop-enter { from { opacity: 0; } to { opacity: 1; } }
 @keyframes backdrop-exit { to { opacity: 0; } }
 .research-nav nav a { position: relative; border-bottom-color: transparent !important; transition: color 180ms ease; }

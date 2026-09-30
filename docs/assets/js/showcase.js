@@ -14,6 +14,7 @@
   let hovered = false;
   let focused = false;
   let dragging = false;
+  let moving = false;
   let paintFrame = 0;
   let autoplayFrame = 0;
   let last = 0;
@@ -111,6 +112,8 @@
       style.setProperty('--album-opacity', String(.55 + .45 * weight));
       style.setProperty('--album-tilt', `${reduced.matches ? 0 : -side * 3}deg`);
       style.setProperty('--album-shift', `${-side * photoGaps[i]}px`);
+      style.setProperty('--caption-offset', `${reduced.matches ? 0 : (1 - weight) * 6}px`);
+      style.setProperty('--caption-opacity', String(.3 + .7 * weight));
     });
   }
   function requestPaint() {
@@ -149,10 +152,20 @@
     });
   }
   function select(next) {
-    carousel.scrollTo((next + originals.length) % originals.length, reduced.matches);
+    const target = (next + originals.length) % originals.length;
+    if (target !== index && !reduced.matches) setMoving(true);
+    carousel.scrollTo(target, reduced.matches);
     elapsed = 0;
   }
+  function setMoving(value) {
+    moving = value;
+    rail.dataset.moving = String(value);
+    syncAutoplay();
+  }
   carousel.on('select', updateSelection).on('reInit', updateSelection).on('scroll', requestPaint).on('settle', requestPaint);
+  carousel.on('scroll', () => { if (!reduced.matches && !moving) setMoving(true); });
+  carousel.on('settle', () => { last = 0; setMoving(false); });
+  carousel.on('reInit', () => setMoving(false));
   carousel.on('pointerDown', () => { dragging = true; elapsed = 0; syncAutoplay(); });
   carousel.on('pointerUp', () => { dragging = false; elapsed = 0; syncAutoplay(); });
   document.getElementById('showcase-prev').addEventListener('click', () => select(index - 1));
@@ -164,7 +177,7 @@
     toggle.querySelector('span').className = `rx-icon icon-${enabled ? 'pause' : 'play'}`;
   }
   function canAdvance() {
-    return enabled && visible && !hovered && !focused && !dragging && !document.hidden && !dialog.open;
+    return enabled && visible && !hovered && !focused && !dragging && !moving && !document.hidden && !dialog.open;
   }
   function syncAutoplay() {
     if (canAdvance()) {
@@ -205,11 +218,14 @@
   reduced.addEventListener('change', () => {
     if (reduced.matches) {
       enabled = false; controls();
+      carousel.scrollTo(index, true);
+      setMoving(false);
       workflowStages.getAnimations({subtree:true}).forEach(animation => animation.cancel());
     }
     syncAutoplay(); requestPaint();
   });
   controls();
   updateSelection();
+  setMoving(false);
   syncAutoplay();
 })();

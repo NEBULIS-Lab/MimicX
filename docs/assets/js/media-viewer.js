@@ -13,12 +13,29 @@
   let request = 0;
   let mediaSize;
   let closeTimer;
+  let viewerMotion;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
+  function carryViewer(closing = false) {
+    const interrupted = viewerMotion?.playState === 'running'
+      ? {transform:getComputedStyle(dialog).transform, opacity:getComputedStyle(dialog).opacity} : null;
+    viewerMotion?.cancel();
+    if (reduced.matches) return;
+    const box = (origin.querySelector('img') || origin).getBoundingClientRect();
+    const destination = dialog.getBoundingClientRect();
+    const visible = box.bottom > 0 && box.top < innerHeight && box.width > 0;
+    const dx = visible ? box.left + box.width / 2 - destination.left - destination.width / 2 : 0;
+    const dy = visible ? box.top + box.height / 2 - destination.top - destination.height / 2 : 8;
+    const scale = visible ? Math.max(.25, Math.min(.98, box.width / destination.width, box.height / destination.height)) : .985;
+    const source = {transform:`translate(${dx}px,${dy}px) scale(${scale})`, opacity:0};
+    const target = {transform:'translate(0px,0px) scale(1)', opacity:1};
+    // The same thumbnail anchors both directions; interruption starts at the current pose.
+    viewerMotion = dialog.animate(closing ? [interrupted || target, source] : [source, target], {
+      duration:closing ? 220 : 320, easing:closing ? 'cubic-bezier(.4,0,.8,.4)' : 'cubic-bezier(.16,1,.3,1)', fill:'both'
+    });
+    viewerMotion.id = 'media-carry';
+  }
   function openViewer() {
-    const box = origin.getBoundingClientRect();
-    dialog.style.setProperty('--viewer-from-x', `${Math.max(-28, Math.min(28, box.left + box.width / 2 - innerWidth / 2))}px`);
-    dialog.style.setProperty('--viewer-from-y', `${Math.max(-18, Math.min(18, box.top + box.height / 2 - innerHeight / 2))}px`);
     document.documentElement.classList.add('media-open');
     dialog.showModal();
     const thumbnail = origin.querySelector('img');
@@ -26,13 +43,15 @@
       mediaSize = {width:thumbnail.naturalWidth, height:thumbnail.naturalHeight};
       sizeViewer();
     }
+    carryViewer();
   }
   function closeViewer() {
     if (!dialog.open || dialog.classList.contains('viewer-closing')) return;
     content.querySelector('video')?.pause();
     if (reduced.matches) { dialog.close(); return; }
     dialog.classList.add('viewer-closing');
-    closeTimer = setTimeout(() => dialog.close(), 160);
+    carryViewer(true);
+    closeTimer = setTimeout(() => dialog.close(), 220);
   }
 
   function sizeViewer() {
@@ -103,6 +122,7 @@
   }
   function clear() {
     clearTimeout(closeTimer);
+    viewerMotion?.cancel(); viewerMotion = null;
     dialog.classList.remove('viewer-closing');
     request += 1;
     panzoom?.destroy(); panzoom = null; surface = null; mediaSize = null;
@@ -184,9 +204,15 @@
     clear(); origin?.focus({preventScroll:true});
   });
   reduced.addEventListener('change', () => {
-    if (reduced.matches && dialog.classList.contains('viewer-closing')) dialog.close();
+    if (reduced.matches) {
+      viewerMotion?.cancel();
+      if (dialog.classList.contains('viewer-closing')) dialog.close();
+    }
   });
   window.addEventListener('resize', () => {
-    if (dialog.open) requestAnimationFrame(() => { sizeViewer(); fit(); });
+    if (dialog.open) requestAnimationFrame(() => {
+      if (!dialog.classList.contains('viewer-closing')) viewerMotion?.cancel();
+      sizeViewer(); fit();
+    });
   });
 })();
