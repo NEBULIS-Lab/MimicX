@@ -11,7 +11,6 @@
   rail.dataset.interval = String(AUTOPLAY_MS);
   let enabled = !reduced.matches;
   let visible = false;
-  let hovered = false;
   let focused = false;
   let dragging = false;
   let moving = false;
@@ -177,7 +176,7 @@
     toggle.querySelector('span').className = `rx-icon icon-${enabled ? 'pause' : 'play'}`;
   }
   function canAdvance() {
-    return enabled && visible && !hovered && !focused && !dragging && !moving && !document.hidden && !dialog.open;
+    return enabled && visible && !focused && !dragging && !moving && !document.hidden && !dialog.open;
   }
   function syncAutoplay() {
     if (canAdvance()) {
@@ -200,8 +199,6 @@
     syncAutoplay();
   }
   toggle.addEventListener('click', () => { enabled = !enabled; controls(); syncAutoplay(); });
-  rail.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') hovered = true; syncAutoplay(); });
-  rail.addEventListener('pointerleave', () => { hovered = false; syncAutoplay(); });
   rail.addEventListener('focusin', event => { focused = event.target.matches(':focus-visible'); syncAutoplay(); });
   rail.addEventListener('focusout', event => {
     focused = rail.contains(event.relatedTarget) && event.relatedTarget.matches(':focus-visible');

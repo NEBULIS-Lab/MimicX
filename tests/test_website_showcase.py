@@ -93,3 +93,18 @@ def test_motion_lifecycle_and_atomic_workflow():
     assert 'function closeViewer()' in viewer
     assert 'prefers-reduced-motion' in viewer
     assert 'viewer-closing' in viewer
+
+
+def test_hover_does_not_pause_album_or_change_click_navigation():
+    js = (SITE / 'assets/js/showcase.js').read_text()
+    assert 'hovered' not in js
+    assert "rail.addEventListener('pointerenter'" not in js
+    assert "rail.addEventListener('pointerleave'" not in js
+    for guard in ('!focused', '!dragging', '!moving', '!document.hidden', '!dialog.open'):
+        assert guard in js
+    assert "toggle.addEventListener('click'" in js
+    assert "if (i !== index)" in js
+    assert 'event.stopImmediatePropagation(); select(i);' in js
+    html = (SITE / 'index.html').read_text()
+    gallery = html.split('class="showcase-track"', 1)[1].split('class="showcase-pagination"', 1)[0]
+    assert gallery.count('data-viewer="image"') == 8
