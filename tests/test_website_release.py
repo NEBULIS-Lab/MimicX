@@ -99,6 +99,18 @@ def test_huggingface_links_are_in_header_and_resources():
     assert 'href="REPRODUCIBILITY.md"' in resources
 
 
+def test_published_arxiv_links_are_in_header_footer_and_readme():
+    source = (WEBSITE / "index.html").read_text()
+    for section in (source.split('<nav class="top-nav"')[1].split('</nav>')[0],
+                    source.split('<footer')[1].split('</footer>')[0]):
+        assert 'href="https://arxiv.org/abs/2610.09055"' in section
+    assert "paper link coming soon" not in source
+    assert "https://example.com" not in source
+    readme = (ROOT / "README.md").read_text()
+    assert "https://arxiv.org/abs/2610.09055" in readme
+    assert "eprint={2610.09055}" in readme
+
+
 def test_static_hero_clean_workflow_and_four_result_plots():
     source = (WEBSITE / "index.html").read_text()
     hero = source.split('<header')[1].split('</header>')[0]
@@ -148,6 +160,9 @@ def test_rebuild_preserves_approved_hero_and_footer():
         ('<footer', '</footer>', 'aba683588e371d4cc0beaf2af5a9ecb20a6b39e91a07f88026e87f560c52700c'),
     ):
         section = source.split(start, 1)[1].split(end, 1)[0]
+        # The publication URL changed; the approved footer layout is preserved.
+        section = section.replace("https://arxiv.org/abs/2610.09055",
+                                  "https://github.com/NEBULIS-Lab/shuaijun-ICLR-paper-MimicX")
         assert hashlib.sha256(section.encode()).hexdigest() == expected
 
 

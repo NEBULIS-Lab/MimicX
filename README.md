@@ -8,6 +8,7 @@
 
 <p>
   <a href="https://nebulis-lab.github.io/MimicX/"><img src="https://img.shields.io/badge/Project-Website-D45B4C?style=flat-square" alt="Project website" height="23"></a>
+  <a href="https://arxiv.org/abs/2610.09055"><img src="https://img.shields.io/badge/arXiv-2610.09055-D45B4C?style=flat-square&amp;logo=arxiv&amp;logoColor=white" alt="arXiv paper" height="23"></a>
   <a href="https://huggingface.co/Shuaijun/MimicX-Policies"><img src="https://img.shields.io/badge/Hugging_Face-Policies-D45B4C?style=flat-square&amp;logo=huggingface&amp;logoColor=white" alt="Hugging Face policies" height="23"></a>
   <a href="https://huggingface.co/datasets/Shuaijun/MimicX-Assets"><img src="https://img.shields.io/badge/Hugging_Face-Assets-3B78A8?style=flat-square&amp;logo=huggingface&amp;logoColor=white" alt="Hugging Face assets" height="23"></a>
   <a href="https://github.com/NEBULIS-Lab/shuaijun-ICLR-paper-MimicX"><img src="https://img.shields.io/badge/Paper-Source-7A7F87?style=flat-square&amp;logo=github&amp;logoColor=white" alt="Paper source" height="23"></a>
@@ -149,6 +150,22 @@ inputs. The static page can also be opened from [docs/index.html](docs/index.htm
 See [website maintenance](docs/WEBSITE.md) for rebuilding and publishing it.
 
 </details>
+
+## Citation
+
+[Read the paper on arXiv](https://arxiv.org/abs/2610.09055).
+
+```bibtex
+@misc{liu2026mimicx,
+  title={MimicX: Policy-in-the-Loop Supervision Refinement for Video-Driven Humanoid Motion Tracking},
+  author={Shuaijun Liu and Chenglong Zhang and Xuhao Liu and Feiyang You and Yifan Liao and Shuyang Hao and Chaozhe Zhang and Chengyu Wu and Zhen Sun and Ningxin Su},
+  year={2026},
+  eprint={2610.09055},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2610.09055}
+}
+```
 
 ## Acknowledgments and License
 
