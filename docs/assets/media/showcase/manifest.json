@@ -187,26 +187,26 @@
   },
   {
     "source": "FOOTBALL__CONTACT_SLOW4X.mp4",
-    "source_sha256": "1d9668a181a13d20332ea83645349decbe935966b8ee03faee466ada3b9846fd",
+    "source_sha256": "11384404df9710377b5a79df0f381bee06304792ba6cc46da7680e7f0e35f72e",
     "stage": "One physical foot-ball contact with prescribed robot replay",
     "width": 1920,
     "height": 1080,
     "file": "football-contact-slow4x.mp4",
-    "sha256": "1d9668a181a13d20332ea83645349decbe935966b8ee03faee466ada3b9846fd",
-    "frames": 55,
+    "sha256": "11384404df9710377b5a79df0f381bee06304792ba6cc46da7680e7f0e35f72e",
+    "frames": 120,
     "fps": 30.0,
-    "duration_seconds": 1.8333333333333333,
+    "duration_seconds": 4.0,
     "playback_speed": 0.25,
     "transform": "Byte-for-byte approved video"
   },
   {
     "source": "FOOTBALL__CONTACT_SLOW4X.mp4",
-    "source_sha256": "1d9668a181a13d20332ea83645349decbe935966b8ee03faee466ada3b9846fd",
+    "source_sha256": "11384404df9710377b5a79df0f381bee06304792ba6cc46da7680e7f0e35f72e",
     "stage": "One physical foot-ball contact with prescribed robot replay",
     "width": 1920,
     "height": 1080,
     "file": "football-contact.webp",
-    "sha256": "f2802b23152055d0011863f516f504b4e1f36ac96add1a3d7c6ef5c29ea39752",
-    "frame": 27
+    "sha256": "041d3844723db1997d6be8058bc42e9fc18f347787fb51e8dda39c0d28a9e044",
+    "frame": 65
   }
 ]

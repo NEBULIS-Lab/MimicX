@@ -124,6 +124,8 @@ def test_showcase_video_provenance_and_lifecycle():
     assert rows['tennis-scene.mp4']['source'] == '09_TENNIS_COURT_LATEST_POLICY.mp4'
     assert rows['football-contact-slow4x.mp4']['source'] == 'FOOTBALL__CONTACT_SLOW4X.mp4'
     assert rows['football-contact-slow4x.mp4']['playback_speed'] == .25
+    assert rows['football-contact-slow4x.mp4']['duration_seconds'] == 4.0
+    assert rows['football-contact-slow4x.mp4']['frames'] == 120
     js = (SITE / 'assets/js/showcase.js').read_text()
     assert 'function syncVideos()' in js
     assert "querySelector('img, video')" in js

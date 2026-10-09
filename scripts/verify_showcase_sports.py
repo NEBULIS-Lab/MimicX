@@ -42,6 +42,8 @@ def verify(site, output, chromium):
                     }''')
                     page.wait_for_timeout(400)
                     video = page.locator('.showcase-track .is-active video')
+                    if label == 'Football Juggling':
+                        assert video.evaluate('v=>v.duration') == 4.0
                     page.screenshot(path=str(output / f'{width}-{index}-showcase.png'))
                     box = video.bounding_box()
                     assert abs(box['width'] / box['height'] - 16 / 9) < .05, (width, index, box,
