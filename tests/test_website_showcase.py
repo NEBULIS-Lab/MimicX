@@ -17,6 +17,8 @@ def test_showcase_order_and_media_inventory():
     gallery = html.split('class="showcase-track"',1)[1].split('class="showcase-pagination"',1)[0]
     assert gallery.count('<video') == 2
     assert gallery.count('<figure') == 7
+    first_slide = gallery.split('<figure', 1)[1].split('</figure>', 1)[0]
+    assert 'football-contact-slow4x.mp4' in first_slide
     assert 'parkour-reference.webp' not in gallery
     assert gallery.count('parkour-sequence.webp') == 2
     for name in ('tennis-scene.mp4', 'football-contact-slow4x.mp4'):

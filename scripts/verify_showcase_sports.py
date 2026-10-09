@@ -29,10 +29,10 @@ def verify(site, output, chromium):
                 assert page.locator('.showcase-track figure').count() == 7
                 assert page.locator('.showcase-track video').count() == 2
                 assert page.locator('.showcase-pagination button').all_text_contents() == [
-                    'Parkour', 'Track Run', 'Stair Ascent', 'Platform Jump',
-                    'Forest Traversal', 'Tennis Swing', 'Football Juggling']
+                    'Football Juggling', 'Parkour', 'Track Run', 'Stair Ascent',
+                    'Platform Jump', 'Forest Traversal', 'Tennis Swing']
                 page.locator('.showcase-viewport').scroll_into_view_if_needed()
-                for label, index in (('Tennis Swing', 5), ('Football Juggling', 6)):
+                for label, index in (('Tennis Swing', 6), ('Football Juggling', 0)):
                     page.locator('.showcase-pagination button').filter(has_text=label).click()
                     page.locator('.showcase-viewport').evaluate("e=>e.scrollIntoView({block:'center',behavior:'instant'})")
                     page.wait_for_function(f'document.querySelector(".showcase-track").dataset.active==="{index}"')
@@ -58,7 +58,7 @@ def verify(site, output, chromium):
                     page.wait_for_function('!document.querySelector("#media-viewer").open')
                     page.wait_for_function('!document.querySelector(".showcase-track .is-active video").paused')
                 page.locator('.showcase-track .is-active video').hover()
-                page.wait_for_function('document.querySelector(".showcase-track").dataset.active!=="6"', timeout=7000)
+                page.wait_for_function('document.querySelector(".showcase-track").dataset.active!=="0"', timeout=7000)
                 page.locator('#overview').scroll_into_view_if_needed()
                 page.wait_for_function('Array.from(document.querySelectorAll(".showcase-track video")).every(v=>v.paused)')
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
