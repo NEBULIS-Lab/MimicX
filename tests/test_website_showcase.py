@@ -6,6 +6,12 @@ from pathlib import Path
 SITE = Path(__file__).resolve().parents[1] / 'docs'
 
 
+def test_body_paragraphs_are_justified_without_changing_headings():
+    css = (SITE / 'assets/css/research.css').read_text()
+    rule = re.search(r'#research p\s*\{([^}]+)\}', css)
+    assert rule and 'text-align: justify' in rule[1]
+
+
 def test_showcase_order_and_media_inventory():
     html = (SITE / 'index.html').read_text()
     assert html.index('</header>') < html.index('class="research-nav"') < html.index('id="showcase"')

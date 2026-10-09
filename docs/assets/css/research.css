@@ -38,7 +38,7 @@
 #research .rx-band { background: var(--rx-band); border-block: 1px solid var(--rx-line); }
 #research h2 { font-size: 30px; line-height: 1.3; font-weight: 650; margin: 0 0 18px; color: var(--rx-text); }
 #research h3 { font-size: 17px; line-height: 1.4; margin: 0 0 12px; color: var(--rx-text); font-weight: 600; }
-#research p { margin: 0 0 18px; }
+#research p { margin: 0 0 18px; text-align: justify; text-justify: inter-word; hyphens: auto; }
 #research strong { color: inherit; }
 #research a { color: var(--rx-accent); text-underline-offset: 4px; }
 #research figure { margin: 0; min-width: 0; }
