@@ -125,7 +125,9 @@ html.media-open { overflow: hidden; }
   .hero-bottom .rx-affiliation { font-size: 11px; max-width: 400px; margin-inline: auto !important; }
   .hero-bottom .rx-correspondence { font-size: 10px; }
   .research-nav-inner { gap: 10px; padding-inline: 14px; }
-  .research-nav nav { gap: 20px; }
+  .research-nav nav { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0 8px; overflow: visible; }
+  .research-nav nav a { padding: 6px 0; text-align: center; font-size: 11px; line-height: 1.35; }
+  #research .rx-section, #research #showcase { scroll-margin-top: 108px; }
   #research #showcase { --media-height: 180px; padding-top: 28px; }
   #research .showcase-track figure { flex-basis: 72%; padding-inline: 6px; }
   .showcase-track figcaption { align-items: start; flex-direction: column; gap: 1px; min-height: 46px; padding-top: 8px; }
@@ -134,8 +136,8 @@ html.media-open { overflow: hidden; }
   #research .showcase-heading h2 { font-size: 23px; }
   .showcase-heading button { width: 32px; height: 32px; min-width: 32px; }
   #showcase-count { display: none; }
-  .showcase-pagination { display: flex; overflow-x: auto; scrollbar-width: none; margin-top: 12px; gap: 15px; }
-  .showcase-pagination button { flex: 0 0 86px; font-size: 11px !important; }
+  .showcase-pagination { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); margin-top: 12px; gap: 6px 12px; }
+  .showcase-pagination button { font-size: 11px !important; }
   .method-ledger { padding-top: 4px; }
   .method-ledger li { padding-bottom: 20px; }
   #media-viewer { width: var(--viewer-width,calc(100vw - 12px)); max-width: none; max-height: calc(100dvh - 12px); }
@@ -145,9 +147,13 @@ html.media-open { overflow: hidden; }
   .viewer-zoom { grid-column: 1 / -1; grid-row: 2; justify-content: center; }
   #viewer-content { padding: 8px; }
   .rx-table-heading { gap: 12px; }
-  .rx-table-scroll { -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y pinch-zoom; }
-  .rx-table th:first-child { position: sticky; left: 0; background: var(--rx-bg); z-index: 1; }
-  .rx-table .ours-row th:first-child { background: var(--rx-ours); }
+  /* Fit all five result columns inline; the existing viewer retains full-size zoom. */
+  #results .rx-table-scroll { overflow: visible; }
+  #results .rx-table { min-width: 0; table-layout: fixed; font-size: 12px; line-height: 1.5; }
+  #results .rx-table th, #results .rx-table td { padding: 10px 4px; }
+  #results .rx-table thead { font-size: 11px; }
+  #results .rx-table thead th:nth-child(-n+2) { width: 24%; }
+  #results .rx-table caption { font-size: 11px; }
   #research .rx-table-heading h3 { margin: 0; }
 }
 @media (max-width: 360px) {

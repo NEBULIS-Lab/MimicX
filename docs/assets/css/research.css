@@ -275,8 +275,8 @@ html:has(#media-viewer[open]) { overflow: hidden; }
   .rx-method-layout { grid-template-columns: 1fr; gap: 28px; }
   .rx-scene-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   #research .rx-intro h2 { font-size: 25px; }
-  .rx-paper-stages { display: flex; overflow-x: auto; gap: 16px; scroll-snap-type: x mandatory; padding-bottom: 14px; }
-  .rx-paper-stages li { width: min(78vw,340px); flex: none; scroll-snap-align: start; }
+  .rx-paper-stages { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px 12px; }
+  .rx-paper-stages li { width: auto; min-width: 0; }
   .rx-plot-grid { grid-template-columns: 1fr; gap: 32px; }
   #research .result-plot figcaption span { font-size: 13px; }
   .rx-hloop-layout { grid-template-columns: 1fr; }

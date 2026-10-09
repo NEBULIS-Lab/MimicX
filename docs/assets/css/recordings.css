@@ -11,19 +11,21 @@
 #research .recording-frame[data-crop="top-only"] video { object-position: center bottom; }
 .recording-grid figcaption { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 10px; font-size: 14px; font-weight: 600; }
 .recording-grid figcaption small { display: block; color: var(--rx-muted); font-size: 12px; font-weight: 400; margin-top: 3px; }
-.recording-grid figcaption .rx-icon-button { flex: 0 0 32px; width: 32px; height: 32px; }
+.recording-grid figcaption .rx-icon-button { flex: 0 0 32px; min-width: 32px; width: 32px; height: 32px; }
 #research .rx-scene-grid img { aspect-ratio: 1; object-fit: cover; }
 .rx-scene-grid a { border-radius: 8px; overflow: hidden; }
 @media (max-width: 900px) {
-  .recording-grid { grid-template-columns: repeat(5, minmax(245px, 1fr)); overflow-x: auto; scroll-snap-type: x proximity; overscroll-behavior-x: contain; padding-bottom: 10px; }
-  .recording-grid figure { scroll-snap-align: start; }
+  .recording-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 14px; }
 }
 @media (max-width: 600px) {
   .recording-heading { align-items: flex-start; gap: 10px; }
   .recording-tools { gap: 10px; }
   .recording-tools > a { font-size: 12px; }
   #research .recording-heading h3, #research .recording-heading h4 { font-size: 16px; padding-top: 5px; }
-  .recording-grid { gap: 14px; }
+  .recording-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
+  /* Keep the source above the four trackers, with every video equally sized. */
+  .recording-grid figure:first-child { grid-column: 1 / -1; width: calc((100% - 12px) / 2); justify-self: center; }
+  .recording-grid figcaption { display: grid; grid-template-columns: minmax(0, 1fr) 32px; gap: 6px; font-size: 12px; line-height: 1.45; align-items: start; }
   .recording-row { padding: 22px 0; }
-  .recording-grid figcaption small { display: block; }
+  .recording-grid figcaption small { display: block; font-size: 11px; overflow-wrap: anywhere; }
 }
