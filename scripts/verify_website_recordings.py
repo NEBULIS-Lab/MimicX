@@ -48,9 +48,10 @@ def verify(site, output, chromium):
                         row.locator('.recording-grid').evaluate('n => n.scrollLeft = 0')
                     if task == 'kungfu':
                         assert row.locator('[data-crop="top-only"] video').evaluate('v=>getComputedStyle(v).objectPosition') == '50% 100%'
-                    row.locator('a[data-viewer="video"]').first.click()
+                    row.locator('[data-method="ours"] a[data-viewer="video"]').click()
                     page.wait_for_function("document.querySelector('#media-viewer').open && document.querySelector('#viewer-content video').videoWidth > 0")
                     assert page.locator('.recording-row video').evaluate_all("vs=>vs.every(v=>v.paused)")
+                    page.locator('#media-viewer').evaluate("async n => { await Promise.all(n.getAnimations().map(a => a.finished.catch(() => {}))); }")
                     box = page.locator('#media-viewer').bounding_box()
                     assert box['x'] >= -1 and box['x'] + box['width'] <= width + 1, box
                     if task == "tennis":

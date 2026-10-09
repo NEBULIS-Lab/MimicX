@@ -90,6 +90,10 @@ button; its author band remains in the public edition. Native page pinch zoom is
 disabled. Video playback stops when its viewer closes. Eligible visible rows
 resume, except those the reader explicitly paused.
 
+The four primary MimicX players show the reference-overlay (`*-ghost.mp4`)
+recordings, including matching posters and enlarged playback. Each task's
+`Robot only` link retains the corresponding overlay-free recording.
+
 The `assets/media/recovery/manifest.json` inventory records full-decode checks,
 source hashes, transformations and the additional-continuation cohort. It also
 includes the high-resolution source/human/G1-reference composites used by the

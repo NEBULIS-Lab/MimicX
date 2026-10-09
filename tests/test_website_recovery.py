@@ -16,6 +16,12 @@ def test_all_tasks_show_input_baseline_and_latest_policy_without_selection():
             assert media in row[0]
         for method in ("beyond", "sonic"):
             assert f'direct-{task}-{method}.mp4' in row[0]
+        ours = re.search(r'<figure data-method="ours">.*?</figure>', row[0], re.S)
+        assert ours, task
+        for attribute, suffix in (("src", "mp4"), ("href", "mp4"), ("poster", "jpg")):
+            assert f'{attribute}="assets/media/recovery/{task}-ghost.{suffix}"' in ours[0]
+        assert f"{task}-policy.mp4" not in ours[0]
+        assert ">Robot only</a>" in row[0]
         assert row[0].count('aria-label="MimicX"') == 1
         assert row[0].count('aria-label="Fixed Reference"') == 1
     assert 'id="baseline-select"' not in html
