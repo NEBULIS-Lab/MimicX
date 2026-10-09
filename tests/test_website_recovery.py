@@ -75,6 +75,11 @@ def test_source_camera_release_matches_each_input_clock():
         assert len({r['ghost_color'] for r in clips}) == 4
         for clip in clips:
             assert clip['schema'] == 'mimicx.source-camera-replay.v2'
+            assert clip['display_revision'] == 'stable-camera-robot-first-v1'
+            assert clip['ghost_alpha'] == .23
+            assert clip['protected_pixel_max_delta'] == 0
+            if task != 'kungfu':
+                assert clip['camera_stability']['new_step_max_cm'] == 0
             assert clip['full_decode_passed']
             assert clip['decoded_frames'] == clip['source_frames']
             assert clip['encoded_fps'] == clip['source_fps']
