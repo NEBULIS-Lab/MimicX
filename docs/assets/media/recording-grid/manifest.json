@@ -1,0 +1,214 @@
+[
+  {
+    "file": "direct-dance-beyond.mp4",
+    "source": "rollout.mp4",
+    "source_sha256": "64d0edcd2c3ee19be60574a6a88863817b3eeb3ee04cc2a165c03dcd250fac46",
+    "sha256": "e44fb451513c530d0271c2ff900a2032652360e550212a34a47b60152e9c9400",
+    "crop": null,
+    "full_decode_passed": true,
+    "timing": "Full original timeline; no cuts or retiming",
+    "width": 1280,
+    "height": 720,
+    "fps": 50.0,
+    "frames": 783,
+    "duration_seconds": 15.66,
+    "method": "BeyondMimic_MjLab",
+    "task": "dance2",
+    "seed": 202,
+    "reference_sha256": "4645c84c47264d103e77a6e6ee543c0a4d11d654d25ad42714fa18c8e4550409",
+    "reference_protocol": "original-reference"
+  },
+  {
+    "file": "direct-dance-beyond.jpg",
+    "source": "direct-dance-beyond.mp4",
+    "sha256": "cb8c6933fcc645f59fb3a3b60062f23829b33282bc3605e072a547faa874ba46",
+    "role": "poster"
+  },
+  {
+    "file": "direct-dance-sonic.mp4",
+    "source": "rollout.mp4",
+    "source_sha256": "b493877565a9f6d1c1f225ede59fcf407f0626c2a1abbc154a2bdf67d91830b3",
+    "sha256": "03960b5572648d9387aab6294e9d0188177c1c169b39b4bd0f31b32e2fbc4181",
+    "crop": null,
+    "full_decode_passed": true,
+    "timing": "Full original timeline; no cuts or retiming",
+    "width": 1280,
+    "height": 720,
+    "fps": 30.0,
+    "frames": 1322,
+    "duration_seconds": 44.06666666666667,
+    "method": "SONIC",
+    "task": "dance2",
+    "seed": 202,
+    "reference_sha256": "2154de69a602529ba86de4e5b4e99b22f83907ce3d4906dc2bdee4105898cd1e",
+    "reference_protocol": "repaired-reference"
+  },
+  {
+    "file": "direct-dance-sonic.jpg",
+    "source": "direct-dance-sonic.mp4",
+    "sha256": "e5fbe06cbcb5612de89a4bcb4c3884c6943408efadf9ac69826b21f340b5bd3c",
+    "role": "poster"
+  },
+  {
+    "file": "direct-kungfu-beyond.mp4",
+    "source": "rollout.mp4",
+    "source_sha256": "8d348444ceae63dbd4fc4c5c47665dde1020c34eab001f003cf451c0b8637fd2",
+    "sha256": "25a1ed7ae112dcb6826f79cebff00efc1573e0ce254af804f27a50008ca1b655",
+    "crop": null,
+    "full_decode_passed": true,
+    "timing": "Full original timeline; no cuts or retiming",
+    "width": 1280,
+    "height": 720,
+    "fps": 50.0,
+    "frames": 1061,
+    "duration_seconds": 21.22,
+    "method": "BeyondMimic_MjLab",
+    "task": "kongfu1",
+    "seed": 202,
+    "reference_sha256": "bf84d3e3e784fe4d3683a6af33ceb67dc3e6e07ba4ba0cd51d956f42de5f9f80",
+    "reference_protocol": "original-reference"
+  },
+  {
+    "file": "direct-kungfu-beyond.jpg",
+    "source": "direct-kungfu-beyond.mp4",
+    "sha256": "985f542f5baae80b6d14a81561e59e1a2fba3846d20fa98e5b379fa890815952",
+    "role": "poster"
+  },
+  {
+    "file": "direct-kungfu-sonic.mp4",
+    "source": "rollout.mp4",
+    "source_sha256": "ac096f0c157d29ade2452c112938bc93e323dbdaa5dcf13175800713d1b07c90",
+    "sha256": "58f3b194abad39b7e085b0449274525a276a83153b13bcd43e59bbc584a05a25",
+    "crop": null,
+    "full_decode_passed": true,
+    "timing": "Full original timeline; no cuts or retiming",
+    "width": 1280,
+    "height": 720,
+    "fps": 30.0,
+    "frames": 1503,
+    "duration_seconds": 50.1,
+    "method": "SONIC",
+    "task": "kongfu1",
+    "seed": 202,
+    "reference_sha256": "8f3f80bd7e125902b59f6afe7ff96034f1b5145cd26ee4f1c64c03fe36d5624b",
+    "reference_protocol": "repaired-reference"
+  },
+  {
+    "file": "direct-kungfu-sonic.jpg",
+    "source": "direct-kungfu-sonic.mp4",
+    "sha256": "83853d3013ee4139d9827e420d5370e18401ec95d6af9125a3146b5ec16fad62",
+    "role": "poster"
+  },
+  {
+    "file": "scene-parkour.mp4",
+    "source": "parkour-policy.mp4",
+    "source_sha256": "60d33404ef2dce7b028f7470269b82b1e4f7925de9d0ed4776000cb84f795efb",
+    "sha256": "56c186c405b6b7bddb2ff9619d9a39643a16a24258f0c62dc24e2c09df59e73f",
+    "crop": {
+      "left": 324,
+      "top": 88,
+      "width": 632,
+      "height": 632
+    },
+    "full_decode_passed": true,
+    "timing": "Full original timeline; no cuts or retiming",
+    "width": 632,
+    "height": 632,
+    "fps": 50.0,
+    "frames": 255,
+    "duration_seconds": 5.1,
+    "task": "parkour",
+    "method": "MimicX",
+    "role": "scene-display-crop"
+  },
+  {
+    "file": "scene-parkour.jpg",
+    "source": "scene-parkour.mp4",
+    "sha256": "3208992bbd32b44c5d0dbde84a316660ed1056bca1bf29333a0bd1b3196e1344",
+    "role": "poster"
+  },
+  {
+    "file": "scene-stairs.mp4",
+    "source": "stairs.mp4",
+    "source_sha256": "3055ea04dc6447d1fb6e223ebabb121a96e789db656bff3da50ee450e5d4f078",
+    "sha256": "6f72b7668346c2a63038ee0afe563c8aaf5c1dc9eb70ecb09c74cf0783ea5b79",
+    "crop": {
+      "left": 324,
+      "top": 88,
+      "width": 632,
+      "height": 632
+    },
+    "full_decode_passed": true,
+    "timing": "Full original timeline; no cuts or retiming",
+    "width": 632,
+    "height": 632,
+    "fps": 50.0,
+    "frames": 449,
+    "duration_seconds": 8.98,
+    "task": "stairs",
+    "method": "MimicX",
+    "role": "scene-display-crop"
+  },
+  {
+    "file": "scene-stairs.jpg",
+    "source": "scene-stairs.mp4",
+    "sha256": "7ff4f193ba26696ac2c73aefea38bf662aa871a56f193dcfd9378cfb02436cd8",
+    "role": "poster"
+  },
+  {
+    "file": "scene-platform.mp4",
+    "source": "platform.mp4",
+    "source_sha256": "2b070640040f2218606b246768fe9145f5cf7e031cdc2e5f87460460d3dde2c3",
+    "sha256": "6115c0e0e41619ba764c840fe8f080af6ca2b84b5ed0f8b318fabcbe564f0141",
+    "crop": {
+      "left": 324,
+      "top": 88,
+      "width": 632,
+      "height": 632
+    },
+    "full_decode_passed": true,
+    "timing": "Full original timeline; no cuts or retiming",
+    "width": 632,
+    "height": 632,
+    "fps": 50.0,
+    "frames": 58,
+    "duration_seconds": 1.16,
+    "task": "platform",
+    "method": "MimicX",
+    "role": "scene-display-crop"
+  },
+  {
+    "file": "scene-platform.jpg",
+    "source": "scene-platform.mp4",
+    "sha256": "86a3dc34bc0cb5c4774cc6379c8597d35a77cc4a9fe1b7c13bdc30e3ebbe2d42",
+    "role": "poster"
+  },
+  {
+    "file": "scene-forest.mp4",
+    "source": "forest.mp4",
+    "source_sha256": "1f0c14bb6f55eabcddf17510fe29bc36650c54894258718c5ad804536d3c9b21",
+    "sha256": "c6dc09225c6bc9e87191d7106456b31913eebde293e8db56b3567f95088310c5",
+    "crop": {
+      "left": 324,
+      "top": 88,
+      "width": 632,
+      "height": 632
+    },
+    "full_decode_passed": true,
+    "timing": "Full original timeline; no cuts or retiming",
+    "width": 632,
+    "height": 632,
+    "fps": 50.0,
+    "frames": 404,
+    "duration_seconds": 8.08,
+    "task": "forest",
+    "method": "MimicX",
+    "role": "scene-display-crop"
+  },
+  {
+    "file": "scene-forest.jpg",
+    "source": "scene-forest.mp4",
+    "sha256": "c3bfc5f4f798253f46a8eb958f01d0d6353f30e0f937e7e0bb4180ca4d858a71",
+    "role": "poster"
+  }
+]

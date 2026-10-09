@@ -27,6 +27,7 @@ def verify(site, output, chromium):
                 page.goto(f"http://127.0.0.1:{server.server_port}", wait_until="networkidle")
                 assert page.locator("html").get_attribute("data-theme") == "dark"
                 assert page.locator("[data-policy-task]").count() == 4
+                assert page.locator("[data-comparison-task]").count() == 0
                 assert page.locator("#baseline-select, [role=tabpanel]").count() == 0
                 for task in ("tennis", "football", "dance", "kungfu"):
                     selector = f'[data-policy-task="{task}"]'
@@ -35,10 +36,18 @@ def verify(site, output, chromium):
                     page.wait_for_function("s => [...document.querySelectorAll(s+' video')].every(v => !v.paused && v.currentTime > .05 && v.videoWidth > 0)", arg=selector, timeout=30000)
                     frames = row.locator('.recording-frame').evaluate_all("ns=>ns.map(n=>{const b=n.getBoundingClientRect(); return {width:b.width,height:b.height}})")
                     assert max(f['width'] for f in frames) - min(f['width'] for f in frames) < 1
-                    assert all(abs(f['width']/f['height']-16/9)<.02 for f in frames)
+                    assert len(frames) == 5
+                    assert all(abs(f['width']/f['height']-1)<.02 for f in frames)
                     row.locator('.recording-toggle').click()
                     page.wait_for_function("s => [...document.querySelectorAll(s+' video')].every(v => v.paused)", arg=selector)
                     row.screenshot(path=str(output / f"{width}-dark-{task}.png"))
+                    if width < 900:
+                        row.locator('.recording-grid').evaluate('n => n.scrollLeft = n.scrollWidth')
+                        page.wait_for_timeout(250)
+                        row.screenshot(path=str(output / f"{width}-dark-{task}-right.png"))
+                        row.locator('.recording-grid').evaluate('n => n.scrollLeft = 0')
+                    if task == 'kungfu':
+                        assert row.locator('[data-crop="top-only"] video').evaluate('v=>getComputedStyle(v).objectPosition') == '50% 100%'
                     row.locator('a[data-viewer="video"]').first.click()
                     page.wait_for_function("document.querySelector('#media-viewer').open && document.querySelector('#viewer-content video').videoWidth > 0")
                     assert page.locator('.recording-row video').evaluate_all("vs=>vs.every(v=>v.paused)")
@@ -50,11 +59,16 @@ def verify(site, output, chromium):
                     page.wait_for_function("!document.querySelector('#media-viewer').open")
                     row.locator('.recording-toggle').click()
                     page.wait_for_function("s => [...document.querySelectorAll(s+' video')].some(v=>!v.paused)", arg=selector)
-                for task in ("tennis", "football"):
-                    row = page.locator(f'[data-comparison-task="{task}"]')
-                    row.scroll_into_view_if_needed()
-                    page.wait_for_timeout(900)
-                    row.screenshot(path=str(output / f"{width}-paper-comparison-{task}.png"))
+                scenes = page.locator('.rx-scene-recordings')
+                scenes.scroll_into_view_if_needed()
+                page.wait_for_function('[...document.querySelectorAll(".rx-scene-grid img")].every(n=>n.complete && n.naturalWidth>0)')
+                for link in scenes.locator('[data-viewer="video"]').all():
+                    link.click()
+                    page.wait_for_function('document.querySelector("#viewer-content video")?.videoWidth > 0')
+                    assert page.locator('#viewer-content video').evaluate('v=>v.videoWidth === v.videoHeight')
+                    page.click('#viewer-close')
+                    page.wait_for_function("!document.querySelector('#media-viewer').open")
+                scenes.screenshot(path=str(output / f'{width}-collision-scenes.png'))
                 page.click('#theme-toggle')
                 page.locator('[data-policy-task="tennis"]').scroll_into_view_if_needed()
                 page.locator('[data-policy-task="tennis"]').screenshot(path=str(output / f"{width}-light-tennis.png"))

@@ -41,7 +41,8 @@ def verify(site, output, chromium):
                     if width >= 1440:
                         assert max(baselines)-min(baselines) < .25
                 assert page.locator('[data-policy-task]').count() == 4
-                assert page.locator('[data-comparison-task]').count() == 2
+                assert page.locator('[data-comparison-task]').count() == 0
+                assert page.locator('[data-policy-task] video').count() == 20
                 assert page.locator('.rx-policy-summary p, .rx-policy-summary div').count() == 0
                 assert 'additional policy continuation' in page.locator('.rx-policy-summary').inner_text()
                 for theme in ('dark', 'light'):

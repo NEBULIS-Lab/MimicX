@@ -47,14 +47,21 @@ MimicX, blue for Fixed Reference and teal for complementary mechanisms.
   reconstructed-scene frames, with Tennis and Forest example selection.
   Each selection pre-decodes all four frames and replaces them together with
   a short staggered fade. Rapid selections cannot mix stages across tasks.
-- Recordings: four directly visible task rows. Each contains the original human
-  input, historical Fixed Reference and newly approved additional-continuation
-  MimicX recording. No task or baseline selectors are required. The reference
-  overlay is available in the same in-page media viewer. Two separate rows
-  retain all four methods from the original Tennis/Football direct comparison;
-  the paper's measurements and checkpoints are unchanged. Then follow four collision-scene recordings:
+- Recordings: four directly visible task rows. Each has five square players:
+  original human input, Fixed Reference, BeyondMimic, SONIC and latest MimicX.
+  There is no duplicate comparison section or task/baseline selector. On narrow
+  screens the five-player row scrolls horizontally. Landscape videos are
+  center-cropped in the page; the portrait Kung Fu input is bottom-aligned, so
+  only its top is cropped. Enlarged task videos retain their original frames.
+  Reference overlays remain available in the in-page media viewer. The
+  BeyondMimic Dance/Kung Fu archives retain the original-reference label;
+  they are not relabeled as matched repaired-reference comparisons. The paper's
+  measurements and checkpoints are unchanged. Then follow four collision-scene recordings:
   Parkour, Stairs, Platform and Forest. Parkour is a diagnostic tracking
   rollout, not a claim of full-horizon completion. Other showcase items are stills.
+  Scene previews and playback use square derivatives with the top black band
+  removed; uncropped originals remain in the media archive. Crop rectangles,
+  hashes and full-timeline checks are recorded in `recording-grid/manifest.json`.
 - Method: the final hand-drawn supervision diagram and compact refinement
   ledger form a top-aligned 64:36 row, stacked on mobile. The ledger connects
   rollout localization, coordinated updates and repeated verification.
