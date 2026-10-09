@@ -11,6 +11,7 @@ dependencies = ["numpy>=1.24,<3", "scipy>=1.10", "PyYAML>=6", "tqdm>=4.65"]
 dev = ["pytest>=8,<10", "build>=1"]
 visualization = ["imageio[ffmpeg]>=2.31", "Pillow>=10"]
 plots = ["matplotlib>=3.7"]
+website = ["playwright>=1.50,<2", "RangeHTTPServer==1.4.0"]
 
 [project.urls]
 Repository = "https://github.com/NEBULIS-Lab/MimicX"

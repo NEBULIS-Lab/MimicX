@@ -12,14 +12,14 @@ def test_all_tasks_show_input_baseline_and_latest_policy_without_selection():
         row = re.search(rf'<article[^>]*data-policy-task="{task}".*?</article>', html, re.S)
         assert row, task
         assert row[0].count("<video ") == 5
-        for media in (f"recovery/{task}-input.mp4", f"{task}-fixed.mp4", f"recovery/{task}-policy.mp4", f"recovery/{task}-ghost.mp4"):
+        for media in (f"recovery/{task}-input.mp4", f"recovery/{task}-policy.mp4"):
             assert media in row[0]
-        for method in ("beyond", "sonic"):
-            assert f'direct-{task}-{method}.mp4' in row[0]
+        for method in ("fixed", "beyond", "sonic", "ours"):
+            assert f'source-camera/{task}-{method}-ghost.mp4' in row[0]
         ours = re.search(r'<figure data-method="ours">.*?</figure>', row[0], re.S)
         assert ours, task
         for attribute, suffix in (("src", "mp4"), ("href", "mp4"), ("poster", "jpg")):
-            assert f'{attribute}="assets/media/recovery/{task}-ghost.{suffix}"' in ours[0]
+            assert f'{attribute}="assets/media/source-camera/{task}-ours-ghost.{suffix}"' in ours[0]
         assert f"{task}-policy.mp4" not in ours[0]
         assert ">Robot only</a>" in row[0]
         assert row[0].count('aria-label="MimicX"') == 1
@@ -63,3 +63,26 @@ def test_release_manifest_and_autoplay_lifecycle():
     for guard in ("IntersectionObserver", "visibilitychange", "prefers-reduced-motion", "mimicx-media-open", "userPaused", "dialog.open"):
         assert guard in js
     assert "pointerenter" not in js
+
+
+def test_source_camera_release_matches_each_input_clock():
+    rows = json.loads((SITE / 'assets/media/source-camera/manifest.json').read_text())
+    assert len(rows) == 16
+    for task in ('tennis', 'football', 'dance', 'kungfu'):
+        clips = [r for r in rows if r['task'] == task]
+        assert {r['method'] for r in clips} == {'fixed', 'beyond', 'sonic', 'ours'}
+        assert len({r['source_calibration_sha256'] for r in clips}) == 1
+        assert len({r['ghost_color'] for r in clips}) == 4
+        for clip in clips:
+            assert clip['schema'] == 'mimicx.source-camera-replay.v2'
+            assert clip['full_decode_passed']
+            assert clip['decoded_frames'] == clip['source_frames']
+            assert clip['encoded_fps'] == clip['source_fps']
+            assert clip['retime_factor'] == 1
+            assert max(clip['endpoint_hold_seconds']) <= .04
+            path = SITE / 'assets/media/source-camera' / clip['file']
+            assert hashlib.sha256(path.read_bytes()).hexdigest() == clip['sha256']
+            assert '/data/' not in json.dumps(clip)
+    js = (SITE / 'assets/js/recordings.js').read_text()
+    assert 'syncRow' in js
+    assert "'seeking'" in js

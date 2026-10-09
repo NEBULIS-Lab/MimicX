@@ -7,12 +7,25 @@ from pathlib import Path
 import threading
 
 from playwright.sync_api import sync_playwright
-from verify_website import QuietHandler
+from RangeHTTPServer import RangeRequestHandler
+
+
+class RecordingHandler(RangeRequestHandler):
+    """Use byte-range responses so local video seeking matches production."""
+
+    def log_message(self, *args):
+        pass
+
+    def copyfile(self, source, outputfile):
+        try:
+            super().copyfile(source, outputfile)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
 
 
 def verify(site, output, chromium):
     output.mkdir(parents=True, exist_ok=True)
-    server = ThreadingHTTPServer(("127.0.0.1", 0), partial(QuietHandler, directory=str(site)))
+    server = ThreadingHTTPServer(("127.0.0.1", 0), partial(RecordingHandler, directory=str(site)))
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     reports = []
@@ -34,12 +47,21 @@ def verify(site, output, chromium):
                     row = page.locator(selector)
                     row.scroll_into_view_if_needed()
                     page.wait_for_function("s => [...document.querySelectorAll(s+' video')].every(v => !v.paused && v.currentTime > .05 && v.videoWidth > 0)", arg=selector, timeout=30000)
+                    page.wait_for_function("s => { const vs=[...document.querySelectorAll(s+' video')]; return Math.max(...vs.map(v=>v.currentTime))-Math.min(...vs.map(v=>v.currentTime)) < .14; }", arg=selector)
+                    durations = row.locator('video').evaluate_all('vs=>vs.map(v=>v.duration)')
+                    assert max(durations) - min(durations) < .001, durations
                     frames = row.locator('.recording-frame').evaluate_all("ns=>ns.map(n=>{const b=n.getBoundingClientRect(); return {width:b.width,height:b.height}})")
                     assert max(f['width'] for f in frames) - min(f['width'] for f in frames) < 1
                     assert len(frames) == 5
                     assert all(abs(f['width']/f['height']-1)<.02 for f in frames)
                     row.locator('.recording-toggle').click()
                     page.wait_for_function("s => [...document.querySelectorAll(s+' video')].every(v => v.paused)", arg=selector)
+                    row.locator('video').nth(2).evaluate('v=>v.currentTime=2')
+                    try:
+                        page.wait_for_function("s => [...document.querySelectorAll(s+' video')].every(v => Math.abs(v.currentTime-2)<.05)", arg=selector, timeout=8000)
+                    except Exception:
+                        print(row.locator('video').evaluate_all('vs=>vs.map(v=>({src:v.currentSrc,time:v.currentTime,seeking:v.seeking,paused:v.paused,ready:v.readyState,seekable:[...Array(v.seekable.length)].map((_,i)=>[v.seekable.start(i),v.seekable.end(i)])}))'), flush=True)
+                        raise
                     row.screenshot(path=str(output / f"{width}-dark-{task}.png"))
                     if width < 900:
                         row.locator('.recording-grid').evaluate('n => n.scrollLeft = n.scrollWidth')
@@ -47,7 +69,7 @@ def verify(site, output, chromium):
                         row.screenshot(path=str(output / f"{width}-dark-{task}-right.png"))
                         row.locator('.recording-grid').evaluate('n => n.scrollLeft = 0')
                     if task == 'kungfu':
-                        assert row.locator('[data-crop="top-only"] video').evaluate('v=>getComputedStyle(v).objectPosition') == '50% 100%'
+                        assert row.locator('[data-crop="top-only"] video').evaluate_all("vs=>vs.length===5 && vs.every(v=>getComputedStyle(v).objectPosition==='50% 100%')")
                     row.locator('[data-method="ours"] a[data-viewer="video"]').click()
                     page.wait_for_function("document.querySelector('#media-viewer').open && document.querySelector('#viewer-content video').videoWidth > 0")
                     assert page.locator('.recording-row video').evaluate_all("vs=>vs.every(v=>v.paused)")

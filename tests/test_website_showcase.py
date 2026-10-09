@@ -66,7 +66,7 @@ def test_author_line_and_inline_policy_summary():
     summary = re.search(r'<p class="rx-policy-summary">(.*?)</p>', html, re.S)
     assert summary
     assert 'additional policy continuation' in summary[1]
-    assert 'original input' in summary[1]
+    assert 'original input' in summary[1].lower()
     assert 'id="task-error"' not in html
     assert 'class="rx-task-results"' not in html
 
