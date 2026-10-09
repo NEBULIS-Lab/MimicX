@@ -11,15 +11,18 @@ def test_all_tasks_show_input_baseline_and_latest_policy_without_selection():
     for task in ("tennis", "football", "dance", "kungfu"):
         row = re.search(rf'<article[^>]*data-policy-task="{task}".*?</article>', html, re.S)
         assert row, task
-        assert row[0].count("<video ") == 5
+        assert row[0].count("<video ") == (4 if task == 'kungfu' else 5)
         for media in (f"recovery/{task}-input.mp4", f"recovery/{task}-policy.mp4"):
             assert media in row[0]
         for method in ("fixed", "beyond", "sonic", "ours"):
-            assert f'source-camera/{task}-{method}-ghost.mp4' in row[0]
+            if task == 'kungfu' and method == 'sonic':
+                assert 'Re-evaluation pending' in row[0]
+                continue
+            assert f'best-recordings/{task}-{method}-ghost.mp4' in row[0]
         ours = re.search(r'<figure data-method="ours">.*?</figure>', row[0], re.S)
         assert ours, task
         for attribute, suffix in (("src", "mp4"), ("href", "mp4"), ("poster", "jpg")):
-            assert f'{attribute}="assets/media/source-camera/{task}-ours-ghost.{suffix}"' in ours[0]
+            assert f'{attribute}="assets/media/best-recordings/{task}-ours-ghost.{suffix}"' in ours[0]
         assert f"{task}-policy.mp4" not in ours[0]
         assert ">Robot only</a>" in row[0]
         assert row[0].count('aria-label="MimicX"') == 1
@@ -66,13 +69,14 @@ def test_release_manifest_and_autoplay_lifecycle():
 
 
 def test_source_camera_release_matches_each_input_clock():
-    rows = json.loads((SITE / 'assets/media/source-camera/manifest.json').read_text())
-    assert len(rows) == 16
+    rows = json.loads((SITE / 'assets/media/best-recordings/manifest.json').read_text())
+    assert len(rows) == 15
     for task in ('tennis', 'football', 'dance', 'kungfu'):
         clips = [r for r in rows if r['task'] == task]
-        assert {r['method'] for r in clips} == {'fixed', 'beyond', 'sonic', 'ours'}
+        expected = {'fixed', 'beyond', 'ours'} | (set() if task == 'kungfu' else {'sonic'})
+        assert {r['method'] for r in clips} == expected
         assert len({r['source_calibration_sha256'] for r in clips}) == 1
-        assert len({r['ghost_color'] for r in clips}) == 4
+        assert len({r['ghost_color'] for r in clips}) == len(expected)
         for clip in clips:
             assert clip['schema'] == 'mimicx.source-camera-replay.v2'
             assert clip['display_revision'] == 'stable-camera-robot-first-v1'
@@ -85,9 +89,15 @@ def test_source_camera_release_matches_each_input_clock():
             assert clip['encoded_fps'] == clip['source_fps']
             assert clip['retime_factor'] == 1
             assert max(clip['endpoint_hold_seconds']) <= .04
-            path = SITE / 'assets/media/source-camera' / clip['file']
+            if clip['method'] == 'sonic':
+                assert clip['startup_band_released'] is True
+                assert clip['maximum_external_wrench_during_playback'] == 0
+            if clip['method'] != 'ours':
+                assert clip['selection']['candidate_count'] > 0
+            path = SITE / 'assets/media/best-recordings' / clip['file']
             assert hashlib.sha256(path.read_bytes()).hexdigest() == clip['sha256']
             assert '/data/' not in json.dumps(clip)
+    assert not list((SITE / 'assets/media/source-camera').glob('*-sonic-ghost.mp4'))
     js = (SITE / 'assets/js/recordings.js').read_text()
     assert 'syncRow' in js
     assert "'seeking'" in js

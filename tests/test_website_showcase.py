@@ -13,7 +13,7 @@ def test_showcase_order_and_media_inventory():
         assert html.index('id="authors"') < html.index('id="showcase"')
     assert html.index('id="showcase"') < html.index('id="policies"') < html.index('id="overview"')
     assert 'class="rx-summary"' not in html
-    assert html.count('data-viewer="video"') >= 28
+    assert html.count('data-viewer="video"') + html.count('recording-pending') >= 28
     gallery = html.split('class="showcase-track"',1)[1].split('class="showcase-pagination"',1)[0]
     assert '<video' not in gallery
     assert gallery.count('<figure') == 8
