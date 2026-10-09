@@ -15,8 +15,12 @@ def test_showcase_order_and_media_inventory():
     assert 'class="rx-summary"' not in html
     assert html.count('data-viewer="video"') + html.count('recording-pending') >= 28
     gallery = html.split('class="showcase-track"',1)[1].split('class="showcase-pagination"',1)[0]
-    assert '<video' not in gallery
-    assert gallery.count('<figure') == 8
+    assert gallery.count('<video') == 2
+    assert gallery.count('<figure') == 7
+    assert 'parkour-reference.webp' not in gallery
+    assert gallery.count('parkour-sequence.webp') == 2
+    for name in ('tennis-scene.mp4', 'football-contact-slow4x.mp4'):
+        assert gallery.count(name) == 2
     assert html.count('tennis-stage-') == 8
     for row in json.loads((SITE / 'assets/media/showcase/manifest.json').read_text()):
         path = SITE / 'assets/media/showcase' / row['file']
@@ -108,4 +112,17 @@ def test_hover_does_not_pause_album_or_change_click_navigation():
     assert 'event.stopImmediatePropagation(); select(i);' in js
     html = (SITE / 'index.html').read_text()
     gallery = html.split('class="showcase-track"', 1)[1].split('class="showcase-pagination"', 1)[0]
-    assert gallery.count('data-viewer="image"') == 8
+    assert gallery.count('data-viewer="image"') == 5
+    assert gallery.count('data-viewer="video"') == 2
+
+
+def test_showcase_video_provenance_and_lifecycle():
+    rows = {row['file']: row for row in json.loads(
+        (SITE / 'assets/media/showcase/manifest.json').read_text())}
+    assert rows['tennis-scene.mp4']['source'] == '09_TENNIS_COURT_LATEST_POLICY.mp4'
+    assert rows['football-contact-slow4x.mp4']['source'] == 'FOOTBALL__CONTACT_SLOW4X.mp4'
+    assert rows['football-contact-slow4x.mp4']['playback_speed'] == .25
+    js = (SITE / 'assets/js/showcase.js').read_text()
+    assert 'function syncVideos()' in js
+    assert "querySelector('img, video')" in js
+    assert 'video.pause()' in js

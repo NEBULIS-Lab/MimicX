@@ -57,7 +57,7 @@ def verify(site, output, chromium):
                 page.click('#showcase-next')
                 page.wait_for_function('document.querySelector(".showcase-track").dataset.active==="0"')
                 page.wait_for_timeout(1100)
-                visible = page.locator('.showcase-track img').evaluate_all('''ns=>ns.filter(n=>{
+                visible = page.locator('.showcase-track img, .showcase-track video').evaluate_all('''ns=>ns.filter(n=>{
                     const r=n.getBoundingClientRect();return Math.min(innerWidth,r.right)-Math.max(0,r.left)>12;
                 }).length''')
                 assert visible>=3, (width, visible)

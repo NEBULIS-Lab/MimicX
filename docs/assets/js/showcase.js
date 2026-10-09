@@ -82,7 +82,7 @@
     const button = document.createElement('button');
     button.type = 'button';
     const caption = figure.querySelector('figcaption');
-    button.textContent = i === 5 ? 'Parkour reference' : caption.firstChild.textContent.trim();
+    button.textContent = caption.firstChild.textContent.trim();
     button.setAttribute('aria-controls', 'showcase-slides');
     button.addEventListener('click', () => select(i));
     pagination.append(button);
@@ -121,12 +121,15 @@
   }
   function fitPhotos() {
     originals.forEach((figure, i) => {
-      const link = figure.querySelector('a'), img = figure.querySelector('img');
-      photoGaps[i] = Math.max(0, (link.clientWidth - img.clientWidth) / 2);
+      const link = figure.querySelector('a'), media = figure.querySelector('img, video');
+      photoGaps[i] = Math.max(0, (link.clientWidth - media.clientWidth) / 2);
     });
     requestPaint();
   }
-  originals.forEach(figure => figure.querySelector('img').addEventListener('load', fitPhotos));
+  originals.forEach(figure => {
+    const media = figure.querySelector('img, video');
+    media.addEventListener(media.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', fitPhotos);
+  });
   function updateSelection() {
     index = carousel.selectedScrollSnap();
     elapsed = 0;
@@ -143,6 +146,7 @@
     track.dataset.active = String(index);
     document.getElementById('showcase-count').textContent = `${String(index + 1).padStart(2, '0')} / ${String(originals.length).padStart(2, '0')}`;
     fitPhotos();
+    syncVideos();
     const button = pagination.children[index];
     const box = button.getBoundingClientRect(), container = pagination.getBoundingClientRect();
     if (box.left < container.left || box.right > container.right) pagination.scrollTo({
@@ -178,7 +182,20 @@
   function canAdvance() {
     return enabled && visible && !focused && !dragging && !moving && !document.hidden && !dialog.open;
   }
+  function syncVideos() {
+    originals.forEach((figure, i) => {
+      const video = figure.querySelector('video');
+      if (!video) return;
+      const shouldPlay = () => i === index && enabled && visible && !reduced.matches && !document.hidden && !dialog.open;
+      if (shouldPlay()) {
+        if (video.paused) video.play().then(() => {
+          if (!shouldPlay()) video.pause();
+        }).catch(() => {});
+      } else video.pause();
+    });
+  }
   function syncAutoplay() {
+    syncVideos();
     if (canAdvance()) {
       if (!autoplayFrame) autoplayFrame = requestAnimationFrame(frame);
     } else {

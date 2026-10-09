@@ -21,7 +21,7 @@
       ? {transform:getComputedStyle(dialog).transform, opacity:getComputedStyle(dialog).opacity} : null;
     viewerMotion?.cancel();
     if (reduced.matches) return;
-    const box = (origin.querySelector('img') || origin).getBoundingClientRect();
+    const box = (origin.querySelector('img, video') || origin).getBoundingClientRect();
     const destination = dialog.getBoundingClientRect();
     const visible = box.bottom > 0 && box.top < innerHeight && box.width > 0;
     const dx = visible ? box.left + box.width / 2 - destination.left - destination.width / 2 : 0;

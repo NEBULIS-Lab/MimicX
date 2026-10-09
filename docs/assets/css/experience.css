@@ -32,7 +32,8 @@ html.media-open { overflow: hidden; }
 .showcase-track { display: flex; position: relative; touch-action: pan-y pinch-zoom; }
 #research .showcase-track figure { grid-area: auto; flex: 0 0 min(78%,1100px); min-width: 0; padding: 0 14px; width: auto; opacity: 1; visibility: visible; transform: none; transition: none; pointer-events: auto; }
 .showcase-track a { height: var(--media-height); transition: none; transform: perspective(1200px) rotateY(var(--album-tilt,0deg)) scale(var(--album-scale,.9)); opacity: var(--album-opacity,.55); overflow: visible; will-change: transform,opacity; }
-#research .showcase-track img { width: auto; height: 100%; max-width: 100%; object-fit: contain; border-radius: 10px; transform: translateX(var(--album-shift,0px)); transition: none; }
+#research .showcase-track :is(img, video) { display: block; width: auto; height: 100%; max-width: 100%; object-fit: contain; border-radius: 10px; transform: translateX(var(--album-shift,0px)); transition: none; }
+#research .showcase-track video { width: min(100%, calc(var(--media-height) * 16 / 9)); height: auto; aspect-ratio: 16 / 9; pointer-events: none; }
 .showcase-track figcaption { opacity: var(--caption-opacity,.3); transform: translateY(var(--caption-offset,0px)); transition: none; padding-inline: 4px; }
 .showcase-pagination { margin-top: 24px; }
 .showcase-controls { gap: 10px; }

@@ -82,22 +82,6 @@
     "frame": 28
   },
   {
-    "file": "tennis-scene.mp4",
-    "source": "VIDEO_SCENE__TENNIS__MIMICX__SOURCE_REGISTERED.mp4",
-    "source_sha256": "0e49f9b53d393612ab3ee865c356fce88cad088edcf37a0131f9e80a8b8530fd",
-    "sha256": "71b8732fdce5fd3efd12d528e947e99fbb08da0f37ee8823121f318007484c03",
-    "stage": "Policy rollout",
-    "transform": "720p; full duration; original timebase; no audio"
-  },
-  {
-    "file": "tennis-scene.webp",
-    "source": "VIDEO_SCENE__TENNIS__MIMICX__SOURCE_REGISTERED.mp4",
-    "source_sha256": "0e49f9b53d393612ab3ee865c356fce88cad088edcf37a0131f9e80a8b8530fd",
-    "sha256": "9dfca696ca4cf440c324a878d91a212aee9018dde175828e98569085b3931d8f",
-    "stage": "Policy rollout",
-    "frame": 196
-  },
-  {
     "file": "football-scene.mp4",
     "source": "VIDEO_SCENE__FOOTBALL_JUGGLING__MIMICX__SOURCE_REGISTERED.mp4",
     "source_sha256": "b041d57eafcf79ed9f58fbdf33db64fd3632bdcc184c0adf6d6cd54ea52ea8af",
@@ -176,5 +160,53 @@
     "width": 1126,
     "height": 1000,
     "selection": "Unchanged paper-selected four-stage correspondence"
+  },
+  {
+    "source": "09_TENNIS_COURT_LATEST_POLICY.mp4",
+    "source_sha256": "de5a49e2c5c4f7ab6e9ce4ca881db6f981e08dc1e8b5987790de05b17bcdde20",
+    "stage": "Recorded policy in registered court; presentation props",
+    "width": 1920,
+    "height": 1080,
+    "file": "tennis-scene.mp4",
+    "sha256": "de5a49e2c5c4f7ab6e9ce4ca881db6f981e08dc1e8b5987790de05b17bcdde20",
+    "frames": 312,
+    "fps": 30.0,
+    "duration_seconds": 10.4,
+    "playback_speed": 1,
+    "transform": "Byte-for-byte approved video"
+  },
+  {
+    "source": "09_TENNIS_COURT_LATEST_POLICY.mp4",
+    "source_sha256": "de5a49e2c5c4f7ab6e9ce4ca881db6f981e08dc1e8b5987790de05b17bcdde20",
+    "stage": "Recorded policy in registered court; presentation props",
+    "width": 1920,
+    "height": 1080,
+    "file": "tennis-scene.webp",
+    "sha256": "44981ddcf6dabd7aa666be65462f153115ee7e165245604d63e00af5760bf090",
+    "frame": 116
+  },
+  {
+    "source": "FOOTBALL__CONTACT_SLOW4X.mp4",
+    "source_sha256": "1d9668a181a13d20332ea83645349decbe935966b8ee03faee466ada3b9846fd",
+    "stage": "One physical foot-ball contact with prescribed robot replay",
+    "width": 1920,
+    "height": 1080,
+    "file": "football-contact-slow4x.mp4",
+    "sha256": "1d9668a181a13d20332ea83645349decbe935966b8ee03faee466ada3b9846fd",
+    "frames": 55,
+    "fps": 30.0,
+    "duration_seconds": 1.8333333333333333,
+    "playback_speed": 0.25,
+    "transform": "Byte-for-byte approved video"
+  },
+  {
+    "source": "FOOTBALL__CONTACT_SLOW4X.mp4",
+    "source_sha256": "1d9668a181a13d20332ea83645349decbe935966b8ee03faee466ada3b9846fd",
+    "stage": "One physical foot-ball contact with prescribed robot replay",
+    "width": 1920,
+    "height": 1080,
+    "file": "football-contact.webp",
+    "sha256": "f2802b23152055d0011863f516f504b4e1f36ac96add1a3d7c6ef5c29ea39752",
+    "frame": 27
   }
 ]
