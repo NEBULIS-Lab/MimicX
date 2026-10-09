@@ -172,7 +172,8 @@ def test_research_themes_and_real_method_artwork():
     assert 'id="theme-toggle"' in html
     assert 'overview-placeholder' not in html
     assert 'Illustration in preparation' not in html
-    assert html.count('role="tab"') == 4
+    assert html.count('data-policy-task=') == 4
+    assert 'id="baseline-select"' not in html
     css = (WEBSITE / 'assets/css/research.css').read_text()
     assert '[data-theme="light"]' in css
     assert '.hero-scene' not in css and 'footer {' not in css

@@ -73,20 +73,11 @@ def verify(site, output, chromium, quick=False):
                 page.reload(wait_until='networkidle')
                 assert page.locator('html').get_attribute('data-theme') == 'light'
                 for task in ('tennis', 'football', 'dance', 'kungfu'):
-                    page.click(f'[data-task="{task}"]')
-                    page.click('#pair-toggle')
-                    page.wait_for_function('document.getElementById("ours-video").currentTime > .1')
-                    page.click('#pair-toggle')
-                    page.click('#pair-reset')
-                page.click('[data-task="tennis"]')
-                for baseline in ['direct-fixed', 'direct-beyond', 'direct-sonic']:
-                    page.select_option('#baseline-select', baseline)
-                    page.click('#pair-toggle')
-                    page.wait_for_function('document.getElementById("ours-video").currentTime > .1')
-                    assert 'Root-local' in page.locator('#error-label').inner_text()
-                    page.click('#pair-toggle')
-                    page.click('#pair-reset')
-                page.select_option('#baseline-select','core')
+                    row = page.locator(f'[data-policy-task="{task}"]')
+                    row.scroll_into_view_if_needed()
+                    row.locator('.recording-toggle').click()
+                    page.wait_for_function('s => [...document.querySelectorAll(s + " video")].some(v => v.currentTime > .1)', arg=f'[data-policy-task="{task}"]')
+                    row.locator('.recording-toggle').click()
                 for link in page.locator('.rx-scene-grid [data-viewer]').all():
                     link.click()
                     page.wait_for_function('document.querySelector("#viewer-content video")?.currentTime > .1')

@@ -13,7 +13,7 @@ def test_showcase_order_and_media_inventory():
         assert html.index('id="authors"') < html.index('id="showcase"')
     assert html.index('id="showcase"') < html.index('id="policies"') < html.index('id="overview"')
     assert 'class="rx-summary"' not in html
-    assert html.count('data-viewer="video"') == 4
+    assert html.count('data-viewer="video"') >= 28
     gallery = html.split('class="showcase-track"',1)[1].split('class="showcase-pagination"',1)[0]
     assert '<video' not in gallery
     assert gallery.count('<figure') == 8
@@ -65,8 +65,9 @@ def test_author_line_and_inline_policy_summary():
         assert authors[1].count('<span>') == 10
     summary = re.search(r'<p class="rx-policy-summary">(.*?)</p>', html, re.S)
     assert summary
-    for field in ('task-error', 'task-horizon', 'task-note', 'policy-protocol'):
-        assert f'id="{field}"' in summary[1]
+    assert 'additional policy continuation' in summary[1]
+    assert 'original input' in summary[1]
+    assert 'id="task-error"' not in html
     assert 'class="rx-task-results"' not in html
 
 

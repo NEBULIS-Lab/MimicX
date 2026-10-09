@@ -40,21 +40,10 @@ def verify(site, output, chromium):
                         assert abs(a-b) < .25 or abs(a-b) > 10, (width, 'misaligned author text', baselines)
                     if width >= 1440:
                         assert max(baselines)-min(baselines) < .25
-                assert page.locator('.rx-policy-summary #task-error').count() == 1
+                assert page.locator('[data-policy-task]').count() == 4
+                assert page.locator('[data-comparison-task]').count() == 2
                 assert page.locator('.rx-policy-summary p, .rx-policy-summary div').count() == 0
-                assert page.locator('.rx-task-results').count() == 0
-                for task in ('tennis', 'football', 'dance', 'kungfu'):
-                    page.click(f'[data-task="{task}"]')
-                    assert page.locator('#task-error').inner_text().endswith(' m')
-                    assert page.locator('#task-horizon').inner_text().endswith(' steps')
-                    assert 'three seeds' in page.locator('.rx-policy-summary').inner_text()
-                page.click('[data-task="tennis"]')
-                page.select_option('#baseline-select', 'direct-beyond')
-                assert page.locator('#task-error').inner_text() == '0.137 / 0.055 m'
-                assert 'BeyondMimic' in page.locator('.rx-policy-summary').inner_text()
-                page.select_option('#baseline-select', 'core')
-                assert page.locator('#task-error').inner_text() == '0.241 / 0.157 m'
-                assert 'all nine' in page.locator('.rx-policy-summary').inner_text()
+                assert 'additional policy continuation' in page.locator('.rx-policy-summary').inner_text()
                 for theme in ('dark', 'light'):
                     if theme == 'light': page.click('#theme-toggle')
                     page.locator('.research-nav').evaluate('n=>n.style.visibility="hidden"')

@@ -38,7 +38,7 @@ MimicX, blue for Fixed Reference and teal for complementary mechanisms.
   follow the actual scroll position, with smooth interpolation instead of
   separate selection-triggered transitions. Embla handles drag,
   loop continuity and resize. Named selectors, arrows and touch swipes support browsing.
-  Hover, focus, an open dialog or an offscreen stage pauses progression;
+  Focus, an open dialog or an offscreen stage pauses progression; hovering does not;
   reduced-motion settings default to manual playback.
   On narrow screens, the selected figure name scrolls into view without moving
   the page. The autoplay clock stops scheduling frames while paused, offscreen,
@@ -47,12 +47,12 @@ MimicX, blue for Fixed Reference and teal for complementary mechanisms.
   reconstructed-scene frames, with Tennis and Forest example selection.
   Each selection pre-decodes all four frames and replaces them together with
   a short staggered fade. Rapid selections cannot mix stages across tasks.
-- Recordings: four keyboard-accessible task tabs, paired native video players,
-  shared play/pause/restart and timeline. Metrics and protocol form one paragraph
-  immediately after the introductory sentence, updating with the selected
-  task and baseline. Values come from the generated static results table,
-  not a second numerical dataset. This player is part
-  of the showcase, followed by exactly four collision-scene recordings:
+- Recordings: four directly visible task rows. Each contains the original human
+  input, historical Fixed Reference and newly approved additional-continuation
+  MimicX recording. No task or baseline selectors are required. The reference
+  overlay is available in the same in-page media viewer. Two separate rows
+  retain all four methods from the original Tennis/Football direct comparison;
+  the paper's measurements and checkpoints are unchanged. Then follow four collision-scene recordings:
   Parkour, Stairs, Platform and Forest. Parkour is a diagnostic tracking
   rollout, not a claim of full-horizon completion. Other showcase items are stills.
 - Method: the final hand-drawn supervision diagram and compact refinement
@@ -65,11 +65,12 @@ MimicX, blue for Fixed Reference and teal for complementary mechanisms.
 - HLoop: the verification/scheduling artwork, workload, executor definitions,
   measured median timings and report-selection parity in balanced columns.
 
-The initial video posters come from the same recordings at 0.1 seconds.
-Videos use lazy preload; switching tasks replaces both sources and resets
-the shared timeline. Loading failures have a retry message and individual
-native controls remain available. Task tabs support arrow, Home and End keys.
-Paired comparisons never autoplay. No videos play in the image carousel.
+Video posters come from their corresponding recordings. Videos preload only
+when needed; visible rows play and loop at their native rates. Source lengths
+differ, so these independent loops are not claimed as synchronized comparisons.
+Per-row pause and native player controls remain available. Offscreen rows,
+backgrounded documents and open dialogs suspend playback. Reduced-motion
+preferences default to paused playback. No videos play in the image carousel.
 All research figures and scene videos open inside a dismissible page dialog,
 with a fixed close control, Escape/backdrop dismissal and return of keyboard
 focus. Dialog dimensions follow the actual media aspect ratio, constrained by
@@ -79,8 +80,15 @@ support Panzoom pinch, pan, zoom buttons and fit-to-view. The
 numerical table has the same zoomable viewer, keeping its original cells and
 values. The hero no longer includes a scene label, rollout shortcut or expand
 button; its author band remains in the public edition. Native page pinch zoom is not
-disabled. Video playback stops when its viewer closes. The paired player pauses
-when scrolled out of view, when the document is hidden or a dialog opens.
+disabled. Video playback stops when its viewer closes. Eligible visible rows
+resume, except those the reader explicitly paused.
+
+The `assets/media/recovery/manifest.json` inventory records full-decode checks,
+source hashes, transformations and the additional-continuation cohort. It also
+includes the high-resolution source/human/G1-reference composites used by the
+submission media package. Reference-stage media and learned-policy recordings
+retain distinct labels. `scripts/verify_website_recordings.py` checks desktop
+and portrait layouts, autoplay, native controls and modal playback.
 
 ## Evidence and assets
 
