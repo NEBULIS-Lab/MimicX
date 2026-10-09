@@ -11,14 +11,12 @@ def test_all_tasks_show_input_baseline_and_latest_policy_without_selection():
     for task in ("tennis", "football", "dance", "kungfu"):
         row = re.search(rf'<article[^>]*data-policy-task="{task}".*?</article>', html, re.S)
         assert row, task
-        assert row[0].count("<video ") == (4 if task == 'kungfu' else 5)
+        assert row[0].count("<video ") == 5
         for media in (f"recovery/{task}-input.mp4", f"recovery/{task}-policy.mp4"):
             assert media in row[0]
         for method in ("fixed", "beyond", "sonic", "ours"):
-            if task == 'kungfu' and method == 'sonic':
-                assert 'Re-evaluation pending' in row[0]
-                continue
             assert f'best-recordings/{task}-{method}-ghost.mp4' in row[0]
+        assert 'recording-pending' not in row[0]
         ours = re.search(r'<figure data-method="ours">.*?</figure>', row[0], re.S)
         assert ours, task
         for attribute, suffix in (("src", "mp4"), ("href", "mp4"), ("poster", "jpg")):
@@ -70,10 +68,10 @@ def test_release_manifest_and_autoplay_lifecycle():
 
 def test_source_camera_release_matches_each_input_clock():
     rows = json.loads((SITE / 'assets/media/best-recordings/manifest.json').read_text())
-    assert len(rows) == 15
+    assert len(rows) == 16
     for task in ('tennis', 'football', 'dance', 'kungfu'):
         clips = [r for r in rows if r['task'] == task]
-        expected = {'fixed', 'beyond', 'ours'} | (set() if task == 'kungfu' else {'sonic'})
+        expected = {'fixed', 'beyond', 'ours', 'sonic'}
         assert {r['method'] for r in clips} == expected
         assert len({r['source_calibration_sha256'] for r in clips}) == 1
         assert len({r['ghost_color'] for r in clips}) == len(expected)
@@ -92,6 +90,10 @@ def test_source_camera_release_matches_each_input_clock():
             if clip['method'] == 'sonic':
                 assert clip['startup_band_released'] is True
                 assert clip['maximum_external_wrench_during_playback'] == 0
+                assert clip['author_approved'] is True
+                assert clip['contact_audit']['foot_ground_contact_sample_fraction'] > .9
+                assert clip['contact_audit']['longest_sampled_no_ground_contact_s'] < .15
+                assert clip['contact_audit']['replay_pelvis_ankle_max_abs_difference_m'] < 1e-8
             if clip['method'] != 'ours':
                 assert clip['selection']['candidate_count'] > 0
             path = SITE / 'assets/media/best-recordings' / clip['file']

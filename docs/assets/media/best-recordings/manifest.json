@@ -84,49 +84,6 @@
   {
     "schema": "mimicx.source-camera-replay.v2",
     "display_revision": "stable-camera-robot-first-v1",
-    "ghost_color": "#23866B",
-    "ghost_alpha": 0.23,
-    "protected_pixel_max_delta": 0,
-    "source_calibration_sha256": "589446d19a5844d9e7d0be25c93210c7daf37d6131a5f508dbc13480bf307ce8",
-    "camera_stability": {
-      "old_step_max_cm": 21.208656346380597,
-      "new_step_max_cm": 0.0,
-      "old_step_p95_cm": 10.766216418153403,
-      "new_step_p95_cm": 0.0
-    },
-    "full_decode_passed": true,
-    "decoded_frames": 312,
-    "encoded_fps": 30.0,
-    "retime_factor": 1.0,
-    "endpoint_hold_seconds": [
-      0.0,
-      0.006666666666667709
-    ],
-    "sha256": "8b35395369fd5c893e05ab91db07b0726d777887b68e02a2284af8c0b69af1a6",
-    "full_duration_seconds": 10.4,
-    "task": "tennis",
-    "method": "sonic",
-    "file": "tennis-sonic-ghost.mp4",
-    "source_frames": 312,
-    "source_fps": 30.0,
-    "width": 1218,
-    "height": 1080,
-    "selection": {
-      "rule": "No low-pelvis event first; else longest time before low pelvis; then lowest full-interval body and joint error",
-      "candidate_count": 2,
-      "selection_scope": "Best recorded valid trial among the listed candidates, not an unbiased mean or strict-success guarantee",
-      "joint_rmse_rad": 0.16419064245448342,
-      "root_local_fk_body_mean_m": 0.040695715885829035,
-      "seed": 202,
-      "checkpoint": "released SONIC",
-      "first_low_pelvis_s": null
-    },
-    "startup_band_released": true,
-    "maximum_external_wrench_during_playback": 0.0
-  },
-  {
-    "schema": "mimicx.source-camera-replay.v2",
-    "display_revision": "stable-camera-robot-first-v1",
     "ghost_color": "#D45B4C",
     "ghost_alpha": 0.23,
     "protected_pixel_max_delta": 0,
@@ -240,49 +197,6 @@
   {
     "schema": "mimicx.source-camera-replay.v2",
     "display_revision": "stable-camera-robot-first-v1",
-    "ghost_color": "#23866B",
-    "ghost_alpha": 0.23,
-    "protected_pixel_max_delta": 0,
-    "source_calibration_sha256": "323da254b63efbdab2ae1668f40c4fbbcaa8d8a52724323c08af162d1c150d25",
-    "camera_stability": {
-      "old_step_max_cm": 8.134243415600064,
-      "new_step_max_cm": 0.0,
-      "old_step_p95_cm": 5.341722448555635,
-      "new_step_p95_cm": 0.0
-    },
-    "full_decode_passed": true,
-    "decoded_frames": 274,
-    "encoded_fps": 30.0,
-    "retime_factor": 1.0,
-    "endpoint_hold_seconds": [
-      0.0,
-      0.019999999999999574
-    ],
-    "sha256": "58c53fb689302212f4389b9890785b0aad7815d5af3c9cf3c079ca605f519773",
-    "full_duration_seconds": 9.133333333333333,
-    "task": "football",
-    "method": "sonic",
-    "file": "football-sonic-ghost.mp4",
-    "source_frames": 274,
-    "source_fps": 30.0,
-    "width": 1080,
-    "height": 1080,
-    "selection": {
-      "rule": "No low-pelvis event first; else longest time before low pelvis; then lowest full-interval body and joint error",
-      "candidate_count": 1,
-      "selection_scope": "Best recorded valid trial among the listed candidates, not an unbiased mean or strict-success guarantee",
-      "joint_rmse_rad": 0.17368876696341565,
-      "root_local_fk_body_mean_m": 0.04188125827581625,
-      "seed": 101,
-      "checkpoint": "released SONIC",
-      "first_low_pelvis_s": null
-    },
-    "startup_band_released": true,
-    "maximum_external_wrench_during_playback": 0.0
-  },
-  {
-    "schema": "mimicx.source-camera-replay.v2",
-    "display_revision": "stable-camera-robot-first-v1",
     "ghost_color": "#D45B4C",
     "ghost_alpha": 0.23,
     "protected_pixel_max_delta": 0,
@@ -392,49 +306,6 @@
       "checkpoint": "model_5000.pt",
       "first_low_pelvis_s": null
     }
-  },
-  {
-    "schema": "mimicx.source-camera-replay.v2",
-    "display_revision": "stable-camera-robot-first-v1",
-    "ghost_color": "#23866B",
-    "ghost_alpha": 0.23,
-    "protected_pixel_max_delta": 0,
-    "source_calibration_sha256": "eaf08e2dd013ccdc51eadf7d8d0a9de441ff81f2362c91f513de0e2aa941f351",
-    "camera_stability": {
-      "old_step_max_cm": 25.135893673294124,
-      "new_step_max_cm": 0.0,
-      "old_step_p95_cm": 13.81755442097038,
-      "new_step_p95_cm": 0.0
-    },
-    "full_decode_passed": true,
-    "decoded_frames": 471,
-    "encoded_fps": 30.0,
-    "retime_factor": 1.0,
-    "endpoint_hold_seconds": [
-      0.0,
-      0.0066666666666659324
-    ],
-    "sha256": "71a20a4f3aeefeb9c8577f74b00a4c161f86498e47d8420f33d78c54ce865b33",
-    "full_duration_seconds": 15.7,
-    "task": "dance",
-    "method": "sonic",
-    "file": "dance-sonic-ghost.mp4",
-    "source_frames": 471,
-    "source_fps": 30.0,
-    "width": 1920,
-    "height": 1080,
-    "selection": {
-      "rule": "No low-pelvis event first; else longest time before low pelvis; then lowest full-interval body and joint error",
-      "candidate_count": 3,
-      "selection_scope": "Best recorded valid trial among the listed candidates, not an unbiased mean or strict-success guarantee",
-      "joint_rmse_rad": 0.21410544058956263,
-      "root_local_fk_body_mean_m": 0.03828354412049675,
-      "seed": 202,
-      "checkpoint": "released SONIC",
-      "first_low_pelvis_s": null
-    },
-    "startup_band_released": true,
-    "maximum_external_wrench_during_playback": 0.0
   },
   {
     "schema": "mimicx.source-camera-replay.v2",
@@ -579,5 +450,233 @@
     "source_fps": 30.0,
     "width": 920,
     "height": 1080
+  },
+  {
+    "schema": "mimicx.source-camera-replay.v2",
+    "display_revision": "stable-camera-robot-first-v1",
+    "ghost_color": "#23866B",
+    "ghost_alpha": 0.23,
+    "protected_pixel_max_delta": 0,
+    "source_calibration_sha256": "589446d19a5844d9e7d0be25c93210c7daf37d6131a5f508dbc13480bf307ce8",
+    "camera_stability": {
+      "old_step_max_cm": 21.208656346380597,
+      "new_step_max_cm": 0.0,
+      "old_step_p95_cm": 10.766216418153403,
+      "new_step_p95_cm": 0.0
+    },
+    "full_decode_passed": true,
+    "decoded_frames": 312,
+    "encoded_fps": 30.0,
+    "retime_factor": 1.0,
+    "endpoint_hold_seconds": [
+      0.0,
+      0.006666666666667709
+    ],
+    "sha256": "8b35395369fd5c893e05ab91db07b0726d777887b68e02a2284af8c0b69af1a6",
+    "full_duration_seconds": 10.4,
+    "task": "tennis",
+    "method": "sonic",
+    "file": "tennis-sonic-ghost.mp4",
+    "source_frames": 312,
+    "source_fps": 30.0,
+    "width": 1218,
+    "height": 1080,
+    "author_approved": true,
+    "approval_date": "2026-10-09",
+    "startup_band_released": true,
+    "maximum_external_wrench_during_playback": 0.0,
+    "selection": {
+      "rule": "No low-pelvis event; else longest frontier; then full-interval body/joint error",
+      "candidate_count": 5,
+      "selection_scope": "Best full recording among all listed old/new valid trials",
+      "joint_rmse_rad": 0.16419064245448342,
+      "root_local_fk_body_mean_m": 0.040695715885829035,
+      "first_low_pelvis_s": null,
+      "seed": 202,
+      "checkpoint": "released SONIC"
+    },
+    "contact_audit": {
+      "state_sha256": "7f63aa2ffb852d33e4ecbee26feae31c2f9deeabe6d0248454d6cdad56d875d6",
+      "foot_ground_contact_sample_fraction": 0.9613899613899614,
+      "longest_sampled_no_ground_contact_s": 0.10000000000005116,
+      "replay_pelvis_ankle_max_abs_difference_m": 0.0,
+      "gravity_m_s2": [
+        0.0,
+        0.0,
+        -9.81
+      ],
+      "equality_constraints": 0
+    }
+  },
+  {
+    "schema": "mimicx.source-camera-replay.v2",
+    "display_revision": "stable-camera-robot-first-v1",
+    "ghost_color": "#23866B",
+    "ghost_alpha": 0.23,
+    "protected_pixel_max_delta": 0,
+    "source_calibration_sha256": "323da254b63efbdab2ae1668f40c4fbbcaa8d8a52724323c08af162d1c150d25",
+    "camera_stability": {
+      "old_step_max_cm": 8.134243415600064,
+      "new_step_max_cm": 0.0,
+      "old_step_p95_cm": 5.341722448555635,
+      "new_step_p95_cm": 0.0
+    },
+    "full_decode_passed": true,
+    "decoded_frames": 274,
+    "encoded_fps": 30.0,
+    "retime_factor": 1.0,
+    "endpoint_hold_seconds": [
+      0.0,
+      0.019999999999999574
+    ],
+    "sha256": "58c53fb689302212f4389b9890785b0aad7815d5af3c9cf3c079ca605f519773",
+    "full_duration_seconds": 9.133333333333333,
+    "task": "football",
+    "method": "sonic",
+    "file": "football-sonic-ghost.mp4",
+    "source_frames": 274,
+    "source_fps": 30.0,
+    "width": 1080,
+    "height": 1080,
+    "author_approved": true,
+    "approval_date": "2026-10-09",
+    "startup_band_released": true,
+    "maximum_external_wrench_during_playback": 0.0,
+    "selection": {
+      "rule": "No low-pelvis event; else longest frontier; then full-interval body/joint error",
+      "candidate_count": 4,
+      "selection_scope": "Best full recording among all listed old/new valid trials",
+      "joint_rmse_rad": 0.17368876696341565,
+      "root_local_fk_body_mean_m": 0.04188125827581625,
+      "first_low_pelvis_s": null,
+      "seed": 101,
+      "checkpoint": "released SONIC"
+    },
+    "contact_audit": {
+      "state_sha256": "2a8143fa27ea210464119a24c315c044fc1e5ee3c2ae23fe86f58f19929fa1c6",
+      "foot_ground_contact_sample_fraction": 0.9649484536082474,
+      "longest_sampled_no_ground_contact_s": 0.10000000000005116,
+      "replay_pelvis_ankle_max_abs_difference_m": 0.0,
+      "gravity_m_s2": [
+        0.0,
+        0.0,
+        -9.81
+      ],
+      "equality_constraints": 0
+    }
+  },
+  {
+    "schema": "mimicx.source-camera-replay.v2",
+    "display_revision": "stable-camera-robot-first-v1",
+    "ghost_color": "#23866B",
+    "ghost_alpha": 0.23,
+    "protected_pixel_max_delta": 0,
+    "source_calibration_sha256": "eaf08e2dd013ccdc51eadf7d8d0a9de441ff81f2362c91f513de0e2aa941f351",
+    "camera_stability": {
+      "old_step_max_cm": 25.135893673294124,
+      "new_step_max_cm": 0.0,
+      "old_step_p95_cm": 13.81755442097038,
+      "new_step_p95_cm": 0.0
+    },
+    "full_decode_passed": true,
+    "decoded_frames": 471,
+    "encoded_fps": 30.0,
+    "retime_factor": 1.0,
+    "endpoint_hold_seconds": [
+      0.0,
+      0.0066666666666659324
+    ],
+    "sha256": "71a20a4f3aeefeb9c8577f74b00a4c161f86498e47d8420f33d78c54ce865b33",
+    "full_duration_seconds": 15.7,
+    "task": "dance",
+    "method": "sonic",
+    "file": "dance-sonic-ghost.mp4",
+    "source_frames": 471,
+    "source_fps": 30.0,
+    "width": 1920,
+    "height": 1080,
+    "author_approved": true,
+    "approval_date": "2026-10-09",
+    "startup_band_released": true,
+    "maximum_external_wrench_during_playback": 0.0,
+    "selection": {
+      "rule": "No low-pelvis event; else longest frontier; then full-interval body/joint error",
+      "candidate_count": 6,
+      "selection_scope": "Best full recording among all listed old/new valid trials",
+      "joint_rmse_rad": 0.21410544058956263,
+      "root_local_fk_body_mean_m": 0.03828354412049675,
+      "first_low_pelvis_s": null,
+      "seed": 202,
+      "checkpoint": "released SONIC"
+    },
+    "contact_audit": {
+      "state_sha256": "d43a332704929c6ddfc39e980a5039a60b4eee34f65a26914eca2c257b371b41",
+      "foot_ground_contact_sample_fraction": 0.9887640449438202,
+      "longest_sampled_no_ground_contact_s": 0.08000000000004093,
+      "replay_pelvis_ankle_max_abs_difference_m": 0.0,
+      "gravity_m_s2": [
+        0.0,
+        0.0,
+        -9.81
+      ],
+      "equality_constraints": 0
+    }
+  },
+  {
+    "schema": "mimicx.source-camera-replay.v2",
+    "display_revision": "stable-camera-robot-first-v1",
+    "ghost_color": "#23866B",
+    "ghost_alpha": 0.23,
+    "protected_pixel_max_delta": 0,
+    "source_calibration_sha256": "a2b459d28843984f28784051044081b803a90026f4a80fbe2a85cb57437d9af9",
+    "camera_stability": {
+      "old_step_max_cm": 12.509189169984204,
+      "new_step_max_cm": 1.4537460894798833,
+      "old_step_p95_cm": 2.9880821685629324,
+      "new_step_p95_cm": 1.1844530156773174
+    },
+    "full_decode_passed": true,
+    "decoded_frames": 638,
+    "encoded_fps": 30.0,
+    "retime_factor": 1.0,
+    "endpoint_hold_seconds": [
+      0.0,
+      0.013333333333335418
+    ],
+    "sha256": "2806be410eb6b2d74c1c18ce0d5452f4859e072956243c8305b17358dff8b3dc",
+    "full_duration_seconds": 21.266666666666666,
+    "task": "kungfu",
+    "method": "sonic",
+    "file": "kungfu-sonic-ghost.mp4",
+    "source_frames": 638,
+    "source_fps": 30.0,
+    "width": 920,
+    "height": 1080,
+    "author_approved": true,
+    "approval_date": "2026-10-09",
+    "startup_band_released": true,
+    "maximum_external_wrench_during_playback": 0.0,
+    "selection": {
+      "rule": "No low-pelvis event; else longest frontier; then full-interval body/joint error",
+      "candidate_count": 4,
+      "selection_scope": "Best full recording among all listed old/new valid trials",
+      "joint_rmse_rad": 0.22071080289519454,
+      "root_local_fk_body_mean_m": 0.0346789125111726,
+      "first_low_pelvis_s": null,
+      "seed": 202,
+      "checkpoint": "released SONIC"
+    },
+    "contact_audit": {
+      "state_sha256": "ae0c608b70349f277239a4fe485cb20db71427788d58fef9f72f528b1fbd567e",
+      "foot_ground_contact_sample_fraction": 0.9613572101790764,
+      "longest_sampled_no_ground_contact_s": 0.08000000000004093,
+      "replay_pelvis_ankle_max_abs_difference_m": 0.0,
+      "gravity_m_s2": [
+        0.0,
+        0.0,
+        -9.81
+      ],
+      "equality_constraints": 0
+    }
   }
 ]
