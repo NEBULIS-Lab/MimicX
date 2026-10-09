@@ -103,3 +103,23 @@ def test_source_camera_release_matches_each_input_clock():
     js = (SITE / 'assets/js/recordings.js').read_text()
     assert 'syncRow' in js
     assert "'seeking'" in js
+
+
+def test_approved_baseline_recording_selection_is_explicit():
+    html = (SITE / 'index.html').read_text()
+    assert 'median-error recordings' in html
+    assert 'MimicX shows its previously selected best recording' in html
+    rows = json.loads((SITE / 'assets/media/best-recordings/manifest.json').read_text())
+    baselines = [r for r in rows if r['method'] in ('beyond', 'sonic')]
+    assert len(baselines) == 8
+    for clip in baselines:
+        selection = clip['selection']
+        assert selection['rule'] == 'Lower median root-local FK error among valid complete recordings'
+        assert selection['rank_one_based'] == (selection['candidate_count'] - 1) // 2 + 1
+        assert selection['first_low_pelvis_s'] is None
+        assert clip['author_approved']
+        if clip['method'] == 'beyond':
+            assert len(selection['checkpoint_sha256']) == 64
+        figure = re.search(rf'<article[^>]*data-policy-task="{clip["task"]}".*?</article>', html, re.S)[0]
+        figure = re.search(rf'<figure data-method="{clip["method"]}">.*?</figure>', figure, re.S)[0]
+        assert 'Best valid recorded rollout' not in figure
