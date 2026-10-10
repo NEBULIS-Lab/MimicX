@@ -6,6 +6,18 @@ from pathlib import Path
 SITE = Path(__file__).resolve().parents[1] / 'docs'
 
 
+def test_teammimic_followup_is_below_title_and_marked_coming_soon():
+    html = (SITE / 'index.html').read_text()
+    hero = html.split('class="hero-copy"', 1)[1].split('class="hero-bottom"', 1)[0]
+    button = re.search(r'<button\b([^>]*class="hero-followup"[^>]*)>(.*?)</button>', hero, re.S)
+    assert button
+    assert hero.index('class="paper-title"') < button.start()
+    assert 'disabled' in button[1] and 'type="button"' in button[1]
+    assert 'Follow-up Work' in button[2] and 'TeamMimic' in button[2]
+    assert 'Coming Soon' in button[2]
+    assert 'href=' not in button[1]
+
+
 def test_body_paragraphs_are_justified_without_changing_headings():
     css = (SITE / 'assets/css/research.css').read_text()
     rule = re.search(r'#research p\s*\{([^}]+)\}', css)

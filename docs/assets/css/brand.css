@@ -154,6 +154,29 @@ footer .footer-note a { color: #d7dadd; }
   text-wrap: balance;
 }
 
+.hero-followup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  max-width: 100%;
+  min-height: 42px;
+  padding: 9px 16px;
+  border: 1px solid #dc8c7d;
+  border-radius: 8px;
+  background: #742f29;
+  color: #fff8f5;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  opacity: 1;
+  cursor: default;
+}
+.hero-followup strong { color: inherit; font-weight: 750; }
+.hero-followup-status { color: #f6c8b9; font-size: 12px; white-space: nowrap; }
+
 @media (max-width: 1000px) {
   .hero-copy .brand-wordmark { width: min(650px, 84vw); }
   .hero-copy .paper-title { font-size: 22px; max-width: 720px; }
