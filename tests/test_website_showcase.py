@@ -136,3 +136,13 @@ def test_showcase_video_provenance_and_lifecycle():
     assert 'function syncVideos()' in js
     assert "querySelector('img, video')" in js
     assert 'video.pause()' in js
+
+
+def test_first_video_gets_playback_time_not_loading_time():
+    js = (SITE / 'assets/js/showcase.js').read_text()
+    assert 'const FIRST_VIDEO_MS = 8000' in js
+    assert 'video.currentTime - videoTime' in js
+    assert 'video.readyState >= 3' in js
+    assert 'videoTime = null' in js
+    assert 'playbackBlocked' in js
+    assert 'elapsed / interval' in js

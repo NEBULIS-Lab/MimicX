@@ -8,6 +8,7 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const pagination = document.querySelector('.showcase-pagination');
   const AUTOPLAY_MS = 4000;
+  const FIRST_VIDEO_MS = 8000;
   rail.dataset.interval = String(AUTOPLAY_MS);
   let enabled = !reduced.matches;
   let visible = false;
@@ -18,6 +19,8 @@
   let autoplayFrame = 0;
   let last = 0;
   let elapsed = 0;
+  let videoTime = null;
+  const playbackBlocked = new WeakSet();
   let index = 0;
   const originals = [...track.children];
   const photoGaps = originals.map(() => 0);
@@ -131,8 +134,15 @@
     media.addEventListener(media.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', fitPhotos);
   });
   function updateSelection() {
+    const previous = index;
     index = carousel.selectedScrollSnap();
     elapsed = 0;
+    videoTime = null;
+    const video = originals[index].querySelector('video');
+    rail.dataset.interval = String(index === 0 && video ? FIRST_VIDEO_MS : AUTOPLAY_MS);
+    if (video && previous !== index) {
+      try { video.currentTime = 0; } catch (_) { /* Metadata may still be loading. */ }
+    }
     originals.forEach((figure, i) => {
       figure.classList.toggle('is-active', i === index);
       figure.classList.toggle('is-previous', i === (index + originals.length - 1) % originals.length);
@@ -188,9 +198,11 @@
       if (!video) return;
       const shouldPlay = () => i === index && enabled && visible && !reduced.matches && !document.hidden && !dialog.open;
       if (shouldPlay()) {
-        if (video.paused) video.play().then(() => {
+        if (video.paused && !playbackBlocked.has(video)) video.play().then(() => {
           if (!shouldPlay()) video.pause();
-        }).catch(() => {});
+        }).catch(error => {
+          if (error.name !== 'AbortError') playbackBlocked.add(video);
+        });
       } else video.pause();
     });
   }
@@ -202,6 +214,7 @@
       cancelAnimationFrame(autoplayFrame);
       autoplayFrame = 0;
       last = 0;
+      videoTime = null;
     }
     rail.dataset.playing = String(canAdvance());
   }
@@ -210,9 +223,19 @@
     if (!canAdvance()) { syncAutoplay(); return; }
     const delta = last ? Math.min(now-last, 100) : 0;
     last = now;
-    elapsed += delta;
-    if (elapsed >= AUTOPLAY_MS) select(index + 1);
-    pagination.children[index].style.setProperty('--progress', String(elapsed / AUTOPLAY_MS));
+    const video = originals[index].querySelector('video');
+    const interval = index === 0 && video ? FIRST_VIDEO_MS : AUTOPLAY_MS;
+    if (video && !video.error && !playbackBlocked.has(video)) {
+      // Loading and buffering do not consume the clip's visible playback time.
+      if (videoTime !== null && !video.paused && !video.seeking && video.readyState >= 3) {
+        let played = video.currentTime - videoTime;
+        if (played < 0 && video.loop && Number.isFinite(video.duration)) played += video.duration;
+        elapsed += Math.max(0, Math.min(played * 1000, 250));
+      }
+      videoTime = video.currentTime;
+    } else elapsed += delta;
+    if (elapsed >= interval) select(index + 1);
+    pagination.children[index].style.setProperty('--progress', String(elapsed / interval));
     syncAutoplay();
   }
   toggle.addEventListener('click', () => { enabled = !enabled; controls(); syncAutoplay(); });
