@@ -1,0 +1,6 @@
+case,title,selection,horizon,policy_duration_seconds,holdout_completed,holdout_count,holdout_body_p95_m,holdout_root_p95_m,checkpoint_sha256
+track,Track Running,New accepted continuation,97,1.94,3,3,0.10855109095573424,0.054311890824092275,c1a92b5304ed02daa52c7f64cee27f93de8b81d6fe0cd02dac855ed75a258364
+stairs,Stair Ascent,Retained complete incumbent,449,8.98,3,3,0.1868568172057469,0.2001855002609069,d292e12abe4ce5bf6f01c5b9d0f16c4c5ff1ac6e50902b7109debe47490399a3
+forest,Forest Traversal,New accepted continuation,404,8.08,3,3,0.17011356924970933,0.05830942162203221,36bf482e45dc0aa0a1c372af984d1b62a80b2c02fee015b465098a4de5863a98
+bench,Platform Jump,Retained complete incumbent,58,1.16,3,3,0.27049591019749636,0.17314535480931692,49db0dc59dd3b6232cbed96220bd690067789a891c9dca6d57f64af44b906a0d
+parkour,Parkour,Retained locally retimed policy,269,5.38,3,3,0.8424381971359253,0.18487906106280305,2c4b021e4b101cd84d6989196a0612ad800a83559de5b3332abc77b530f92ed1

@@ -24,6 +24,7 @@
   }
 
   function syncRow(row, source = row.videos[0]) {
+    if (row.element.dataset.sync === 'independent') return;
     if (source.readyState < 1) return;
     row.videos.forEach(video => {
       if (video === source || video.readyState < 1) return;

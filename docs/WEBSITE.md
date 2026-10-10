@@ -186,3 +186,22 @@ Before publishing, verify that all HTML/media dependencies are tracked in Git;
 generic media ignore rules may otherwise omit newly exported files. The two
 releases have independent commit histories. Do not merge a public release's
 author history into an anonymous repository.
+
+## Selected Scene Demonstrations
+
+The Recorded execution section includes five source-video / historical Fixed
+Reference / selected MimicX rows. `assets/media/terrain-release/manifest.json`
+records media hashes, durations, checkpoint/reference identities and independent
+holdout measurements. `assets/results/scene_demonstrations_20261011.csv` is a
+separate demonstration release, not a replacement for the controlled paper CSV.
+
+Track Running and Forest Traversal use accepted continuations. Stair Ascent and
+Platform Jump retain their verified complete incumbents. Parkour uses a locally
+retimed 5.38-second reference, with all source poses retained; its late-roll
+articulation remains imperfect. It is not an original-speed success result.
+
+These rows keep independent playback clocks because source excerpts and selected
+references can differ in duration. Full recordings and robot-only alternatives
+open in the media viewer. The solid robot is the recorded policy; the coral
+reference overlay cannot cover its silhouette. Whole-clip framing preserves the
+robot and collision-scene context. The four core-skill comparisons are unchanged.

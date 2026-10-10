@@ -1,0 +1,609 @@
+{
+  "schema": "mimicx.scene-demonstrations.v1",
+  "release": "2026-10-11",
+  "updates_paper_metrics": false,
+  "updates_published_weights": false,
+  "tasks": [
+    {
+      "case": "track",
+      "title": "Track Running",
+      "horizon": 97,
+      "checkpoint_sha256": "c1a92b5304ed02daa52c7f64cee27f93de8b81d6fe0cd02dac855ed75a258364",
+      "motion_sha256": "f33fc81b99681cbe986052ca0e00568a0ae51edc502c2611d39327d1c3cd3880",
+      "scene_sha256": "44a2dcc50df4f959cfb07579fab39b918aba229760a13636568510af897c2c2d",
+      "policy_duration_seconds": 1.94,
+      "holdout_completed": 3,
+      "holdout_count": 3,
+      "holdout_body_p95_m": 0.10855109095573424,
+      "holdout_root_p95_m": 0.054311890824092275,
+      "selection": "New accepted continuation",
+      "ghost_rgba": [
+        0.831,
+        0.357,
+        0.298,
+        0.16
+      ],
+      "pose_modification": false,
+      "camera": {
+        "lookat": [
+          1.5778362452983856,
+          0.07730908691883084,
+          0.6309915108978749
+        ],
+        "distance": 4.588082168826741,
+        "azimuth": 105.0,
+        "elevation": -20.0,
+        "fovy": 40.0,
+        "max_normalized_envelope_extent": 0.8753833995838499,
+        "static_camera": true
+      },
+      "scene": "Task-equivalent collision proxy",
+      "media": [
+        {
+          "file": "track-input.mp4",
+          "sha256": "f5c0b8bb3f654346dad64b5ff2c6d21f4a701bf408bf6dbdadb340bf028a233c",
+          "bytes": 2020076,
+          "frames": 50,
+          "fps": 25.0,
+          "duration_seconds": 2.0,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "input",
+          "source": "INPUT__TRACK__SELECTED.mp4",
+          "source_sha256": "f5c0b8bb3f654346dad64b5ff2c6d21f4a701bf408bf6dbdadb340bf028a233c",
+          "crop": null
+        },
+        {
+          "file": "track-input.jpg",
+          "sha256": "277cf510dfcf401ce95ca5befb04791cb7bad57a397d22873128b10be6587a8b",
+          "bytes": 118560
+        },
+        {
+          "file": "track-fixed.mp4",
+          "sha256": "e086ff9eee5fb167b164a9afc947ae2346ba3d50153de54e3deb38fb6aa8f04f",
+          "bytes": 323196,
+          "frames": 97,
+          "fps": 50.0,
+          "duration_seconds": 1.94,
+          "width": 1920,
+          "height": 952,
+          "full_decode_passed": true,
+          "role": "fixed",
+          "source": "POLICY__TRACK__FIXED_CONTINUATION__SEED1001.mp4",
+          "source_sha256": "87ac36b473e0d6c03ab8ad6307af26055d9c64bdb35b3f0dda7b22b65a549eb9",
+          "crop": {
+            "top": 128
+          }
+        },
+        {
+          "file": "track-fixed.jpg",
+          "sha256": "fceb240143ee80b41c5077e853686c7b778c92cdfb4f0f302c20ffa409dd5ce5",
+          "bytes": 19639
+        },
+        {
+          "file": "track-ours.mp4",
+          "sha256": "3073466fa3d281bde8f587970b5bdb3042e6caa161798d6421069af9ef932153",
+          "bytes": 903432,
+          "frames": 97,
+          "fps": 50.0,
+          "duration_seconds": 1.94,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "ours",
+          "source": "TERRAIN_REVIEW_V2_20261010__TRACK__MIMICX__WITH_GHOST.mp4",
+          "source_sha256": "3073466fa3d281bde8f587970b5bdb3042e6caa161798d6421069af9ef932153",
+          "crop": null
+        },
+        {
+          "file": "track-ours.jpg",
+          "sha256": "03c02edd29f8a7d9d88e1c688f7506ebddccaebfcb9cfcfc2147cfdb2dd8ee44",
+          "bytes": 29800
+        },
+        {
+          "file": "track-robot.mp4",
+          "sha256": "eb7861fd1196546817bd28a450e5db4434fe1759e7ceb560786f6867552581e8",
+          "bytes": 828772,
+          "frames": 97,
+          "fps": 50.0,
+          "duration_seconds": 1.94,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "robot",
+          "source": "TERRAIN_REVIEW_V2_20261010__TRACK__MIMICX__ROBOT_ONLY.mp4",
+          "source_sha256": "eb7861fd1196546817bd28a450e5db4434fe1759e7ceb560786f6867552581e8",
+          "crop": null
+        },
+        {
+          "file": "track-robot.jpg",
+          "sha256": "52b02390698a587791fd0116711dc7ff1f16b01a0f8ba0b8206dcd657f0ec1be",
+          "bytes": 29555
+        }
+      ]
+    },
+    {
+      "case": "stairs",
+      "title": "Stair Ascent",
+      "horizon": 449,
+      "checkpoint_sha256": "d292e12abe4ce5bf6f01c5b9d0f16c4c5ff1ac6e50902b7109debe47490399a3",
+      "motion_sha256": "a1192b8cbd87088ff62d15eb029c313c2cddc17d6b099f461642da32cae82adc",
+      "scene_sha256": "5e3efd077305b5b93dd18f395def59f3e4879c59d31faef63e55144aa609c25a",
+      "policy_duration_seconds": 8.98,
+      "holdout_completed": 3,
+      "holdout_count": 3,
+      "holdout_body_p95_m": 0.1868568172057469,
+      "holdout_root_p95_m": 0.2001855002609069,
+      "selection": "Retained complete incumbent",
+      "ghost_rgba": [
+        0.831,
+        0.357,
+        0.298,
+        0.16
+      ],
+      "pose_modification": false,
+      "camera": {
+        "lookat": [
+          2.991655007004738,
+          0.09686788916587827,
+          1.1751832727715372
+        ],
+        "distance": 7.231395927071268,
+        "azimuth": 105.0,
+        "elevation": -20.0,
+        "fovy": 40.0,
+        "max_normalized_envelope_extent": 0.8788602202194705,
+        "static_camera": true
+      },
+      "scene": "Task-equivalent collision proxy",
+      "media": [
+        {
+          "file": "stairs-input.mp4",
+          "sha256": "1f155c420bbfc4035c7270c87f5ac3fb5ea497435ffbb560d470eea85315b9cc",
+          "bytes": 7424217,
+          "frames": 226,
+          "fps": 25.0,
+          "duration_seconds": 9.04,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "input",
+          "source": "INPUT__STAIRS__SELECTED.mp4",
+          "source_sha256": "1f155c420bbfc4035c7270c87f5ac3fb5ea497435ffbb560d470eea85315b9cc",
+          "crop": null
+        },
+        {
+          "file": "stairs-input.jpg",
+          "sha256": "97dc1ba2264ee47bdce469f59a325270e2817643c0cc07fddd76dfee152c0679",
+          "bytes": 84811
+        },
+        {
+          "file": "stairs-fixed.mp4",
+          "sha256": "dd00929f728f931ee1ac6f56863a4307acc5573109331484a2c5e64da7a2b5bc",
+          "bytes": 826735,
+          "frames": 449,
+          "fps": 50.0,
+          "duration_seconds": 8.98,
+          "width": 1920,
+          "height": 952,
+          "full_decode_passed": true,
+          "role": "fixed",
+          "source": "POLICY__STAIRS__FIXED_CONTINUATION__SEED1001.mp4",
+          "source_sha256": "14a4320d3677d815dd0b66a769f2fe25a09192c3c55964a66dc694879b86c6d1",
+          "crop": {
+            "top": 128
+          }
+        },
+        {
+          "file": "stairs-fixed.jpg",
+          "sha256": "0ee0645fece7d391d6fcae8293e28cc0b58262aa340a7bc9bd77b18149918e04",
+          "bytes": 14253
+        },
+        {
+          "file": "stairs-ours.mp4",
+          "sha256": "8acf263b8f3144406e9608dfa87073c6778f12de6cd06aa675c206fb4c9d5cb6",
+          "bytes": 2061002,
+          "frames": 449,
+          "fps": 50.0,
+          "duration_seconds": 8.98,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "ours",
+          "source": "TERRAIN_REVIEW_V2_20261010__STAIRS__MIMICX__WITH_GHOST.mp4",
+          "source_sha256": "8acf263b8f3144406e9608dfa87073c6778f12de6cd06aa675c206fb4c9d5cb6",
+          "crop": null
+        },
+        {
+          "file": "stairs-ours.jpg",
+          "sha256": "45c72bdbe91e5744bd85476064eb9a003ff02b9a1a00e29aed1dcf0a6c0b3858",
+          "bytes": 23639
+        },
+        {
+          "file": "stairs-robot.mp4",
+          "sha256": "335627c047f56fee6bf385deb22ee3b2e366c45e23462261fe46d5921989b3da",
+          "bytes": 1855450,
+          "frames": 449,
+          "fps": 50.0,
+          "duration_seconds": 8.98,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "robot",
+          "source": "TERRAIN_REVIEW_V2_20261010__STAIRS__MIMICX__ROBOT_ONLY.mp4",
+          "source_sha256": "335627c047f56fee6bf385deb22ee3b2e366c45e23462261fe46d5921989b3da",
+          "crop": null
+        },
+        {
+          "file": "stairs-robot.jpg",
+          "sha256": "30621f7ed786090b5867139af0e8905ccb9ffffff973fde057f6868a15f81a80",
+          "bytes": 23447
+        }
+      ]
+    },
+    {
+      "case": "forest",
+      "title": "Forest Traversal",
+      "horizon": 404,
+      "checkpoint_sha256": "36bf482e45dc0aa0a1c372af984d1b62a80b2c02fee015b465098a4de5863a98",
+      "motion_sha256": "0fd95ae4bb6a9403a5a3675ecd6f7d405522490f1a72369d1000da8767d83457",
+      "scene_sha256": "416e4bab9bd3a72672c5a41831738e4ac276bc9a80381fcaab8c0c13586855c4",
+      "policy_duration_seconds": 8.08,
+      "holdout_completed": 3,
+      "holdout_count": 3,
+      "holdout_body_p95_m": 0.17011356924970933,
+      "holdout_root_p95_m": 0.05830942162203221,
+      "selection": "New accepted continuation",
+      "ghost_rgba": [
+        0.831,
+        0.357,
+        0.298,
+        0.16
+      ],
+      "pose_modification": false,
+      "camera": {
+        "lookat": [
+          2.0954994708299637,
+          -0.11704768240451813,
+          0.6909305768460036
+        ],
+        "distance": 4.65526195577893,
+        "azimuth": 105.0,
+        "elevation": -20.0,
+        "fovy": 40.0,
+        "max_normalized_envelope_extent": 0.8704217786019608,
+        "static_camera": true
+      },
+      "scene": "Task-equivalent collision proxy",
+      "media": [
+        {
+          "file": "forest-input.mp4",
+          "sha256": "57f6f0320fbcf06e8262d3035bc5bdbd9635f43beebb2b05646048f16657ed91",
+          "bytes": 10711941,
+          "frames": 244,
+          "fps": 30.0,
+          "duration_seconds": 8.133333333333333,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "input",
+          "source": "INPUT__FOREST__SELECTED.mp4",
+          "source_sha256": "57f6f0320fbcf06e8262d3035bc5bdbd9635f43beebb2b05646048f16657ed91",
+          "crop": null
+        },
+        {
+          "file": "forest-input.jpg",
+          "sha256": "97cd7c779249219cb81ea91eedfb569e48cf8fdac13e1bb6c8bb569155cca600",
+          "bytes": 218455
+        },
+        {
+          "file": "forest-fixed.mp4",
+          "sha256": "fc8ac2e9015fe6d8fa10c2b8078f9d9f5b8d719988e74b521ed37b827515eff0",
+          "bytes": 761062,
+          "frames": 404,
+          "fps": 50.0,
+          "duration_seconds": 8.08,
+          "width": 1920,
+          "height": 952,
+          "full_decode_passed": true,
+          "role": "fixed",
+          "source": "POLICY__FOREST__FIXED_CONTINUATION__SEED1001.mp4",
+          "source_sha256": "7b1c167fd581f92d70b91dfa809ca5b33905a0b8510e6c5acf2b9120825b7827",
+          "crop": {
+            "top": 128
+          }
+        },
+        {
+          "file": "forest-fixed.jpg",
+          "sha256": "b83bae691a9bd0224de301ec0d69eb5c729d675f8c49c72721b42995001a741d",
+          "bytes": 20746
+        },
+        {
+          "file": "forest-ours.mp4",
+          "sha256": "192e84c833be3590616bccb6ecf3c03207a293beec63bc6adb665a916e75fbf0",
+          "bytes": 2478904,
+          "frames": 404,
+          "fps": 50.0,
+          "duration_seconds": 8.08,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "ours",
+          "source": "TERRAIN_REVIEW_V2_20261010__FOREST__MIMICX__WITH_GHOST.mp4",
+          "source_sha256": "192e84c833be3590616bccb6ecf3c03207a293beec63bc6adb665a916e75fbf0",
+          "crop": null
+        },
+        {
+          "file": "forest-ours.jpg",
+          "sha256": "1675ef8682912988da0fd704209616c95a8b4ed9e6050cb38cb757934fe72ba7",
+          "bytes": 28661
+        },
+        {
+          "file": "forest-robot.mp4",
+          "sha256": "149d5f22e4c0dd3cb812168aae85653414573c7bcf873b0203efc9c08616afbd",
+          "bytes": 2256047,
+          "frames": 404,
+          "fps": 50.0,
+          "duration_seconds": 8.08,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "robot",
+          "source": "TERRAIN_REVIEW_V2_20261010__FOREST__MIMICX__ROBOT_ONLY.mp4",
+          "source_sha256": "149d5f22e4c0dd3cb812168aae85653414573c7bcf873b0203efc9c08616afbd",
+          "crop": null
+        },
+        {
+          "file": "forest-robot.jpg",
+          "sha256": "8258c94518f9db9f82d3e54b8d3da19189990244f4f31a8231df638940a07549",
+          "bytes": 28148
+        }
+      ]
+    },
+    {
+      "case": "bench",
+      "title": "Platform Jump",
+      "horizon": 58,
+      "checkpoint_sha256": "49db0dc59dd3b6232cbed96220bd690067789a891c9dca6d57f64af44b906a0d",
+      "motion_sha256": "ac885ff9bc0e50c9a058485de72e280d77ce8876f633c360b929bc1e0cefa326",
+      "scene_sha256": "f4e69c55f0c7ea62652dd7614e1afde0d4f8f97901be82efce4956779fedce66",
+      "policy_duration_seconds": 1.16,
+      "holdout_completed": 3,
+      "holdout_count": 3,
+      "holdout_body_p95_m": 0.27049591019749636,
+      "holdout_root_p95_m": 0.17314535480931692,
+      "selection": "Retained complete incumbent",
+      "ghost_rgba": [
+        0.831,
+        0.357,
+        0.298,
+        0.16
+      ],
+      "pose_modification": false,
+      "camera": {
+        "lookat": [
+          0.8955427259206773,
+          0.18718779087066648,
+          1.0291146383062004
+        ],
+        "distance": 4.761256769286023,
+        "azimuth": 105.0,
+        "elevation": -20.0,
+        "fovy": 40.0,
+        "max_normalized_envelope_extent": 0.882516699608119,
+        "static_camera": true
+      },
+      "scene": "Task-equivalent collision proxy",
+      "media": [
+        {
+          "file": "bench-input.mp4",
+          "sha256": "67558d79387da01b89de26746499bf38546a12a99d013d6d15cca0d0e0b842b6",
+          "bytes": 2870574,
+          "frames": 106,
+          "fps": 29.97002997002997,
+          "duration_seconds": 3.5368666666666666,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "input",
+          "source": "INPUT__BENCH__SELECTED.mp4",
+          "source_sha256": "67558d79387da01b89de26746499bf38546a12a99d013d6d15cca0d0e0b842b6",
+          "crop": null
+        },
+        {
+          "file": "bench-input.jpg",
+          "sha256": "abfb2d33c430097eab123f67be55f3fcb3a4f03f933fcb18131779e3cb0d7d2c",
+          "bytes": 57906
+        },
+        {
+          "file": "bench-fixed.mp4",
+          "sha256": "2b0032c932e7edb7871c6e73fcd8366b69ec6e72572df54d19018e9ae9bd049b",
+          "bytes": 236186,
+          "frames": 58,
+          "fps": 50.0,
+          "duration_seconds": 1.16,
+          "width": 1920,
+          "height": 952,
+          "full_decode_passed": true,
+          "role": "fixed",
+          "source": "POLICY__BENCH__FIXED_CONTINUATION__SEED1001.mp4",
+          "source_sha256": "ee90654a0aef61667fd270ec1052dfb91226a7e8adec61929fd83d44dd9a14ce",
+          "crop": {
+            "top": 128
+          }
+        },
+        {
+          "file": "bench-fixed.jpg",
+          "sha256": "e934dd968fed686ee95fcea353cb730d26dfd61904c2e66e0cf5791ef4b5c876",
+          "bytes": 24738
+        },
+        {
+          "file": "bench-ours.mp4",
+          "sha256": "c65c8366ff5d8f48db7ccb36625929fa2410cbd4a9db7c631f9ed73a0388ef17",
+          "bytes": 656816,
+          "frames": 58,
+          "fps": 50.0,
+          "duration_seconds": 1.16,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "ours",
+          "source": "TERRAIN_REVIEW_V2_20261010__BENCH__MIMICX__WITH_GHOST.mp4",
+          "source_sha256": "c65c8366ff5d8f48db7ccb36625929fa2410cbd4a9db7c631f9ed73a0388ef17",
+          "crop": null
+        },
+        {
+          "file": "bench-ours.jpg",
+          "sha256": "d66757019ae1c4f3b190c8b52aca2d675fa66f01548bdb843e1f7367e52d2e2b",
+          "bytes": 32094
+        },
+        {
+          "file": "bench-robot.mp4",
+          "sha256": "ddf584e10271ccc35ece92a17f4d61b2bdb23a48693800d2d4cc5b316ce917dc",
+          "bytes": 559300,
+          "frames": 58,
+          "fps": 50.0,
+          "duration_seconds": 1.16,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "robot",
+          "source": "TERRAIN_REVIEW_V2_20261010__BENCH__MIMICX__ROBOT_ONLY.mp4",
+          "source_sha256": "ddf584e10271ccc35ece92a17f4d61b2bdb23a48693800d2d4cc5b316ce917dc",
+          "crop": null
+        },
+        {
+          "file": "bench-robot.jpg",
+          "sha256": "ae232d7dd82df401434103d6e0bec9b9aff42141fa7ed85ebfcad60a45f7ff5f",
+          "bytes": 31341
+        }
+      ]
+    },
+    {
+      "case": "parkour",
+      "title": "Parkour",
+      "horizon": 269,
+      "checkpoint_sha256": "2c4b021e4b101cd84d6989196a0612ad800a83559de5b3332abc77b530f92ed1",
+      "motion_sha256": "3e8146c1e561b18c70a75c04aaf01467606df65301660b57c60f2d8eeccf5981",
+      "scene_sha256": "fbfda8cde31d77e6cefd2acb1d8b889eb21351463cee2a7c37a5c357ff562047",
+      "policy_duration_seconds": 5.38,
+      "holdout_completed": 3,
+      "holdout_count": 3,
+      "holdout_body_p95_m": 0.8424381971359253,
+      "holdout_root_p95_m": 0.18487906106280305,
+      "selection": "Retained locally retimed policy",
+      "ghost_rgba": [
+        0.831,
+        0.357,
+        0.298,
+        0.16
+      ],
+      "pose_modification": false,
+      "camera": {
+        "lookat": [
+          1.93633833527565,
+          0.06995901465415955,
+          0.8003585374355316
+        ],
+        "distance": 4.980832513198851,
+        "azimuth": 105.0,
+        "elevation": -20.0,
+        "fovy": 40.0,
+        "max_normalized_envelope_extent": 0.860155095656555,
+        "static_camera": true
+      },
+      "scene": "Task-equivalent collision proxy",
+      "media": [
+        {
+          "file": "parkour-input.mp4",
+          "sha256": "313e1f545cc52b9d42a7661a86dc5b8e85177483720ad1848f1d404526a68f5d",
+          "bytes": 10453631,
+          "frames": 134,
+          "fps": 29.97002997002997,
+          "duration_seconds": 4.471133333333333,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "input",
+          "source": "INPUT__PARKOUR__SELECTED.mp4",
+          "source_sha256": "313e1f545cc52b9d42a7661a86dc5b8e85177483720ad1848f1d404526a68f5d",
+          "crop": null
+        },
+        {
+          "file": "parkour-input.jpg",
+          "sha256": "f3b485b79cdf3db41e8d7c2e4fbfb7a1eb46b11424371a50072f9fc7eedb3b68",
+          "bytes": 185903
+        },
+        {
+          "file": "parkour-fixed.mp4",
+          "sha256": "deea3ae22790eaf0cfef37abedb7fce31347b33ef7bb2345e2930d64886d3e11",
+          "bytes": 616825,
+          "frames": 255,
+          "fps": 50.0,
+          "duration_seconds": 5.1,
+          "width": 1920,
+          "height": 952,
+          "full_decode_passed": true,
+          "role": "fixed",
+          "source": "POLICY__PARKOUR__FIXED_CONTINUATION__SEED1001.mp4",
+          "source_sha256": "67f0b037819f5d727734bc13b4f658aa50703991ff54de884f5c7b178c87f6d2",
+          "crop": {
+            "top": 128
+          }
+        },
+        {
+          "file": "parkour-fixed.jpg",
+          "sha256": "ac07a58bb18bc17f98a9c8a4f627786fdb0905d1bbc16d29847407d2c04a0e55",
+          "bytes": 16385
+        },
+        {
+          "file": "parkour-ours.mp4",
+          "sha256": "a0ca9eec1df21d52bb068914e9029145be7f1cb2af4e0bf6fd2384b9645d25e9",
+          "bytes": 2045890,
+          "frames": 269,
+          "fps": 50.0,
+          "duration_seconds": 5.38,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "ours",
+          "source": "TERRAIN_RELEASE_20261011__PARKOUR__MIMICX__WITH_GHOST.mp4",
+          "source_sha256": "a0ca9eec1df21d52bb068914e9029145be7f1cb2af4e0bf6fd2384b9645d25e9",
+          "crop": null
+        },
+        {
+          "file": "parkour-ours.jpg",
+          "sha256": "c194c09e43507ebf47f6a4b951d0d936a37fe251d9284257d0c54f6926fd0fce",
+          "bytes": 29647
+        },
+        {
+          "file": "parkour-robot.mp4",
+          "sha256": "8057e0a51b7bb63158c89f60df3b7bce396aae39661c001c74e5ba66f40e52b4",
+          "bytes": 1771013,
+          "frames": 269,
+          "fps": 50.0,
+          "duration_seconds": 5.38,
+          "width": 1920,
+          "height": 1080,
+          "full_decode_passed": true,
+          "role": "robot",
+          "source": "TERRAIN_RELEASE_20261011__PARKOUR__MIMICX__ROBOT_ONLY.mp4",
+          "source_sha256": "8057e0a51b7bb63158c89f60df3b7bce396aae39661c001c74e5ba66f40e52b4",
+          "crop": null
+        },
+        {
+          "file": "parkour-robot.jpg",
+          "sha256": "5a0449468bc1b0ef9b3041f274d53f7fd5810df4c16f15b2e585ff276d9a9f9c",
+          "bytes": 28954
+        }
+      ],
+      "reference_timing": "Local 1.5x timing; all source poses retained",
+      "original_reference_seconds": 5.1,
+      "original_speed_completed": 0,
+      "original_speed_evaluations": 3,
+      "tail_candidates_accepted": 0,
+      "visual_status": "Full retimed horizon; late-roll articulation remains imperfect"
+    }
+  ]
+}
