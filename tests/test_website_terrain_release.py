@@ -6,18 +6,30 @@ from pathlib import Path
 SITE = Path(__file__).resolve().parents[1] / 'docs'
 
 
-def test_five_scene_tasks_include_sources_and_recorded_comparisons():
+def test_five_scene_tasks_pair_input_with_mimicx_and_label_parkour_mpc():
     html = (SITE / 'index.html').read_text()
+    scenes = html.split('<div class="rx-scene-recordings">', 1)[1].split('<section id="overview"', 1)[0]
+    assert 'Fixed Reference' not in scenes
+    assert 'class="terrain-grid"' in scenes
     for task in ('track', 'stairs', 'forest', 'bench', 'parkour'):
         row = re.search(rf'<article[^>]*data-policy-task="{task}".*?</article>', html, re.S)
         assert row, task
-        assert row[0].count('<video ') == 3
+        assert row[0].count('<video ') == 2
         assert 'data-sync="independent"' in row[0]
-        for method in ('input', 'fixed', 'ours'):
-            assert f'data-method="{method}"' in row[0]
-        assert 'Robot only' in row[0]
+        assert re.findall(r'<figure data-method="([^"]+)"', row[0]) == ['input', 'ours']
+        assert f'src="assets/media/terrain-release/{task}-input.mp4"' in row[0]
+        if task == 'parkour':
+            assert 'src="assets/media/terrain-release/parkour-mpc.mp4"' in row[0]
+            assert 'poster="assets/media/terrain-release/parkour-mpc.jpg"' in row[0]
+            assert 'aria-label="MimicX + MPC"' in row[0]
+            assert 'robot joint control' in row[0]
+            assert 'diagnostic control demonstration' in row[0]
+            assert 'parkour-robot.mp4' not in row[0]
+        else:
+            assert f'src="assets/media/terrain-release/{task}-ours.mp4"' in row[0]
+            assert 'aria-label="MimicX"' in row[0]
+            assert 'Robot only' in row[0]
     assert '5.38 s' in html and 'locally retimed' in html
-    assert 'historical' in html.lower()
     js = (SITE / 'assets/js/recordings.js').read_text()
     assert "row.element.dataset.sync === 'independent'" in js
 
@@ -45,14 +57,20 @@ def test_terrain_media_matches_frozen_selected_policies():
     assert '/data/' not in serialized and '/home/' not in serialized
 
 
-def test_terrain_previews_share_square_sizes_and_keep_full_frame_links():
+def test_terrain_pairs_form_four_desktop_videos_with_uncropped_16_9_frames():
     css = (SITE / 'assets/css/recordings.css').read_text()
-    assert 'width: calc((100% - 56px) * .6 + 28px)' in css
-    assert '.terrain-row .recording-grid { width: 100%; }' in css
-    assert 'object-fit: cover' in css
+    # Two task columns, each with two videos, become one task on mobile.
+    assert '.terrain-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));' in css
+    assert '.terrain-row .recording-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }' in css
+    assert '.terrain-row .recording-frame { aspect-ratio: 16 / 9; }' in css
+    assert '.terrain-row .recording-grid figure:first-child { grid-column: auto; width: 100%; }' in css
+    mobile = css.split('@media (max-width: 900px)', 1)[1].split('@media', 1)[0]
+    assert '.terrain-grid { grid-template-columns: minmax(0, 1fr); }' in mobile
     assert '#research .terrain-row .recording-frame video { object-fit: contain; }' in css
     html = (SITE / 'index.html').read_text()
     for task in ('track', 'stairs', 'forest', 'bench', 'parkour'):
         row = re.search(rf'<article[^>]*data-policy-task="{task}".*?</article>', html, re.S)[0]
-        for method in ('input', 'fixed', 'ours'):
-            assert f'href="assets/media/terrain-release/{task}-{method}.mp4" data-viewer="video"' in row
+        execution = 'parkour-mpc' if task == 'parkour' else f'{task}-ours'
+        for stem in (f'{task}-input', execution):
+            assert f'href="assets/media/terrain-release/{stem}.mp4" data-viewer="video"' in row
+        assert f'{task}-fixed.mp4' not in row
