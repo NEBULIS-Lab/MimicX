@@ -14,12 +14,13 @@
 .recording-grid figcaption .rx-icon-button { flex: 0 0 32px; min-width: 32px; width: 32px; height: 32px; }
 #research .rx-scene-grid img { aspect-ratio: 1; object-fit: cover; }
 .rx-scene-grid a { border-radius: 8px; overflow: hidden; }
-.terrain-row .recording-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.terrain-row .recording-frame { background: var(--rx-band); }
+/* Three scene clips retain the same tile size as the five-policy rows. */
+.terrain-row .recording-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); width: calc((100% - 56px) * .6 + 28px); margin-inline: auto; }
 #research .terrain-row .recording-frame video { object-fit: contain; }
 .terrain-row .recording-note { margin: 14px 0 0; font-size: 13px; color: var(--rx-muted); line-height: 1.65; }
 @media (max-width: 900px) {
   .recording-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 14px; }
+  .terrain-row .recording-grid { width: 100%; }
 }
 @media (max-width: 600px) {
   .recording-heading { align-items: flex-start; gap: 10px; }

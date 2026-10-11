@@ -45,7 +45,14 @@ def test_terrain_media_matches_frozen_selected_policies():
     assert '/data/' not in serialized and '/home/' not in serialized
 
 
-def test_terrain_media_does_not_crop_scene_or_force_source_timing():
+def test_terrain_previews_share_square_sizes_and_keep_full_frame_links():
     css = (SITE / 'assets/css/recordings.css').read_text()
-    assert '.terrain-row .recording-frame video' in css
-    assert 'object-fit: contain' in css
+    assert 'width: calc((100% - 56px) * .6 + 28px)' in css
+    assert '.terrain-row .recording-grid { width: 100%; }' in css
+    assert 'object-fit: cover' in css
+    assert '#research .terrain-row .recording-frame video { object-fit: contain; }' in css
+    html = (SITE / 'index.html').read_text()
+    for task in ('track', 'stairs', 'forest', 'bench', 'parkour'):
+        row = re.search(rf'<article[^>]*data-policy-task="{task}".*?</article>', html, re.S)[0]
+        for method in ('input', 'fixed', 'ours'):
+            assert f'href="assets/media/terrain-release/{task}-{method}.mp4" data-viewer="video"' in row
