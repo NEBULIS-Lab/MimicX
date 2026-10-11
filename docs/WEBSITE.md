@@ -56,12 +56,11 @@ MimicX, blue for Fixed Reference and teal for complementary mechanisms.
   Reference overlays remain available in the in-page media viewer. The
   BeyondMimic Dance/Kung Fu archives retain the original-reference label;
   they are not relabeled as matched repaired-reference comparisons. The paper's
-  measurements and checkpoints are unchanged. Then follow four collision-scene recordings:
-  Parkour, Stairs, Platform and Forest. Parkour is a diagnostic tracking
-  rollout, not a claim of full-horizon completion. Other showcase items are stills.
-  Scene previews and playback use square derivatives with the top black band
-  removed; uncropped originals remain in the media archive. Crop rectangles,
-  hashes and full-timeline checks are recorded in `recording-grid/manifest.json`.
+  measurements and checkpoints are unchanged. Five collision-scene tasks follow:
+  Track, Stairs, Forest, Platform and Parkour, each with input and execution.
+  Scene previews are uncropped 16:9 pairs, with two tasks per desktop row and
+  one per mobile row. Parkour is labeled MimicX + MPC, a retimed diagnostic
+  control demonstration. See Selected Scene Demonstrations below for provenance.
 - Method: the final hand-drawn supervision diagram and compact refinement
   ledger form a top-aligned 64:36 row, stacked on mobile. The ledger connects
   rollout localization, coordinated updates and repeated verification.
@@ -189,19 +188,23 @@ author history into an anonymous repository.
 
 ## Selected Scene Demonstrations
 
-The Recorded execution section includes five source-video / historical Fixed
-Reference / selected MimicX rows. `assets/media/terrain-release/manifest.json`
-records media hashes, durations, checkpoint/reference identities and independent
-holdout measurements. `assets/results/scene_demonstrations_20261011.csv` is a
-separate demonstration release, not a replacement for the controlled paper CSV.
+The collision-scene recordings show five input / MimicX pairs, with two tasks
+(four videos) per desktop row and one task (two videos) per mobile row.
+All scene previews are 16:9 with `object-fit: contain`; full frames remain
+visible. Fixed Reference entries are removed only from this subsection's UI;
+their source files and historical records are retained.
 
-Track Running and Forest Traversal use accepted continuations. Stair Ascent and
-Platform Jump retain their verified complete incumbents. Parkour uses a locally
-retimed 5.38-second reference, with all source poses retained; its late-roll
-articulation remains imperfect. It is not an original-speed success result.
+Track Running, Stair Ascent, Forest Traversal and Platform Jump keep their
+existing videos and independent playback clocks. The four core-skill comparisons
+and all other website sections are unchanged.
 
-These rows keep independent playback clocks because source excerpts and selected
-references can differ in duration. Full recordings and robot-only alternatives
-open in the media viewer. The solid robot is the recorded policy; the coral
-reference overlay cannot cover its silhouette. Whole-clip framing preserves the
-robot and collision-scene context. The four core-skill comparisons are unchanged.
+Parkour displays **MimicX + MPC**, a locally retimed 5.38-second robot-joint-control
+diagnostic demonstration. The actor is followed by predictive control; this is
+a hybrid-control recording. `assets/media/terrain-release/parkour-mpc.json`
+records the displayed clip's source, hashes and control context.
+
+`assets/media/terrain-release/manifest.json` and
+`assets/results/scene_demonstrations_20261011.csv` retain the earlier policy
+release's identities and measurements, not measurements of the new MPC clip.
+The paper metrics and published weights are unchanged. The earlier Parkour
+videos remain on disk but are not linked as the current execution.

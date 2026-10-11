@@ -1,0 +1,39 @@
+{
+  "schema": "mimicx.parkour-hybrid-demonstration.v1",
+  "release": "2026-10-12",
+  "label": "MimicX + MPC",
+  "purpose": "Diagnostic control demonstration",
+  "control": "Frozen MimicX actor followed by model predictive control of robot joint targets",
+  "reference_timing": "Locally retimed 5.38 s reference; 269 frames at 50 Hz",
+  "selected_reset_seed": 29003,
+  "updates_paper_metrics": false,
+  "updates_published_weights": false,
+  "historical_policy_records": "manifest.json and scene_demonstrations_20261011.csv describe the earlier policy release, not this controller",
+  "media": [
+    {
+      "file": "parkour-mpc.mp4",
+      "sha256": "4142acdfb41f65c435d0731efde8df33f5b6026dc80f0dc7c99d9dd3b536e2c1",
+      "bytes": 2128427,
+      "source": "PARKOUR_COMPLETION_20261012__MPC__HOLDOUT29003__FULL.mp4",
+      "source_sha256": "4142acdfb41f65c435d0731efde8df33f5b6026dc80f0dc7c99d9dd3b536e2c1",
+      "width": 1920,
+      "height": 1080,
+      "frames": 269,
+      "fps": 50,
+      "duration_seconds": 5.38,
+      "full_decode_passed": true,
+      "crop": null,
+      "transcoded": false
+    },
+    {
+      "file": "parkour-mpc.jpg",
+      "sha256": "f30a724c751090961df19ab09edc0e0dbbfe757b95474f4ddb38386796964638",
+      "bytes": 59675,
+      "source": "parkour-mpc.mp4",
+      "frame_time_seconds": 0.6,
+      "width": 1920,
+      "height": 1080,
+      "crop": null
+    }
+  ]
+}
