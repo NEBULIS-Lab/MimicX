@@ -1,0 +1,194 @@
+{
+  "schema": "mimicx.scene-demonstration.v1",
+  "release": "2026-10-14",
+  "case": "descent",
+  "title": "Stair Descent",
+  "updates_paper_metrics": false,
+  "updates_published_weights": false,
+  "horizon": 240,
+  "policy_duration_seconds": 4.8,
+  "checkpoint_sha256": "11bd44e91954b7179bb7afcde40b78701a3c16524a0e9a0ae4502ea6b6d715dc",
+  "motion_sha256": "9c70a00adc838a1c286af39b3b187c10e95efea99afcd985f525c6b0f5aeb22d",
+  "scene_sha256": "a3c9a7ab7a1aa9adf5851447fbbecbe6c598d32d8ffcc63b719f9508ea34b93f",
+  "scene": "Task-equivalent collision proxy",
+  "input_source": {
+    "url": "https://www.pexels.com/video/woman-walking-down-from-the-stairs-5739876/",
+    "creator": "Leeloo The First",
+    "license": "https://www.pexels.com/license/",
+    "source_frames": [
+      0,
+      145
+    ],
+    "source_fps": 29.97002997002997,
+    "crop_xywh": [
+      0,
+      840,
+      1080,
+      1080
+    ],
+    "retimed": false
+  },
+  "training_budget": {
+    "common_updates": 3000,
+    "fixed_updates": 3000,
+    "refined_updates": 3000,
+    "total_updates": 9000,
+    "num_envs": 1024
+  },
+  "selection_seeds": [
+    1001,
+    2002,
+    3003
+  ],
+  "selection": {
+    "accepted": true,
+    "baseline_frontiers": [
+      240,
+      240,
+      240
+    ],
+    "candidate_frontiers": [
+      240,
+      240,
+      240
+    ],
+    "paired_common_prefix_p95": [
+      [
+        {
+          "body_pos_error_max": 0.2129800915718078,
+          "root_pos_error": 0.08541167011515674
+        },
+        {
+          "body_pos_error_max": 0.09118655547499653,
+          "root_pos_error": 0.05888102902705721
+        }
+      ],
+      [
+        {
+          "body_pos_error_max": 0.22276641726493826,
+          "root_pos_error": 0.09704632066393143
+        },
+        {
+          "body_pos_error_max": 0.0924818716943264,
+          "root_pos_error": 0.057191566079578586
+        }
+      ],
+      [
+        {
+          "body_pos_error_max": 0.21139765456318854,
+          "root_pos_error": 0.09267095380194722
+        },
+        {
+          "body_pos_error_max": 0.0909172836691141,
+          "root_pos_error": 0.056966402678724395
+        }
+      ]
+    ]
+  },
+  "holdouts": [
+    {
+      "seed": 4001,
+      "complete": true,
+      "metrics": {
+        "body_pos_error_max": 0.09085240066051478,
+        "root_pos_error": 0.05838278072773317,
+        "max_scene_penetration_m": 0.020155556443257262
+      },
+      "quality_passed": true
+    },
+    {
+      "seed": 5002,
+      "complete": true,
+      "metrics": {
+        "body_pos_error_max": 0.09163203202188011,
+        "root_pos_error": 0.05643956551766664,
+        "max_scene_penetration_m": 0.02223501297560118
+      },
+      "quality_passed": true
+    },
+    {
+      "seed": 6003,
+      "complete": true,
+      "metrics": {
+        "body_pos_error_max": 0.09247264638543129,
+        "root_pos_error": 0.05760420228501555,
+        "max_scene_penetration_m": 0.01801860311280489
+      },
+      "quality_passed": true
+    }
+  ],
+  "camera": {
+    "lookat": [
+      1.819851342588663,
+      -0.20214897394180295,
+      0.8123608416318894
+    ],
+    "distance": 4.090640495174033,
+    "azimuth": 105.0,
+    "elevation": -20.0,
+    "fovy": 40.0,
+    "max_normalized_envelope_extent": 0.8833545457467425,
+    "static_camera": true
+  },
+  "ghost_rgba": [
+    0.831,
+    0.357,
+    0.298,
+    0.16
+  ],
+  "pose_modification": false,
+  "root_alignment": false,
+  "media": [
+    {
+      "file": "descent-input.mp4",
+      "sha256": "7235c763bd93cbb0ed0541769fa2017cfabf2bb628eec65904c7c007641c27cc",
+      "frames": 145,
+      "fps": 29.97002997002997,
+      "duration_seconds": 4.838166666666667,
+      "width": 960,
+      "height": 960,
+      "full_decode_passed": true,
+      "role": "input",
+      "source_sha256": "7235c763bd93cbb0ed0541769fa2017cfabf2bb628eec65904c7c007641c27cc",
+      "pose_modification": false
+    },
+    {
+      "file": "descent-input.jpg",
+      "sha256": "72837e93b72aee2adbf2ef21beafae2a88907f1de8e025f9bda62aa6bf20a28d"
+    },
+    {
+      "file": "descent-ours.mp4",
+      "sha256": "2924018d05bb33f694f30bc09292fef1b5734d7f9e4d8d33a8d268a543db3965",
+      "frames": 240,
+      "fps": 50.0,
+      "duration_seconds": 4.8,
+      "width": 1920,
+      "height": 1080,
+      "full_decode_passed": true,
+      "role": "ours",
+      "source_sha256": "2924018d05bb33f694f30bc09292fef1b5734d7f9e4d8d33a8d268a543db3965",
+      "pose_modification": false
+    },
+    {
+      "file": "descent-ours.jpg",
+      "sha256": "55a33fb6b1c0afdbb10cd21595d9c3f67848116cb60b7b2e1019109b8a908e0f"
+    },
+    {
+      "file": "descent-robot.mp4",
+      "sha256": "1180b61433ed67126beadadde5a43cb4e9806ec44dd6d969c30d0b598677838a",
+      "frames": 240,
+      "fps": 50.0,
+      "duration_seconds": 4.8,
+      "width": 1920,
+      "height": 1080,
+      "full_decode_passed": true,
+      "role": "robot",
+      "source_sha256": "1180b61433ed67126beadadde5a43cb4e9806ec44dd6d969c30d0b598677838a",
+      "pose_modification": false
+    },
+    {
+      "file": "descent-robot.jpg",
+      "sha256": "4025b8f7aad9c80bbced42b1f518eb03909a8d421500d0029eb55ae1e2d31917"
+    }
+  ]
+}
