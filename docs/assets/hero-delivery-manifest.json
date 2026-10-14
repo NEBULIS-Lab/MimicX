@@ -1,0 +1,20 @@
+[
+  {
+    "source": "assets/media/hero-tennis.png",
+    "file": "assets/media/hero-tennis.webp",
+    "source_sha256": "e791b0f9a1be12dd1747ff82395480025563ace95cb47761c977f8574f4669c3",
+    "sha256": "e5f38234f88b6b28f18a535922d98867e6542fa9de5991fe4b4c20d8951acc8b",
+    "source_bytes": 6447511,
+    "bytes": 271530,
+    "encoding": "WebP quality 96; original 4480 x 1600 resolution"
+  },
+  {
+    "source": "assets/branding/mimicx-full-logo.svg",
+    "file": "assets/branding/mimicx-full-logo.web.svg",
+    "source_sha256": "3facedeea2d814082d5fa42672dc7cdefea67f94ec02ef03af6e4a45f8abb824",
+    "sha256": "dab5952e460a05f66cae68a63ca5b6fc0fd494dd9b73eea2b0104ad5b2668dbe",
+    "source_bytes": 1018296,
+    "bytes": 515093,
+    "encoding": "SVG geometry unchanged; embedded RGBA image encoded as lossless WebP"
+  }
+]
