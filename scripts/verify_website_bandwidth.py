@@ -28,44 +28,36 @@ def verify(site, output, chromium):
                 page.on('request', lambda r: requests.append(r.url) if '.mp4' in r.url else None)
                 page.add_init_script('''Object.defineProperty(navigator, 'connection', {value: {
                     saveData: LOW, effectiveType: LOW ? '3g' : '4g', downlink: LOW ? 1 : 10,
-                    addEventListener() {} }});'''.replace('LOW', str(low).lower()))
+                    addEventListener() {} }});
+                    localStorage.setItem('mimicx-low-data', 'on');'''.replace('LOW', str(low).lower()))
                 if low:
                     cdp = page.context.new_cdp_session(page)
                     cdp.send('Network.enable')
                     cdp.send('Network.emulateNetworkConditions', dict(offline=False, latency=120,
-                        downloadThroughput=125000, uploadThroughput=62500, connectionType='cellular3g'))
+                        downloadThroughput=375000, uploadThroughput=62500, connectionType='cellular3g'))
                 page.goto(f'http://127.0.0.1:{server.server_port}', wait_until='domcontentloaded')
                 page.wait_for_timeout(1000)
-                assert all('/previews/showcase--football-contact-slow4x.mp4' in url for url in requests), requests
+                assert all('/media/showcase/' in url for url in requests), requests
                 initial_requests = len(requests)
                 row = page.locator('[data-policy-task="tennis"]')
                 started = time.monotonic()
                 row.scroll_into_view_if_needed()
-                expected = 1 if low else 5
+                expected = 5
                 page.wait_for_function('n => [...document.querySelectorAll("[data-policy-task=tennis] video")].filter(v=>!v.paused && v.currentTime > .1).length === n', arg=expected, timeout=60000)
                 startup_seconds = time.monotonic() - started
                 videos = row.locator('video')
-                if low:
-                    assert videos.evaluate_all('vs=>vs.filter(v=>v.hasAttribute("src")).length') == 1
-                    assert row.locator('[data-method=ours] video').evaluate('v=>!v.paused')
-                    playing = row.locator('[data-method=ours] video')
-                    initial_time = playing.evaluate('v=>v.currentTime')
-                    page.wait_for_timeout(3500)
-                    before = videos.evaluate_all('vs=>vs.map(v=>v.currentTime)')
-                    playback_advance = before[-1] - initial_time
-                    row.locator('[data-method=sonic] .recording-load').click()
-                    page.wait_for_function('!document.querySelector("[data-policy-task=tennis] [data-method=sonic] video").paused', timeout=60000)
-                    assert row.locator('[data-method=ours] video').evaluate('v=>v.paused && !v.hasAttribute("src")')
-                else:
-                    playback_advance = None
-                    page.wait_for_timeout(1800)
-                    before = videos.evaluate_all('vs=>vs.map(v=>v.currentTime)')
-                    assert max(before) - min(before) < .2, before
-                    row.locator('.recording-toggle').click()
-                    page.wait_for_function('[...document.querySelectorAll("[data-policy-task=tennis] video")].every(v=>v.paused)')
-                    row.locator('.recording-toggle').click()
-                    page.wait_for_function('[...document.querySelectorAll("[data-policy-task=tennis] video")].every(v=>!v.paused)')
-                assert all('/previews/' in url for url in requests), requests
+                assert videos.evaluate_all('vs=>vs.filter(v=>v.hasAttribute("src")).length') == 5
+                initial_time = videos.last.evaluate('v=>v.currentTime')
+                page.wait_for_timeout(1800)
+                before = videos.evaluate_all('vs=>vs.map(v=>v.currentTime)')
+                playback_advance = before[-1] - initial_time
+                assert max(before) - min(before) < .2, before
+                row.locator('.recording-toggle').click()
+                page.wait_for_function('[...document.querySelectorAll("[data-policy-task=tennis] video")].every(v=>v.paused)')
+                row.locator('.recording-toggle').click()
+                page.wait_for_function('[...document.querySelectorAll("[data-policy-task=tennis] video")].every(v=>!v.paused)')
+                assert all('/previews/' in url or '/media/showcase/' in url for url in requests), requests
+                assert page.locator('#low-data-mode').count() == 0
                 row.screenshot(path=str(output / f'{width}-recordings.png'))
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                 # Explicit viewer action alone requests the untouched HD recording.
@@ -77,11 +69,9 @@ def verify(site, output, chromium):
                 assert page.locator('.recording-row video').evaluate_all('vs=>vs.every(v=>v.paused)')
                 page.click('#viewer-close')
                 page.wait_for_function('!document.querySelector("#media-viewer").open')
-                page.locator('#low-data-mode').set_checked(not low)
                 row.scroll_into_view_if_needed()
-                page.wait_for_function('n => [...document.querySelectorAll("[data-policy-task=tennis] video")].filter(v=>!v.paused).length === n', arg=5 if low else 1, timeout=60000)
+                page.wait_for_function('[...document.querySelectorAll("[data-policy-task=tennis] video")].every(v=>!v.paused)', timeout=60000)
                 if not low:
-                    page.locator('#low-data-mode').uncheck()
                     for task in ('football', 'dance', 'kungfu', 'track', 'stairs', 'forest', 'bench', 'parkour', 'descent'):
                         other = page.locator(f'[data-policy-task="{task}"]')
                         other.scroll_into_view_if_needed()
@@ -103,6 +93,7 @@ def verify(site, output, chromium):
                     page.locator('.showcase-pagination button').first.click()
                     page.wait_for_function('document.querySelector(".showcase-track video").currentTime > 1', timeout=15000)
                     page.locator('.showcase-viewport').screenshot(path=str(output / f'{width}-showcase.png'))
+                    assert page.locator('.showcase-track video').evaluate_all('vs=>vs.every(v=>v.src.includes("/media/showcase/") && !v.dataset.src)')
                     page.locator('.showcase-pagination button').nth(1).click()
                     page.locator('.showcase-pagination button').first.click()
                     page.wait_for_function('document.querySelector(".showcase-track video").currentTime > .1', timeout=15000)
@@ -114,10 +105,11 @@ def verify(site, output, chromium):
                     row.locator('.recording-load').first.click()
                     page.wait_for_function('[...document.querySelectorAll("[data-policy-task=tennis] video")].every(v=>!v.paused)', timeout=30000)
                 assert not errors, errors
-                reports.append(dict(width=width, low_data=low, throttled_mbps=1 if low else None,
-                                    initial_video_requests=initial_requests, inline_previews_only=True,
-                                    hd_only_on_click=True, startup_seconds=startup_seconds,
-                                    playback_advance_over_3_5s=playback_advance, playback_times=before, errors=errors))
+                reports.append(dict(width=width, save_data_hint=low, throttled_mbps=3 if low else None,
+                                    initial_video_requests=initial_requests, recordings_use_previews=True,
+                                    showcase_uses_originals=True, all_five_autoplay=True,
+                                    recording_hd_only_on_click=True, startup_seconds=startup_seconds,
+                                    playback_advance_over_1_8s=playback_advance, playback_times=before, errors=errors))
                 page.close()
             browser.close()
     finally:

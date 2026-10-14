@@ -1,8 +1,4 @@
 .recording-row { padding: 26px 0; border-top: 1px solid var(--rx-line); }
-.recording-options { display: flex; justify-content: flex-end; margin: 0 0 12px; }
-.recording-options label { display: inline-flex; align-items: center; gap: 9px; color: var(--rx-muted); font-size: 14px; cursor: pointer; }
-.recording-options input { accent-color: #d45b4c; width: 17px; height: 17px; margin: 0; }
-.recording-options input:focus-visible { outline: 2px solid #d45b4c; outline-offset: 3px; }
 .recording-heading, .recording-tools { display: flex; align-items: center; gap: 18px; }
 .recording-heading { justify-content: space-between; margin-bottom: 14px; }
 #research .recording-heading h3, #research .recording-heading h4 { margin: 0; font-size: 18px; font-weight: 600; }

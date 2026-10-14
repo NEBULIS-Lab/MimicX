@@ -141,7 +141,7 @@
     const video = originals[index].querySelector('video');
     rail.dataset.interval = String(index === 0 && video ? FIRST_VIDEO_MS : AUTOPLAY_MS);
     if (video && previous !== index) {
-      window.MimicXMedia.reset(video);
+      try { video.currentTime = 0; } catch (_) { /* Metadata may still be loading. */ }
     }
     originals.forEach((figure, i) => {
       figure.classList.toggle('is-active', i === index);
@@ -198,14 +198,12 @@
       if (!video) return;
       const shouldPlay = () => i === index && enabled && visible && !reduced.matches && !document.hidden && !dialog.open;
       if (shouldPlay()) {
-        window.MimicXMedia.prepare(video);
-        if (!window.MimicXMedia.buffered(video)) return;
         if (video.paused && !playbackBlocked.has(video)) video.play().then(() => {
           if (!shouldPlay()) video.pause();
         }).catch(error => {
           if (error.name !== 'AbortError') playbackBlocked.add(video);
         });
-      } else { video.pause(); window.MimicXMedia.release(video); }
+      } else video.pause();
     });
   }
   function syncAutoplay() {

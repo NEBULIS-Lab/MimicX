@@ -25,21 +25,35 @@ def test_inline_videos_only_load_previews_on_demand_and_keep_hd_links():
     media = Media((SITE / 'index.html').read_text())
     assert len(media.videos) == 34
     hd_links = {a['href'] for a in media.links if a.get('data-viewer') == 'video'}
-    for video in media.videos:
+    previews = [v for v in media.videos if 'data-src' in v]
+    assert len(previews) == 32
+    showcase = [v for v in media.videos if 'src' in v]
+    assert len(showcase) == 2
+    for video in showcase:
+        assert video['src'].startswith('assets/media/showcase/')
+        assert video['preload'] == 'metadata'
+        assert 'poster' in video
+    for video in previews:
         assert 'src' not in video, 'Do not let the parser load offscreen originals'
         assert video['preload'] == 'none'
         assert video['data-src'].startswith('assets/media/previews/')
         assert (SITE / video['data-src']).is_file()
         assert video['data-original-src'] in hd_links
         assert video.get('data-poster') and 'poster' not in video
-    assert any(a.get('id') == 'low-data-mode' and a.get('type') == 'checkbox' for a in media.inputs)
+    assert not any(a.get('id') == 'low-data-mode' for a in media.inputs)
+    loader = (SITE / 'assets/js/video-loading.js').read_text()
+    player = (SITE / 'assets/js/recordings.js').read_text()
+    assert 'navigator.connection' not in loader
+    assert 'mimicx-low-data' not in loader
+    assert 'lowData' not in player
+    assert 'MimicXMedia' not in (SITE / 'assets/js/showcase.js').read_text()
 
 
 def test_preview_manifest_preserves_sources_timing_and_faststart():
     path = SITE / 'assets/media/previews/manifest.json'
     assert path.exists(), 'Each derivative needs a checked source and encoding record'
     manifest = json.loads(path.read_text())
-    assert len(manifest['videos']) == 34
+    assert len(manifest['videos']) == 32
     for row in manifest['videos']:
         original, preview = SITE / row['source'], SITE / row['preview']
         assert hashlib.sha256(original.read_bytes()).hexdigest() == row['source_sha256']

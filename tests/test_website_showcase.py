@@ -41,8 +41,8 @@ def test_showcase_order_and_media_inventory():
     assert gallery.count('parkour-sequence.webp') == 2
     for name in ('tennis-scene.mp4', 'football-contact-slow4x.mp4'):
         assert f'href="assets/media/showcase/{name}' in gallery
-        assert f'data-original-src="assets/media/showcase/{name}' in gallery
-        assert f'data-src="assets/media/previews/showcase--{name}"' in gallery
+        assert f' src="assets/media/showcase/{name}' in gallery
+    assert 'assets/media/previews/' not in gallery
     assert html.count('tennis-stage-') == 8
     for row in json.loads((SITE / 'assets/media/showcase/manifest.json').read_text()):
         path = SITE / 'assets/media/showcase' / row['file']

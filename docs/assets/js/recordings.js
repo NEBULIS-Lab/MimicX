@@ -10,7 +10,7 @@
   const rows = [...document.querySelectorAll('.recording-row')].map(element => ({
     element, videos:[...element.querySelectorAll('video')],
     button:element.querySelector('.recording-toggle'), visible:false, near:false,
-    userPaused:reduced.matches, starting:false, buffering:false, request:0, single:null,
+    userPaused:reduced.matches, starting:false, buffering:false, request:0,
     programmaticSeeks:new WeakMap()
   }));
 
@@ -44,12 +44,8 @@
     return row.visible && !row.userPaused && !document.hidden && !dialog.open && !viewerOpening;
   }
 
-  function selected(row) {
-    return media.lowData ? [row.single || row.element.querySelector('[data-method="ours"] video')] : row.videos;
-  }
-
   function syncRow(row, source = row.videos[0]) {
-    if (row.element.dataset.sync === 'independent' || media.lowData || source.readyState < 1) return;
+    if (row.element.dataset.sync === 'independent' || source.readyState < 1) return;
     row.videos.forEach(video => {
       if (video === source || video.readyState < 1 || Math.abs(video.currentTime - source.currentTime) <= .08) return;
       const target = Math.min(source.currentTime, Math.max(0, video.duration - .04));
@@ -59,23 +55,20 @@
   }
 
   function update(row) {
-    const wanted = selected(row);
+    const wanted = row.videos;
     const blocked = document.hidden || dialog.open || viewerOpening;
     if (!eligible(row)) {
       row.request++;
       row.starting = false;
       row.buffering = false;
       row.videos.forEach(video => pause(video, blocked || !row.visible));
-      if (!blocked && row.near && !row.visible && !row.userPaused && !media.lowData) {
+      if (!blocked && row.near && !row.visible && !row.userPaused) {
         media.prepare(row.element.querySelector('[data-method="ours"] video'), 'metadata');
       }
       label(row);
       return;
     }
-    row.videos.forEach(video => {
-      if (wanted.includes(video)) media.prepare(video);
-      else pause(video, true);
-    });
+    wanted.forEach(video => media.prepare(video));
     if (row.starting) return;
     if (wanted.every(video => !video.paused && video.readyState >= 3)) {
       row.buffering = false;
@@ -110,8 +103,7 @@
     });
     row.videos.forEach(video => {
       const choose = () => {
-        if ((media.lowData && selected(row)[0] !== video) || !video.hasAttribute('src')) {
-          if (media.lowData) row.single = video;
+        if (!video.hasAttribute('src')) {
           row.request++;
           row.starting = false;
           row.userPaused = false;
@@ -131,13 +123,12 @@
       video.tabIndex = 0;
       video.addEventListener('click', choose);
       video.addEventListener('keydown', event => {
-        if (((media.lowData && selected(row)[0] !== video) || !video.hasAttribute('src')) && [' ', 'Enter'].includes(event.key)) {
+        if (!video.hasAttribute('src') && [' ', 'Enter'].includes(event.key)) {
           event.preventDefault(); choose();
         }
       });
       video.addEventListener('play', () => {
         if (plays.delete(video)) { label(row); return; }
-        if (media.lowData) row.single = video;
         row.userPaused = false;
         update(row);
       });
@@ -170,9 +161,6 @@
   rows.forEach(row => { observer.observe(row.element); near.observe(row.element); });
   setInterval(() => rows.filter(row => row.visible).forEach(update), 250);
   document.addEventListener('visibilitychange', () => rows.forEach(update));
-  document.addEventListener('mimicx-data-mode', () => {
-    rows.forEach(row => { row.single = null; row.request++; row.starting = false; update(row); });
-  });
   document.addEventListener('mimicx-media-open', () => { viewerOpening = true; rows.forEach(update); });
   dialog.addEventListener('close', () => { viewerOpening = false; rows.forEach(update); });
   reduced.addEventListener('change', () => {

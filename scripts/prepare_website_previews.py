@@ -17,11 +17,23 @@ class Videos(HTMLParser):
     def __init__(self, text):
         super().__init__(convert_charrefs=True)
         self.tags = []
+        self.div_depth = 0
+        self.recording_depth = None
         self.feed(text)
 
     def handle_starttag(self, tag, attrs):
-        if tag == 'video':
+        if tag == 'div':
+            self.div_depth += 1
+            if 'recording-frame' in dict(attrs).get('class', '').split():
+                self.recording_depth = self.div_depth
+        if tag == 'video' and self.recording_depth is not None:
             self.tags.append((self.get_starttag_text(), dict(attrs)))
+
+    def handle_endtag(self, tag):
+        if tag == 'div':
+            if self.div_depth == self.recording_depth:
+                self.recording_depth = None
+            self.div_depth -= 1
 
 
 def sha(path):

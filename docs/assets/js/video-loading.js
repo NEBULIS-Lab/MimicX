@@ -1,16 +1,8 @@
 'use strict';
 
 (() => {
-  const connection = navigator.connection;
-  const toggle = document.getElementById('low-data-mode');
   const positions = new WeakMap();
   const restores = new WeakMap();
-  let preference;
-  try { preference = localStorage.getItem('mimicx-low-data'); } catch (_) {}
-  const networkIsSlow = () => Boolean(connection?.saveData ||
-    ['slow-2g', '2g', '3g'].includes(connection?.effectiveType) ||
-    (connection?.downlink > 0 && connection.downlink < 2));
-  let lowData = preference ? preference === 'on' : networkIsSlow();
 
   function poster(video) {
     if (video.dataset.poster && !video.hasAttribute('poster')) video.poster = video.dataset.poster;
@@ -69,20 +61,5 @@
     return false;
   }
 
-  function publish() {
-    toggle.checked = lowData;
-    document.documentElement.dataset.lowData = String(lowData);
-    document.dispatchEvent(new Event('mimicx-data-mode'));
-  }
-  toggle.addEventListener('change', () => {
-    lowData = toggle.checked;
-    preference = lowData ? 'on' : 'off';
-    try { localStorage.setItem('mimicx-low-data', preference); } catch (_) {}
-    publish();
-  });
-  connection?.addEventListener('change', () => {
-    if (!preference) { lowData = networkIsSlow(); publish(); }
-  });
-  window.MimicXMedia = {prepare, release, reset, buffered, get lowData() { return lowData; }};
-  publish();
+  window.MimicXMedia = {prepare, release, reset, buffered};
 })();

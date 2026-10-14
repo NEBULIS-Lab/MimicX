@@ -13,38 +13,6 @@
   },
   "videos": [
     {
-      "source": "assets/media/showcase/football-contact-slow4x.mp4",
-      "preview": "assets/media/previews/showcase--football-contact-slow4x.mp4",
-      "source_sha256": "11384404df9710377b5a79df0f381bee06304792ba6cc46da7680e7f0e35f72e",
-      "preview_sha256": "218605c775d805b61c68d1d796a4bb8c5d6bc6adfacbb52a215bc918cd3d9b92",
-      "source_bytes": 936780,
-      "bytes": 152469,
-      "source_duration": 4.0,
-      "duration": 4.0,
-      "width": 854,
-      "height": 480,
-      "fps": 30.0,
-      "frames": 120,
-      "full_decode_passed": true,
-      "fast_start": true
-    },
-    {
-      "source": "assets/media/showcase/tennis-scene.mp4",
-      "preview": "assets/media/previews/showcase--tennis-scene.mp4",
-      "source_sha256": "de5a49e2c5c4f7ab6e9ce4ca881db6f981e08dc1e8b5987790de05b17bcdde20",
-      "preview_sha256": "1862264e3008ecf9249c1f4b64806c499086ba793a047d2ac3cd869921732f5c",
-      "source_bytes": 2735256,
-      "bytes": 281655,
-      "source_duration": 10.4,
-      "duration": 10.4,
-      "width": 854,
-      "height": 480,
-      "fps": 30.0,
-      "frames": 312,
-      "full_decode_passed": true,
-      "fast_start": true
-    },
-    {
       "source": "assets/media/recovery/tennis-input.mp4",
       "preview": "assets/media/previews/recovery--tennis-input.mp4",
       "source_sha256": "d036eba58c35d49fd315b1fed87053b7dd4912a6fe0e34ac1da5eedcb9d16b82",
