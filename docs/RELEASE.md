@@ -1,4 +1,51 @@
-# Source Release 0.2.0
+# Source Release 0.3.0
+
+## Current Release
+
+The 2026-10-14 source update integrates the later demonstration runtime while
+preserving the original paper configurations and checkpoint archive:
+
+- Immutable paired artifact download, integrity checks, and named-task evaluation.
+- Portable PPO recovery, terrain continuation, atomic checkpoint recovery and
+  independently recorded additional-update budgets.
+- A separate `demonstrations` backend profile; the default `paper` overlay is
+  unchanged.
+- Named-joint and startup-force recording audits, source-camera replay, protected
+  translucent references, and contact-causal ball replay.
+- An explicitly separate Parkour actor-prefix/MPC controller and CPU state replay.
+- Optional `artifacts` and `physics` dependencies, CPU physics CI and new guides.
+
+See [Demonstrations](DEMONSTRATIONS.md), [Continuation](CONTINUATION.md),
+[Recording and Contact](RECORDING_AND_CONTACT.md), and
+[Hybrid Control](HYBRID_CONTROL.md) for runnable commands and verification scope.
+Weights, motion recordings and numerical result archives remain outside Git.
+No website media or paper content changes are part of this source update.
+
+Verification on 2026-10-14 includes a clean Python3.11 install, a real selective
+HF download, all nine paired artifact checks, and full-horizon physical evaluation
+of all nine PPO checkpoints through the portable workers with zero early
+terminations. The 12 original gate decisions reproduce exactly from raw archived
+telemetry. Camera projection and encoded-video integration checks also pass.
+The source distribution and wheel build successfully; the installed wheel reads
+its packaged release configuration without a research checkout.
+The complete CPU-plus-physics suite passes 293 tests; four tests requiring
+external native assets or an explicitly enabled graphics backend are skipped.
+The two graphics tests also pass separately in the configured renderer runtime.
+
+Final review adds regression guards for motion/scene/profile content changes
+during campaign reuse, the native termination-before-reference-advance order,
+and body-origin linear velocities in recorded telemetry.
+
+Physical runs preserve checkpoint/reference bytes and configuration, not
+bit-identical floating-point state trajectories. Compared with the frozen HF
+runner on the same seeds, the largest mean body-position difference is 0.000669 m
+and the largest mean anchor-position difference is 0.005204 m; both executions
+complete all nine horizons. Original published telemetry is retained unchanged.
+Actual PPO training/resume and a fresh full six-reset Parkour MPC search are not
+rerun by this packaging verification; their CPU contracts and recorded evidence
+are tested as described in the linked guides.
+
+## Previous Release: 0.2.0
 
 This release packages the current single-human implementation, the tracking
 backend overlay and the numerical evidence used by the manuscript. The native

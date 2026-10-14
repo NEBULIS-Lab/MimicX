@@ -78,7 +78,8 @@ Physics training and evaluation additionally use the
 
 | Goal | Start here |
 | :--- | :--- |
-| **Run a released policy** | Choose a [recommended policy and matching reference](https://huggingface.co/Shuaijun/MimicX-Policies/blob/main/recommended/README.md). |
+| **Run a released policy** | [Download and verify a paired policy/reference](docs/DEMONSTRATIONS.md), then evaluate with the pinned runtime. |
+| **Continue or record a policy** | Use [checkpoint continuation](docs/CONTINUATION.md) and [camera/contact-aware recording](docs/RECORDING_AND_CONTACT.md). |
 | **Learn a skill from a new video** | Follow [video reconstruction, retargeting and tracking](docs/QUICKSTART.md). |
 | **Refine an existing policy** | Create a manifest and [run or resume AutoRefine](docs/QUICKSTART.md#autorefine). |
 | **Reproduce the paper protocols** | Prepare the checksummed inputs using the [reproduction inventory](docs/REPRODUCIBILITY.md). |
@@ -109,12 +110,21 @@ covers selective downloads and reconstruction of the exact core input bundle.
 Pair each policy with its recorded reference and configuration: G1 29-DoF
 and historical 23-DoF policies use different model layouts.
 
+The [2026-10-14 demonstration release](docs/DEMONSTRATIONS.md) provides nine
+standalone PPO policies and a separately identified Parkour hybrid controller.
+Its immutable download entry point keeps later continuations separate from
+the frozen paper archive.
+
 ## Documentation
 
 | Guide | Scope |
 | :--- | :--- |
 | [Installation](dependencies/README.md) | External dependencies, pinned backend setup and model requirements |
 | [Video to Policy](docs/QUICKSTART.md) | Reconstruction, retargeting, warmstart training and AutoRefine |
+| [Released Demonstrations](docs/DEMONSTRATIONS.md) | Immutable paired downloads, checksum verification and evaluation |
+| [Continuation](docs/CONTINUATION.md) | Checkpoint recovery and terrain-aware policy continuation |
+| [Recording and Contact](docs/RECORDING_AND_CONTACT.md) | Source-camera recording, baseline playback and contact-causal replay |
+| [Hybrid Control](docs/HYBRID_CONTROL.md) | Parkour actor-prefix and predictive-controller replay |
 | [Method](docs/METHOD.md) | Diagnosis, proposals, continuation and acceptance rules |
 | [Paper Reproduction](docs/REPRODUCIBILITY.md) | Registered inputs, controlled comparisons and evaluation protocols |
 | [HLoop](docs/HLOOP.md) | Heterogeneous execution, scheduling modes and parity checks |

@@ -1,5 +1,8 @@
 # Video to Policy
 
+For pretrained demonstrations, start with the [paired release guide](DEMONSTRATIONS.md).
+The workflow below remains the video-to-policy and original-paper entry point.
+
 Run commands from the repository root unless a subshell changes directory.
 Complete [dependency setup](../dependencies/README.md) first. All GPU operations
 below require an allocated GPU in your execution environment.

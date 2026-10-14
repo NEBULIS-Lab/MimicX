@@ -2,6 +2,7 @@
 """Audit the staged source release for generated artifacts and credentials."""
 
 import ast
+import argparse
 import json
 from pathlib import Path
 import re
@@ -12,9 +13,16 @@ FORBIDDEN_SUFFIXES = {".pt", ".pth", ".npz", ".pkl", ".mp4", ".pdf", ".png", ".j
 FORBIDDEN_ROOTS = {"third_party", ".venv", "runs", "data", "logs", "checkpoints", "dist", "build", "results", "benchmarks"}
 
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--scope', choices=('all', 'code'), default='all',
+                        help='Code scope excludes static website files, but audits Markdown guides')
+    args = parser.parse_args(argv)
     raw = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT)
     files = [Path(item.decode()) for item in raw.split(b"\0") if item]
+    if args.scope == 'code':
+        files = [p for p in files if p.parts[0] != 'docs' or
+                 (p.suffix == '.md' and p.parts[:2] != ('docs', 'assets'))]
     if not files:
         raise RuntimeError("Stage source files before running the release audit")
     failures = []
@@ -31,7 +39,11 @@ def main():
             failures.append(f"Large file: {relative}")
         if path.suffix.lower() == ".stl" or website_media:
             continue
-        text = content.decode("utf-8")
+        try:
+            text = content.decode("utf-8")
+        except UnicodeDecodeError:
+            failures.append(f"Unexpected binary: {relative}")
+            continue
         if re.search(r"(?:ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}|-----BEGIN [A-Z ]*PRIVATE KEY-----)", text):
             failures.append(f"Credential-like content: {relative}")
         if re.search(r"/(?:data/(?:private|shared)|home)/[A-Za-z0-9_.-]+/", text):

@@ -1,5 +1,9 @@
 # Visual Exports
 
+For source-matched cameras, baseline recording contracts, and dynamically
+simulated sports-object contact, see [Recording and Contact](RECORDING_AND_CONTACT.md).
+The original paper rollout commands below remain unchanged.
+
 Use the tracking environment and path setup from [Quickstart](QUICKSTART.md).
 Render a real checkpoint under the same evaluation task, motion and seed used
 for its numerical evaluation:

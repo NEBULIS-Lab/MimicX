@@ -1,5 +1,8 @@
 # Paper Reproduction Inventory
 
+Later demonstration continuations have a separate [immutable release](DEMONSTRATIONS.md).
+They do not overwrite the inputs, trial identities or gate records below.
+
 This repository implements **MimicX: Policy-in-the-Loop Supervision Refinement
 for Video-Driven Humanoid Motion Tracking**. Runtime configuration and input
 identity are separate from measured results, which live in the website only.

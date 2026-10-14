@@ -26,6 +26,23 @@ part of this source-release verification.
 
 ## Video and Retargeting
 
+For current continuation and scene tasks, first create a separate tracking
+checkout with the demonstration profile:
+
+```bash
+python scripts/setup_dependencies.py unitree_rl_mjlab --profile demonstrations
+```
+
+Use `third_party/unitree_rl_mjlab_demonstrations` as `--backend-root` for
+[continuation](../docs/CONTINUATION.md). The default paper profile is
+unchanged. Released-checkpoint evaluation can instead use the frozen HF
+runtime through [the paired artifact entry point](../docs/DEMONSTRATIONS.md).
+
+Optional CPU contact physics and hybrid state replay use `.[physics]`.
+These extras do not install the GPU learning stack.
+
+## Reconstruction Dependencies
+
 ```bash
 python scripts/setup_dependencies.py GVHMR
 python scripts/setup_dependencies.py GMR

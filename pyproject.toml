@@ -1,6 +1,6 @@
 [project]
 name = "mimicx"
-version = "0.2.0"
+version = "0.3.0"
 description = "Policy-in-the-loop supervision refinement for video-driven humanoid motion tracking"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -9,7 +9,9 @@ dependencies = ["numpy>=1.24,<3", "scipy>=1.10", "PyYAML>=6", "tqdm>=4.65"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10", "build>=1"]
+artifacts = ["huggingface-hub>=0.24,<2"]
 visualization = ["imageio[ffmpeg]>=2.31", "Pillow>=10"]
+physics = ["mujoco==3.5.0"]
 plots = ["matplotlib>=3.7"]
 website = ["playwright>=1.50,<2", "RangeHTTPServer==1.4.0"]
 
@@ -24,7 +26,7 @@ build-backend = "setuptools.build_meta"
 include = ["mimicx*"]
 
 [tool.setuptools.package-data]
-mimicx = ["configs/paper/*.json", "configs/paper/methods/*.yaml"]
+mimicx = ["configs/paper/*.json", "configs/paper/methods/*.yaml", "configs/releases/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
