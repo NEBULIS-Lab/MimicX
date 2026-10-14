@@ -7,6 +7,16 @@ from pathlib import Path
 SITE = Path(__file__).resolve().parents[1] / 'docs'
 
 
+def test_only_descent_input_uses_full_window_crop():
+    html = (SITE / 'index.html').read_text()
+    row = re.search(r'<article[^>]*data-policy-task="descent".*?</article>', html, re.S).group()
+    input_figure = re.search(r'<figure data-method="input".*?</figure>', row, re.S).group()
+    assert 'data-crop="descent"' in input_figure
+    assert html.count('data-crop="descent"') == 1
+    css = (SITE / 'assets/css/recordings.css').read_text()
+    assert '.recording-frame[data-crop="descent"] video { object-fit: cover;' in css
+
+
 def test_six_scene_tasks_fill_three_desktop_rows():
     html = (SITE / 'index.html').read_text()
     rows = re.findall(r'<article class="recording-row terrain-row".*?</article>', html, re.S)

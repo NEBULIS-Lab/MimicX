@@ -110,6 +110,15 @@
           update(row);
         }
       };
+      if (video.parentElement.dataset.crop === 'descent') {
+        // Follow the descent within the square source without cutting head or feet.
+        const crop = () => {
+          const progress = Number.isFinite(video.duration) && video.duration > 0
+            ? Math.min(1, Math.max(0, video.currentTime / video.duration)) : 0;
+          video.style.setProperty('--crop-y', `${25 + 20 * progress}%`);
+        };
+        ['timeupdate', 'loadedmetadata', 'emptied'].forEach(event => video.addEventListener(event, crop));
+      }
       // An unloaded native Play control cannot emit a play event in all browsers.
       const loadButton = document.createElement('button');
       loadButton.type = 'button';
