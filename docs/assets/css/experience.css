@@ -106,6 +106,30 @@ html.media-open { overflow: hidden; }
   .scene-play { transition: background 180ms ease, transform 180ms ease; }
 }
 
+/* Research captions remain readable alongside four desktop plots. */
+@media (min-width: 701px) {
+  #research .result-plot figcaption,
+  #research .rx-legend,
+  #research .rx-source-note,
+  #research .rx-timings .rx-source-note,
+  #research .rx-paper-art figcaption,
+  #research .method-ledger p,
+  #research .rx-method-notes p,
+  #research .rx-timings p,
+  #research .rx-executors :is(dt, dd),
+  #research .rx-table caption { font-size: 16px; line-height: 1.65; }
+  #research .result-plot strong { font-size: 18px; line-height: 1.4; }
+  #research .ledger-fields,
+  #research .ledger-return,
+  #research .rx-stage-heading > span,
+  #research .rx-table-heading > span,
+  #research .rx-stages small,
+  #research .rx-timing > div,
+  #research .rx-data p,
+  #research #result-downloads { font-size: 14px; line-height: 1.6; }
+  #research .rx-stages span { font-size: 16px; }
+}
+
 @media (max-width: 1100px) {
   #research #showcase { --media-height: 310px; }
   .hero-bottom .rx-authors p:first-child { font-size: 13px; column-gap: 13px; }
