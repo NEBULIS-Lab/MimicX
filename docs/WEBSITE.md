@@ -94,7 +94,7 @@ recordings, including matching posters and enlarged playback. Each task's
 `Robot only` link retains the corresponding overlay-free recording.
 
 The `assets/media/recovery/manifest.json` inventory records full-decode checks,
-source hashes, transformations and the additional-continuation cohort. It also
+source files, transformations and the additional-continuation cohort. It also
 includes the high-resolution source/human/G1-reference composites used by the
 submission media package. Reference-stage media and learned-policy recordings
 retain distinct labels. `scripts/verify_website_recordings.py` checks desktop
@@ -110,7 +110,7 @@ described alongside the relevant evidence.
 
 `assets/media/manifest.json` records the original experimental media.
 `assets/media/research/manifest.json` records the new poster and final-artwork
-derivatives, their source names and SHA-256 hashes. Paper drawings are exported
+derivatives, their source names. Paper drawings are exported
 at 2400 pixels wide. Neither source PDFs nor videos are modified.
 `assets/icons/lucide/` contains unmodified official Lucide 0.468.0 control
 icons and their license. Existing resource-button brand icons are unchanged.
@@ -176,7 +176,7 @@ python scripts/verify_website_mobile.py --site docs --chromium /path/to/chromium
 ```
 
 `assets/media/showcase/manifest.json` records the approved source frames,
-source checksums, crops inherited from the paper and CPU video derivatives.
+source files, crops inherited from the paper and CPU video derivatives.
 `assets/media/evidence/manifest.json` maps each figure to its data and metric
 contract. The paper's current direct comparison and five collision scenes
 are separate cohorts; the older adapter comparison stays under `archive/`.
@@ -201,7 +201,7 @@ and all other website sections are unchanged.
 Parkour displays **MimicX + MPC**, a locally retimed 5.38-second robot-joint-control
 diagnostic demonstration. The actor is followed by predictive control; this is
 a hybrid-control recording. `assets/media/terrain-release/parkour-mpc.json`
-records the displayed clip's source, hashes and control context.
+records the displayed clip's source and control context.
 
 `assets/media/terrain-release/manifest.json` and
 `assets/results/scene_demonstrations_20261011.csv` retain the earlier policy

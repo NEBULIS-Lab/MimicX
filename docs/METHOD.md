@@ -61,8 +61,8 @@ different reductions of the same telemetry, implemented in `gate.py` and
 
 A candidate must improve the ordered execution key and pass all configured
 guards. Missing verification evidence rejects it. Otherwise the current
-checkpoint remains selected. Atomic state writes, content hashes and completed
-command records support restart without repeating successful training.
+checkpoint remains selected. Saved progress supports restarting the loop without
+repeating completed training.
 
 ## HLoop
 
@@ -76,7 +76,7 @@ concerns report selection, not a newly retrained policy.
 
 | Operation | Source |
 |---|---|
-| Configuration and hashes | `mimicx/refinement/manifest.py` |
+| Experiment configuration | `mimicx/refinement/manifest.py` |
 | Failure diagnosis | `scripts/autorefine/mine_failures.py` |
 | Typed proposals | `mimicx/refinement/proposals.py` |
 | Continuation and restart | `mimicx/refinement/closed_loop.py` |

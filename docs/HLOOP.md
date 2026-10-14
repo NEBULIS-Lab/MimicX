@@ -1,7 +1,7 @@
 # MimicX-HLoop
 
 The `mimicx.hloop-plan.v1` schema describes a fixed DAG of commands, dependencies,
-artifact paths/hashes, resource classes (`cpu`, `gpu`, `io`), candidate IDs,
+input/output files, resource classes (`cpu`, `gpu`, `io`), candidate IDs,
 seeds and budgets. Templates support `{repo_root}` and `{run_dir}`. Inspect
 `tests/runtime/test_hloop.py` for a small deterministic plan.
 
@@ -26,7 +26,7 @@ that arbitrary third-party commands consume it automatically.
 
 Concurrent GPU jobs are serialized per logical device; CPU and I/O jobs have
 separate worker limits. Report comparison checks semantic-plan identity,
-candidate IDs, job outcomes, input/output hashes, and selection artifacts.
+candidate IDs, job outcomes, input/output consistency, and selection decisions.
 The CPU fixture provides a deterministic software test, not a performance
 benchmark. Real scheduler speed should be measured on the same workload and
 resource allocation in each mode, with repeated wall-clock measurements.

@@ -1,6 +1,6 @@
 # Paper Reproduction Inventory
 
-Later demonstration continuations have a separate [immutable release](DEMONSTRATIONS.md).
+Later demonstration continuations have a separate [demonstration release](DEMONSTRATIONS.md).
 They do not overwrite the inputs, trial identities or gate records below.
 
 This repository implements **MimicX: Policy-in-the-Loop Supervision Refinement
@@ -24,7 +24,7 @@ identity are separate from measured results, which live in the website only.
 
 ## Exact Core Input Bundle
 
-`mimicx/configs/paper/core_inputs.json` records checksums for 22 assets: four original
+`mimicx/configs/paper/core_inputs.json` lists 22 inputs: four original
 motions, two pre-registered repaired motions, four warmstarts, eight historical
 parameter dumps, and four fixed-policy HLoop checkpoints. The bundle has been
 assembled and verified by the authors. It is now available through the paired
@@ -33,7 +33,7 @@ assembled and verified by the authors. It is now available through the paired
 repositories, rather than stored in Git. The bundled `prepare.py core-inputs`
 command reconstructs the 22-file input bundle; see the
 [artifact usage guide](https://huggingface.co/Shuaijun/MimicX-Policies/blob/main/USAGE.md).
-Public parameter dumps have sanitized paths and updated checksums; use the
+Public parameter dumps use portable paths; use the
 emitted `manifest.json` with `--spec`, as shown below. Checkpoint and motion
 bytes are unchanged. Do not substitute a newly trained
 warmstart while calling it an exact reproduction of the reported continuation.

@@ -167,10 +167,9 @@ python scripts/visualization/contact_replay.py audit --input outputs/contact
 
 Outputs are `ball.npz` (time, position, velocity, quaternion, constraint force and
 contact counts), `contacts.json` (contact times, normals, positions and forces),
-and `manifest.json` (input/artifact hashes, physics, initial contacts, grouped
-impulses and audit). An independent audit checks artifact hashes, Euler position
-integration, force balance, unit quaternions, contact timing/duration and world
-force direction. Every non-ballistic velocity change must have matching contacts.
+and `manifest.json` (inputs, physics, initial contacts and grouped impulses).
+Validation checks file integrity, Euler position integration, force balance,
+unit quaternions, contact timing/duration and world force direction. Every non-ballistic velocity change must have matching contacts.
 Initial overlaps are reported, not automatically rejected. Collision geometry and
 penetration quality still need task-specific checking. Input hashes cover the
 recording/config/model files, not transitive external assets.
@@ -202,21 +201,11 @@ The passing opt-in tests cover both off-center pinhole projection and a four-fra
 free-root, scalar-joint robot export: uniform downscaling, source FPS, full decode,
 moving silhouettes and exact robot-pixel protection before encoding.
 
-## Source Provenance
+## Implementation
 
-These historical source snapshots supplied the ported logic, not runtime paths or
-date-specific orchestration. No checkpoints, external meshes or scene assets were
-copied. Full SHA-256 values identify the reviewed snapshots:
-
-| Source basename | Ported logic | SHA-256 |
-| --- | --- | --- |
-| `export_source_camera_recordings_20261009.py` | Clock coverage, SLERP, pinhole frustum, protected ghosts, full-decode export | `4d6542a0624e70d5da53f7715dbd1b2556152036c5ba7ccd33a1bc8697e9876d` |
-| `stabilize_recording_cameras_20261009.py` | Source-background decision and rigid camera smoothing | `8693546cf9c36df1ca8a86365a6ca015a437f0a666435f3983d67a3ae676ec50` |
-| `baseline_recovery_20261009.py` | Playback support and named-order audit criteria; no training launcher | `a96e181983d1a6bb74451d5a2b995480c74f07e4644c66313331a35700507b96` |
-| `sonic_release.py` | Startup-band release acknowledgement | `5c2e916be0cb7cc7d5639497165fee37ebb40ae305d28424553688e09be8f7d4` |
-| `sonic_recording.py` | No-reset fall observation and forward clock guard | `6a657c68da9780b76dac8ea73b7830ac7864a8cb96a0148f05cb6a8a7ef6b96e` |
-| `run_sonic_sim_record.py` | Named-joint state sampling and support telemetry; no bundled deployment | `0fb6bbf578268ad9d2f854f3492338a324088fc1b7fae31867988bb0b6aea955` |
-| `contact_causal_sports_20261010.py` | Prescribed-robot MuJoCo integration and contact force capture | `ca5303047e4efaa6b7a681a9b560cc08bd0a15c651a7c720a209a8a5bf549813` |
-| `fit_contact_causal_sports_20261010.py` | Contact grouping, ballistic initialization, bounded CEM mechanics | `39e4a07bc6b334478ce6de302869ae82c1e3f0ae80d2d92dc065784f823b16ea` |
-| `audit_contact_causal_sports_20261010.py` | Euler integration, force balance and unsupported-bounce checks | `19a643b98631e809c2135fe8ef7489544c70da1b522b9aced2385654b654e2bb` |
-| `export_contact_causal_sports_20261010.py` | Numeric trajectories, contacts, physics receipts and input provenance | `1347e535a20d0977d14c3d4df905afb85c20905da4dc42e7cb90406d03245a5a` |
+The recording utilities cover source-camera projection, camera stabilization,
+clock coverage, named-joint sampling, startup-support checks and translucent
+references. Contact replay uses MuJoCo integration, bounded CEM fitting and
+checks for unsupported changes in ball velocity. These utilities operate on
+recorded robot states; external model weights and scene assets are supplied
+separately. See the APIs and commands above for each workflow.

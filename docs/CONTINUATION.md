@@ -103,7 +103,7 @@ resumes restore it. Save intervals remain 250 updates for core recovery and 50
 for terrain recovery.
 
 `effective_training.json` fixes the inherited iteration, block budget, practice
-windows, configuration, input hashes, and transition budget. `attempts/` records
+windows, configuration, inputs, and transition budget. `attempts/` records
 each invocation. Changed contracts and checkpoints without original metadata
 are rejected. Re-run the same training command to resume:
 
@@ -134,26 +134,25 @@ collection directory.
 The incumbent remains protected by the original common-prefix tracking guard,
 completion ranking, quality gate, failure-window selection, and separate
 holdouts. Selection uses noise 0.005; holdouts use 0.01. Completed stages are
-reused only with matching command/config/checkpoint signatures, motion/scene/profile
-content hashes, and artifact hashes, even without optional frozen-input hashes.
+reused only when commands, configurations, checkpoints, inputs and outputs
+match the saved run.
 Evaluation artifacts live below each stage's `rollout/`; interrupted
 outputs are retained under `incomplete_rollout_*` before a fresh evaluation.
 Terrain's separate paired-prefix/per-seed gates and practice-window logic are
 available in `mimicx.parkour.metrics`; these are not replaced by the core gate.
 
-## Source Mapping
+## Implementation
 
-The following files are byte-identical to both the native implementation and
-`releases/2026-10-14-demonstrations/runtime/`:
+The environment and scene modules match the bundled demonstration runtime:
 
-| Package file | SHA-256 |
+| Module | Role |
 | --- | --- |
-| `mimicx/policy_recovery/environment.py` | `d21f736f2ea8f3f52271f3c33aa788432dc3766b12cf228e576d1aac2872f6bc` |
-| `mimicx/parkour/environment.py` | `a8bbdcffae66395bf425539a82e75a00fb909496c07a31210a9e1165cba6e5ca` |
-| `mimicx/parkour/scene_geometry.py` | `ceb2260f5f449da4326a450fc70d06a888cc7d1edf78dd6839c41ad7c64ebf61` |
-| `mimicx/parkour/terrain_environment.py` | `f5f70593aa6b2c732ede10d58d884da6fe41e3a14058f42288d0f2d0aa63abf1` |
+| `mimicx/policy_recovery/environment.py` | Main-task continuation environment |
+| `mimicx/parkour/environment.py` | Contact-aware Parkour environment |
+| `mimicx/parkour/scene_geometry.py` | Collision-scene geometry |
+| `mimicx/parkour/terrain_environment.py` | Terrain tracking environment |
 
-Additional native mappings:
+Related modules:
 
 | Destination | Source | Adaptation |
 | --- | --- | --- |

@@ -5,7 +5,7 @@
 The 2026-10-14 source update integrates the later demonstration runtime while
 preserving the original paper configurations and checkpoint archive:
 
-- Immutable paired artifact download, integrity checks, and named-task evaluation.
+- Task-based policy and asset downloads, validation, and evaluation.
 - Portable PPO recovery, terrain continuation, atomic checkpoint recovery and
   independently recorded additional-update budgets.
 - A separate `demonstrations` backend profile; the default `paper` overlay is
@@ -58,8 +58,8 @@ research working directory is not required to run the released entry points.
 - PPO tracking overlay, video/retarget conversion interfaces, rollout and
   reference-only exports, and exact-state visualization utilities.
 - HLoop and its execution baselines; controlled-comparison generation.
-- Website-only numerical CSVs with source/published checksums and all outcome rows.
-- Frozen core task/method settings, an input hash manifest, and a fixed-policy
+- Website numerical data with source records and all outcome rows.
+- Frozen core task/method settings, an input inventory, and a fixed-policy
   HLoop benchmark plan generator.
 - A portable CPU regression suite and CI configuration.
 
@@ -87,7 +87,7 @@ Verified on 2026-09-12:
 | Source distribution and wheel build | Passed |
 | Pinned Unitree checkout and overlay installer | Passed |
 | Source/artifact/credential audit | Passed |
-| Exact core input hashes | 22 assets verified |
+| Core experiment inputs | 22 assets verified |
 | Actual warmstart CPU shape checks | Four policies, 160 inputs / 29 actions |
 | Frozen core trial preparation | 48 runnable job files generated |
 | Fixed-policy HLoop preparation | 17 jobs materialized, no execution |

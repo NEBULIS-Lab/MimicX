@@ -14,7 +14,7 @@ world-contact penetration is 0.05344 m. The locally retimed reference is 5.38 s.
 
 ## Inputs and Dependencies
 
-Use paired, checksum-verified Assets and Policies snapshots. Asset resolution
+Use matching Assets and Policies releases. Asset resolution
 and download are separate from controller execution; no private paths, weights,
 or third-party robot meshes are included in this code.
 
@@ -30,8 +30,7 @@ TRACE="$P/recorded_states/seed29003/traces.npz"
 NAMES="$P/recorded_states/seed29003/names.json"
 ```
 
-`controller.json` in `$P` supplies the checkpoint, motion and scene paths and
-hashes. Resolve checkpoint paths relative to `$POLICIES`, other paths relative
+`controller.json` in `$P` supplies the matching checkpoint, motion and scene files. Resolve checkpoint paths relative to `$POLICIES`, other paths relative
 to `$ASSETS`; do not treat the archival `source-artifact://` entries in
 `config.json` as filenames. Keep `names.json`, `planner.json`, `traces.npz`, and
 `validation/seed*.json` paired. Controller index 0 is frozen PPO, index 1 is the
@@ -63,7 +62,7 @@ device-backed environment or render. Outputs:
 - `model.mjb`: locally compiled model, including native collision/actuator data.
 - `affine.json`: named action scales and offsets in action-space order.
 - `names.json`: joint order, full-body reference order and tracked-body subset.
-- `model_manifest.json`: input hashes, MuJoCo version and dimensions/timing.
+- `model_manifest.json`: input files, MuJoCo version and dimensions/timing.
 
 No meshes are copied by this command. A compiled model can contain third-party
 geometry; do not redistribute the output without the relevant permissions.

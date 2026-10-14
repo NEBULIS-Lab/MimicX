@@ -14,20 +14,14 @@ python -m mimicx.runtime.demonstrations download --task tennis --output artifact
 
 Repeat `--task` for several policies. Omit it to select all nine: `tennis`,
 `football`, `dance`, `kungfu`, `track`, `stairs`, `forest`, `bench`, `descent`.
-`bench` is Platform Jump. Only selected weights and the shared, checksummed
+`bench` is Platform Jump. Only selected weights and the shared
 motion/runtime bundle are fetched, not the historical checkpoint archive.
 Downloading does not execute code.
 
-The shared release also contains its scene records and example media, because
-the immutable runner verifies the complete runtime release before execution.
-
-`mimicx/configs/releases/demonstrations.json` pins both repositories and the
-SHA-256 hashes of their manifest and runtime dependency indexes:
-
-| Artifact | Immutable revision |
-| :--- | :--- |
-| Policies | `2ecacde275a3b70c97fe82b44ce45178e8df3d01` |
-| Assets | `3c7eb5214e6137bafb1a101c32d8c4c42c32a8e3` |
+The shared release also includes scene records and example media. The downloader
+selects compatible policy and asset versions automatically using
+`mimicx/configs/releases/demonstrations.json`; no file identifiers need to be
+copied manually.
 
 `releases/2026-10-14-demonstrations` reuses the frozen scene runtime in
 `releases/2026-10-11-scenes`. These snapshots form a pair. Do not mix actors
@@ -58,7 +52,7 @@ the lightweight `artifacts` extra does not install a simulator or PyTorch.
 The default seed is the first registered holdout seed; use `--seed` to select
 another. Existing output directories are refused to protect prior evidence.
 
-The immutable runner carries the original environment construction code.
+The bundled runner recreates the original evaluation environment.
 For further training using the editable implementation, see
 [Continuation](CONTINUATION.md). Restoring a checkpoint must preserve its
 observation layout, joint ordering, action scaling and motion timing.

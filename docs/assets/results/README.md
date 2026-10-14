@@ -12,7 +12,7 @@
 | `reward_higher_regression_rejection.csv` | 3 | Historical reward/execution disagreement |
 | `tennis_training_dynamics_3000_points.csv` | 3000 | Logged PPO iteration telemetry |
 
-`provenance.json` records source and published SHA-256 hashes and the exact
+`provenance.json` lists the source files and the exact
 metadata columns omitted. Numeric values are preserved as strings during CSV
 export; rows are not filtered by outcome. No checkpoint paths, device-placement
 metadata or private log paths are published. Regenerate with
