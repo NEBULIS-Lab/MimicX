@@ -129,7 +129,8 @@
     dialog.style.removeProperty('--viewer-width');
     dialog.style.removeProperty('--viewer-height');
     dialog.classList.remove('viewer-compact');
-    content.querySelector('video')?.pause();
+    const video = content.querySelector('video');
+    if (video) { video.pause(); video.removeAttribute('src'); video.load(); }
     content.replaceChildren();
     delete content.dataset.scale;
     delete content.dataset.ready;

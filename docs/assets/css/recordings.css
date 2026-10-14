@@ -1,11 +1,17 @@
 .recording-row { padding: 26px 0; border-top: 1px solid var(--rx-line); }
+.recording-options { display: flex; justify-content: flex-end; margin: 0 0 12px; }
+.recording-options label { display: inline-flex; align-items: center; gap: 9px; color: var(--rx-muted); font-size: 14px; cursor: pointer; }
+.recording-options input { accent-color: #d45b4c; width: 17px; height: 17px; margin: 0; }
+.recording-options input:focus-visible { outline: 2px solid #d45b4c; outline-offset: 3px; }
 .recording-heading, .recording-tools { display: flex; align-items: center; gap: 18px; }
 .recording-heading { justify-content: space-between; margin-bottom: 14px; }
 #research .recording-heading h3, #research .recording-heading h4 { margin: 0; font-size: 18px; font-weight: 600; }
 .recording-tools > a { font-size: 13px; text-underline-offset: 4px; }
 .recording-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
 .recording-grid figure { min-width: 0; margin: 0; }
-.recording-frame { aspect-ratio: 1; background: #090b0c; overflow: hidden; border-radius: 8px; }
+.recording-frame { position: relative; aspect-ratio: 1; background: #090b0c; overflow: hidden; border-radius: 8px; }
+.recording-frame .recording-load { position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%); width: 42px; height: 42px; color: #fff; background: #16191bd9; border: 1px solid #ffffff66; border-radius: 50%; }
+.recording-frame .recording-load[hidden] { display: none; }
 .recording-pending { display: grid; place-items: center; padding: 16px; box-sizing: border-box; color: #bac1c5; text-align: center; font-size: 14px; }
 #research .recording-frame video { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; border-radius: 8px; }
 #research .recording-frame[data-crop="top-only"] video { object-position: center bottom; }

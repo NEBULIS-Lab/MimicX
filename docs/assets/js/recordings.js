@@ -3,15 +3,36 @@
 (() => {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const dialog = document.getElementById('media-viewer');
+  const media = window.MimicXMedia;
+  let viewerOpening = false;
+  const pauses = new WeakSet(), plays = new WeakSet();
+  const loadButtons = new WeakMap();
   const rows = [...document.querySelectorAll('.recording-row')].map(element => ({
-    element, videos: [...element.querySelectorAll('video')],
-    button: element.querySelector('.recording-toggle'), visible: false,
-    userPaused: reduced.matches, request: 0, updating: false,
-    programmaticSeeks: new WeakMap()
+    element, videos:[...element.querySelectorAll('video')],
+    button:element.querySelector('.recording-toggle'), visible:false, near:false,
+    userPaused:reduced.matches, starting:false, buffering:false, request:0, single:null,
+    programmaticSeeks:new WeakMap()
   }));
 
+  function pause(video, unload = false) {
+    if (!video.paused) pauses.add(video);
+    video.pause();
+    if (unload) {
+      media.release(video);
+      // load() cancels queued media events; do not suppress the next user action.
+      pauses.delete(video);
+      plays.delete(video);
+    }
+  }
+
   function label(row) {
-    const playing = row.videos.some(video => !video.paused);
+    row.videos.forEach(video => {
+      const loaded = video.hasAttribute('src');
+      video.controls = loaded;
+      const button = loadButtons.get(video);
+      if (button) button.hidden = loaded;
+    });
+    const playing = row.videos.some(video => !video.paused) || row.starting || row.buffering;
     const title = `${playing ? 'Pause' : 'Play'} recordings`;
     row.button.title = title;
     row.button.setAttribute('aria-label', title);
@@ -20,59 +41,112 @@
   }
 
   function eligible(row) {
-    return row.visible && !row.userPaused && !document.hidden && !dialog.open;
+    return row.visible && !row.userPaused && !document.hidden && !dialog.open && !viewerOpening;
+  }
+
+  function selected(row) {
+    return media.lowData ? [row.single || row.element.querySelector('[data-method="ours"] video')] : row.videos;
   }
 
   function syncRow(row, source = row.videos[0]) {
-    if (row.element.dataset.sync === 'independent') return;
-    if (source.readyState < 1) return;
+    if (row.element.dataset.sync === 'independent' || media.lowData || source.readyState < 1) return;
     row.videos.forEach(video => {
-      if (video === source || video.readyState < 1) return;
-      if (Math.abs(video.currentTime - source.currentTime) <= .08) return;
-      const target = Math.min(source.currentTime, video.duration);
+      if (video === source || video.readyState < 1 || Math.abs(video.currentTime - source.currentTime) <= .08) return;
+      const target = Math.min(source.currentTime, Math.max(0, video.duration - .04));
       row.programmaticSeeks.set(video, target);
       video.currentTime = target;
     });
   }
 
-  async function update(row) {
-    const request = ++row.request;
-    row.updating = true;
+  function update(row) {
+    const wanted = selected(row);
+    const blocked = document.hidden || dialog.open || viewerOpening;
     if (!eligible(row)) {
-      row.videos.forEach(video => video.pause());
-      row.updating = false;
+      row.request++;
+      row.starting = false;
+      row.buffering = false;
+      row.videos.forEach(video => pause(video, blocked || !row.visible));
+      if (!blocked && row.near && !row.visible && !row.userPaused && !media.lowData) {
+        media.prepare(row.element.querySelector('[data-method="ours"] video'), 'metadata');
+      }
       label(row);
       return;
     }
+    row.videos.forEach(video => {
+      if (wanted.includes(video)) media.prepare(video);
+      else pause(video, true);
+    });
+    if (row.starting) return;
+    if (wanted.every(video => !video.paused && video.readyState >= 3)) {
+      row.buffering = false;
+      if (wanted.every(video => !video.seeking)) syncRow(row);
+      label(row);
+      return;
+    }
+    // Hold the shared timeline when any recording needs more data.
+    wanted.forEach(video => pause(video));
+    row.buffering = !wanted.every(video => media.buffered(video));
+    if (row.buffering) { label(row); return; }
     syncRow(row);
-    await Promise.allSettled(row.videos.map(video => video.play()));
-    if (request !== row.request) return;
-    if (!eligible(row)) row.videos.forEach(video => video.pause());
-    syncRow(row);
-    row.updating = false;
+    if (wanted.some(video => video.seeking)) return;
+    row.starting = true;
+    const request = ++row.request;
+    Promise.allSettled(wanted.map(video => {
+      plays.add(video);
+      return video.play().catch(error => { plays.delete(video); throw error; });
+    })).then(() => {
+      if (request !== row.request) return;
+      row.starting = false;
+      if (!eligible(row)) wanted.forEach(video => pause(video));
+      label(row);
+    });
     label(row);
   }
 
   rows.forEach(row => {
     row.button.addEventListener('click', () => {
-      row.userPaused = row.videos.some(video => !video.paused);
+      row.userPaused = row.starting || row.buffering || row.videos.some(video => !video.paused);
       update(row);
     });
     row.videos.forEach(video => {
-      video.addEventListener('play', () => {
-        if (!row.updating && row.userPaused && !reduced.matches) {
+      const choose = () => {
+        if ((media.lowData && selected(row)[0] !== video) || !video.hasAttribute('src')) {
+          if (media.lowData) row.single = video;
+          row.request++;
+          row.starting = false;
           row.userPaused = false;
-          syncRow(row, video);
           update(row);
         }
-        label(row);
+      };
+      // An unloaded native Play control cannot emit a play event in all browsers.
+      const loadButton = document.createElement('button');
+      loadButton.type = 'button';
+      loadButton.className = 'recording-load rx-icon-button';
+      loadButton.title = `Play ${video.getAttribute('aria-label') || 'recording'}`;
+      loadButton.setAttribute('aria-label', loadButton.title);
+      loadButton.innerHTML = '<span class="rx-icon icon-play" aria-hidden="true"></span>';
+      loadButton.addEventListener('click', choose);
+      video.parentElement.append(loadButton);
+      loadButtons.set(video, loadButton);
+      video.tabIndex = 0;
+      video.addEventListener('click', choose);
+      video.addEventListener('keydown', event => {
+        if (((media.lowData && selected(row)[0] !== video) || !video.hasAttribute('src')) && [' ', 'Enter'].includes(event.key)) {
+          event.preventDefault(); choose();
+        }
+      });
+      video.addEventListener('play', () => {
+        if (plays.delete(video)) { label(row); return; }
+        if (media.lowData) row.single = video;
+        row.userPaused = false;
+        update(row);
       });
       video.addEventListener('pause', () => {
-        if (!row.updating && eligible(row) && !video.ended && !video.seeking) {
+        if (pauses.delete(video)) { label(row); return; }
+        if (eligible(row) && !video.ended && !video.seeking) {
           row.userPaused = true;
           update(row);
         }
-        label(row);
       });
       video.addEventListener('seeking', () => {
         const expected = row.programmaticSeeks.get(video);
@@ -83,23 +157,24 @@
     });
     label(row);
   });
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      const row = rows.find(item => item.element === entry.target);
-      row.visible = entry.isIntersecting && entry.intersectionRatio >= .12;
-      update(row);
-    });
-  }, {threshold: [0, .12]});
-  rows.forEach(row => observer.observe(row.element));
-  // Source video is the shared clock, including each loop boundary.
-  setInterval(() => rows.forEach(row => {
-    if (eligible(row) && !row.updating && row.videos.every(video => !video.paused && !video.seeking)) syncRow(row);
-  }), 200);
+  const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+    const row = rows.find(item => item.element === entry.target);
+    row.visible = entry.isIntersecting && entry.intersectionRatio >= .12;
+    update(row);
+  }), {threshold:[0, .12]});
+  const near = new IntersectionObserver(entries => entries.forEach(entry => {
+    const row = rows.find(item => item.element === entry.target);
+    row.near = entry.isIntersecting;
+    update(row);
+  }), {rootMargin:'120px 0px'});
+  rows.forEach(row => { observer.observe(row.element); near.observe(row.element); });
+  setInterval(() => rows.filter(row => row.visible).forEach(update), 250);
   document.addEventListener('visibilitychange', () => rows.forEach(update));
-  document.addEventListener('mimicx-media-open', () => {
-    rows.forEach(row => { row.request += 1; row.videos.forEach(video => video.pause()); label(row); });
+  document.addEventListener('mimicx-data-mode', () => {
+    rows.forEach(row => { row.single = null; row.request++; row.starting = false; update(row); });
   });
-  dialog.addEventListener('close', () => rows.forEach(update));
+  document.addEventListener('mimicx-media-open', () => { viewerOpening = true; rows.forEach(update); });
+  dialog.addEventListener('close', () => { viewerOpening = false; rows.forEach(update); });
   reduced.addEventListener('change', () => {
     rows.forEach(row => { row.userPaused = reduced.matches; update(row); });
   });
