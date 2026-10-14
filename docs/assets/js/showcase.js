@@ -59,6 +59,7 @@
       workflowStages.setAttribute('aria-busy', 'false');
       workflowButtons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.workflow === shownWorkflow)));
       document.getElementById('workflow-note').textContent = 'These frames could not be loaded. Please try again.';
+      document.getElementById('workflow-note').hidden = false;
       return;
     }
     if (current !== workflowRequest) return;
@@ -78,8 +79,9 @@
     workflowStages.setAttribute('aria-busy', 'false');
     shownWorkflow = key;
     document.getElementById('workflow-note').textContent = key === 'tennis'
-      ? 'Tennis Swing: the four corresponding stages selected for the paper.'
+      ? ''
       : 'Forest Traversal: paper-selected midpoint frames from each stage, not a shared physical timestamp.';
+    document.getElementById('workflow-note').hidden = key === 'tennis';
   }));
   originals.forEach((figure, i) => {
     const button = document.createElement('button');
