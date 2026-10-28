@@ -17,3 +17,11 @@ GMR-related loader/adaptation code acknowledges Yanjie Ze's MIT-licensed GMR
 implementation; its license text is retained in dependencies/GMR_LICENSE.
 Unitree hand visualization assets under dependencies/assets/unitree_dex3_grip
 retain the BSD-3-Clause license reproduced alongside those files.
+
+The optional Isaac adapter integrates with HybridRobotics' MIT-licensed
+BeyondMimic whole_body_tracking implementation. Isaac Lab, Isaac Sim and
+their required robot assets are external dependencies, not bundled or
+relicensed here. See dependencies/isaaclab-sources.json and docs/ISAAC.md.
+Released SONIC inference and BONES, AMASS and LaFAN1 source motions likewise
+retain their providers' licenses; no such weights or motion datasets are
+included in this source distribution.

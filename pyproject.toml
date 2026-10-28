@@ -1,6 +1,6 @@
 [project]
 name = "mimicx"
-version = "0.3.0"
+version = "0.4.0"
 description = "Policy-in-the-loop supervision refinement for video-driven humanoid motion tracking"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -26,7 +26,7 @@ build-backend = "setuptools.build_meta"
 include = ["mimicx*"]
 
 [tool.setuptools.package-data]
-mimicx = ["configs/paper/*.json", "configs/paper/methods/*.yaml", "configs/releases/*.json"]
+mimicx = ["configs/paper/*.json", "configs/paper/methods/*.yaml", "configs/releases/*.json", "configs/datasets/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

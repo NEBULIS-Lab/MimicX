@@ -24,4 +24,8 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install -e '.[dev,visualization,physics]'
-      - run: python -m pytest -q tests/test_contact_replay_mujoco.py tests/test_hybrid_controller_runtime.py
+      - run: >-
+          python -m pytest -q
+          tests/test_contact_replay_mujoco.py tests/test_hybrid_controller_runtime.py
+          tests/test_motion_study.py tests/test_motion_study_scoring.py
+          tests/test_sonic_study.py tests/isaac

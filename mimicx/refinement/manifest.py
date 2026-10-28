@@ -10,6 +10,8 @@ from typing import Any, Mapping
 
 import yaml
 
+from mimicx.runtime.backends import validate_backend
+
 
 SCHEMA_VERSION = "mimicx.autorefine-loop.v1"
 
@@ -34,6 +36,7 @@ class RuntimeSpec:
     checkpoint_root: Path
     checkpoint_glob: str
     env: Mapping[str, str]
+    backend: str = "mjlab"
 
 
 @dataclass(frozen=True)
@@ -219,6 +222,7 @@ def load_loop_manifest(path: Path) -> LoopManifest:
         horizon=_positive_int(_required(task_raw, "horizon", "task"), "task.horizon"),
     )
     runtime = RuntimeSpec(
+        backend=validate_backend(str(runtime_raw.get("backend", "mjlab"))),
         workdir=_resolve_existing(
             _required(runtime_raw, "workdir", "runtime"),
             root,

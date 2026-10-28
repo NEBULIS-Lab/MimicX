@@ -14,6 +14,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from mimicx.refinement.proposals import ProposalContext, generate_candidates
+from mimicx.runtime.backends import isaac_script, isaac_train_argv
 
 
 def parse_args() -> argparse.Namespace:
@@ -26,11 +27,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--train-iters", type=int, default=200)
     parser.add_argument("--num-envs", type=int, default=1024)
     parser.add_argument("--learning-rate", type=float, default=2e-6)
+    parser.add_argument("--train-seed", type=int, default=42)
     parser.add_argument("--run-prefix", default="mimicx_autorefine_auto")
     parser.add_argument("--task-id", default="unknown")
     parser.add_argument("--candidate-budget", type=int, default=3)
     parser.add_argument("--runtime-workdir", type=Path, default=PROJECT_ROOT / "third_party/unitree_rl_mjlab")
     parser.add_argument("--runtime-python", type=Path, default=Path(sys.executable))
+    parser.add_argument("--runtime-backend", choices=("mjlab", "isaaclab"), default="mjlab")
+    parser.add_argument("--runtime-train-script", type=Path)
+    parser.add_argument("--runtime-task")
+    parser.add_argument("--checkpoint-root", type=Path)
     parser.add_argument(
         "--backend",
         choices=("heuristic", "llm", "hybrid"),
@@ -88,11 +94,22 @@ def main() -> int:
             f"--agent.load-checkpoint {shlex.quote(args.base_checkpoint.name)} "
             f"--agent.algorithm.learning-rate {args.learning_rate}"
         )
+        task = "Unitree-G1-Tracking-MimicX-AutoRefine-Dynamic-Curriculum"
+        if args.runtime_backend == "isaaclab":
+            task = args.runtime_task or "MimicX-Tracking-Flat-G1-v0"
+            argv = isaac_train_argv(
+                python=args.runtime_python.absolute(), script=args.runtime_train_script or isaac_script("train"),
+                task=task, motion_file=args.motion_file.resolve(), checkpoint=args.base_checkpoint.resolve(),
+                output_root=args.checkpoint_root or args.runtime_workdir / "logs", run_name=run_name,
+                iterations=args.train_iters, num_envs=args.num_envs, learning_rate=args.learning_rate, seed=args.train_seed)
+            command = (f"cd {shlex.quote(str(args.runtime_workdir.resolve()))} && "
+                       f"MIMICX_AUTOREFINE_PATCH_FILE={shlex.quote(str(patch_path.resolve()))} "
+                       + shlex.join(argv))
         candidates.append(
             {
                 "id": candidate_id,
                 "patch_file": str(patch_path),
-                "task": "Unitree-G1-Tracking-MimicX-AutoRefine-Dynamic-Curriculum",
+                "task": task,
                 "run_name": run_name,
                 "hypothesis": patch["id"].replace("_", " "),
                 "train_command": command,
@@ -105,6 +122,7 @@ def main() -> int:
         "base_checkpoint": str(args.base_checkpoint.resolve()),
         "load_run": args.load_run,
         "proposal_backend": args.backend,
+        "runtime_backend": args.runtime_backend,
         "candidates": candidates,
     }
     matrix_json = args.output_dir / "candidate_matrix.json"

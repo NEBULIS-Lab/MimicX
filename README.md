@@ -44,7 +44,7 @@ current policy.
 
 | Component | What it does |
 | :--- | :--- |
-| **Video-to-policy pipeline** | Connects GVHMR / SMPL-X reconstruction, GMR retargeting and PPO tracking in MuJoCo / MjLab. |
+| **Video-to-policy pipeline** | Connects GVHMR / SMPL-X reconstruction, GMR retargeting and PPO tracking in MuJoCo / MjLab, with an optional [Isaac Lab backend](docs/ISAAC.md). |
 | **Task-aware AutoRefine** | Uses failure windows and body-error channels to propose targeted objectives and curricula. |
 | **Repeated execution gate** | Checks execution improvements and tracking guards before replacing the current policy; records acceptance or protection. |
 | **MimicX-HLoop** | Overlaps GPU rollout and CPU diagnosis while preserving policy-selection decisions. |
@@ -83,6 +83,8 @@ Physics training and evaluation additionally use the
 | **Learn a skill from a new video** | Follow [video reconstruction, retargeting and tracking](docs/QUICKSTART.md). |
 | **Refine an existing policy** | Create a manifest and [run or resume AutoRefine](docs/QUICKSTART.md#autorefine). |
 | **Reproduce the paper protocols** | Prepare the inputs using the [reproduction guide](docs/REPRODUCIBILITY.md). |
+| **Use the optional Isaac backend** | Follow the isolated [Isaac Lab setup and motion conversion](docs/ISAAC.md); see its current runtime validation scope. |
+| **Compare trackers on additional motions** | Audit [motion inputs](docs/MOTION_STUDY.md), then prepare the [matched-budget study](docs/MOTION_STUDY_EXECUTION.md). |
 
 GPU entry points use the compute allocation provided by your environment.
 Device IDs are process-visible indices; launchers preserve inherited GPU
@@ -128,6 +130,10 @@ The original paper policies remain available separately for reproduction.
 | [Method](docs/METHOD.md) | Diagnosis, proposals, continuation and acceptance rules |
 | [Paper Reproduction](docs/REPRODUCIBILITY.md) | Registered inputs, controlled comparisons and evaluation protocols |
 | [HLoop](docs/HLOOP.md) | Heterogeneous execution, scheduling modes and parity checks |
+| [Isaac Lab](docs/ISAAC.md) | Optional native simulator backend, named motion conversion and local-file policy entry points |
+| [Motion Inputs](docs/MOTION_STUDY.md) | Prospective motion selection, source timing and kinematic validation |
+| [Motion Study](docs/MOTION_STUDY_EXECUTION.md) | Shared warmstarts, controlled continuation budgets and repeated evaluation |
+| [SONIC Evaluation](docs/SONIC_STUDY.md) | Released-controller playback, startup checks and common motion metrics |
 | [Visualization](docs/VISUALIZATION.md) | Rollout videos, screenshots and exact-state replay |
 | [Release Notes](docs/RELEASE.md) | Available components and tested workflows |
 
@@ -139,6 +145,8 @@ The original paper policies remain available separately for reproduction.
 | `mimicx/refinement/` | Diagnosis-conditioned search, verification and persistent state |
 | `mimicx/runtime/` | Dependency-aware execution and parity checks |
 | `mimicx/adapters/` | Motion-format bridge |
+| `mimicx/backends/` | Optional simulator integrations, loaded only when selected |
+| `mimicx/experiments/` | Matched motion-study execution and baseline evaluation |
 | `mimicx/evaluation/` | Metric reduction and experiment evidence utilities |
 | `mimicx/visualization/` | Replay, source-object registration, camera and geometry utilities |
 | `dependencies/backend_overlay/` | Tracking backend modifications |

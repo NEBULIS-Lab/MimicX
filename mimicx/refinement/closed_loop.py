@@ -18,6 +18,7 @@ from mimicx.refinement.gate import (
 )
 from mimicx.refinement.manifest import LoopManifest, ReplayItemSpec, hash_file
 from mimicx.refinement.state import atomic_write_json, load_or_create_state, save_state
+from mimicx.runtime.backends import isaac_train_argv, isaac_rollout_outputs
 
 
 @dataclass(frozen=True)
@@ -89,6 +90,7 @@ class ClosedLoopCoordinator:
                 "horizon": self.manifest.task.horizon,
             },
             "runtime": {
+                "backend": self.manifest.runtime.backend,
                 "workdir": str(self.manifest.runtime.workdir),
                 "python": str(self.manifest.runtime.python),
                 "train_script": str(self.manifest.runtime.train_script),
@@ -169,13 +171,18 @@ class ClosedLoopCoordinator:
             "--step-metrics-output",
             str(steps),
         ]
+        if self.manifest.runtime.backend == "isaaclab":
+            argv.append("--headless")
+        outputs = [str(metrics), str(steps)]
+        if self.manifest.runtime.backend == "isaaclab":
+            outputs = [str(p) for p in isaac_rollout_outputs(metrics, steps)]
         return {
             "id": f"incumbent_rollout_seed{seed}",
             "argv": argv,
             "cwd": str(self.manifest.runtime.workdir),
             "gpu_pool": list(self.eval_gpus),
             "seed": seed,
-            "expected_outputs": [str(metrics), str(steps)],
+            "expected_outputs": outputs,
             "recoverable_exit_codes": [-11],
             "success_log_marker": "rollout_ok steps=",
         }
@@ -227,6 +234,14 @@ class ClosedLoopCoordinator:
                     str(self.manifest.runtime.workdir),
                     "--runtime-python",
                     str(self.manifest.runtime.python),
+                    "--runtime-backend",
+                    self.manifest.runtime.backend,
+                    "--runtime-train-script",
+                    str(self.manifest.runtime.train_script),
+                    "--runtime-task",
+                    self.manifest.runtime.dynamic_task,
+                    "--checkpoint-root",
+                    str(self.manifest.runtime.checkpoint_root),
                     "--output-dir",
                     str(candidate_dir),
                     "--motion-file",
@@ -241,6 +256,8 @@ class ClosedLoopCoordinator:
                     str(self.manifest.search.num_envs),
                     "--learning-rate",
                     str(self.manifest.search.learning_rate),
+                    "--train-seed",
+                    str(self.manifest.search.train_seed),
                     "--run-prefix",
                     (
                         f"mimicx_{self.manifest.task.id}_seed"
@@ -518,6 +535,14 @@ class ClosedLoopCoordinator:
             "--agent.seed",
             str(self.manifest.search.train_seed),
         )
+        if self.manifest.runtime.backend == "isaaclab":
+            argv = tuple(isaac_train_argv(
+                python=self.manifest.runtime.python, script=self.manifest.runtime.train_script,
+                task=self.manifest.runtime.dynamic_task, motion_file=self.manifest.task.motion_file,
+                checkpoint=self._incumbent_checkpoint(), output_root=self.manifest.runtime.checkpoint_root,
+                run_name=run_name, iterations=self.manifest.search.train_iterations,
+                num_envs=self.manifest.search.num_envs, learning_rate=self.manifest.search.learning_rate,
+                seed=self.manifest.search.train_seed))
         return CommandRecord(
             id=f"iter{self.state.current_iteration:03d}/train_{candidate['id']}",
             argv=argv,
@@ -527,6 +552,10 @@ class ClosedLoopCoordinator:
                 {"MIMICX_AUTOREFINE_PATCH_FILE": str(candidate["patch_file"])}
             ),
             requires_gpu=True,
+            expected_outputs=(
+                (self.manifest.runtime.checkpoint_root / f"{run_name}.completed.json",)
+                if self.manifest.runtime.backend == "isaaclab" else ()
+            ),
         )
 
     def _incumbent_load_run(self) -> str:
@@ -598,6 +627,8 @@ class ClosedLoopCoordinator:
             str(output_dir / "metrics.json"),
             str(output_dir / "metrics_steps.csv"),
         ]
+        if self.manifest.runtime.backend == "isaaclab":
+            payload["expected_outputs"] = [str(p) for p in isaac_rollout_outputs(*payload["expected_outputs"])]
         argv = payload["argv"]
         metrics_index = argv.index("--metrics-output") + 1
         steps_index = argv.index("--step-metrics-output") + 1

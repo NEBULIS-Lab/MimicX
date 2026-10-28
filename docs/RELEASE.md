@@ -1,6 +1,40 @@
-# Source Release 0.3.0
+# Source Release 0.4.0
 
 ## Current Release
+
+The 2026-10-28 update adds an optional native Isaac Lab backend and a prospective
+motion-study workflow. MuJoCo/MjLab remains the default; existing paper inputs,
+published results, checkpoint releases and website media are unchanged.
+
+- Isolated Isaac Sim 6 / Isaac Lab beta2 integration, named motion conversion,
+  local-file training, checkpoint continuation and physical state/contact export.
+- AutoRefine routing through actual Isaac rollout, diagnosis, candidate training
+  and repeated execution verification.
+- Motion input checks covering source timing, joint/body order, FK and a
+  reference-relative evaluation protocol for upright and ground-contact motions.
+- Shared native warmstarts, equal continuation-update budgets, checkpoint
+  selection and held-out evaluation for the new motion study.
+- Released SONIC evaluation with explicit startup-support release, event-clock
+  alignment and a common canonical body metric.
+
+Real Isaac verification includes G1 motion FK, training/save/reload/resume,
+full-horizon state recording, all-body contact coverage and one physical
+refinement cycle. A CPU protection replay uses those recorded physical outcomes.
+The integration tests establish that the execution path works; the new
+multi-task training study is separate and does not change paper results.
+The optional environment is documented as experimental and is not asserted
+to reproduce the older upstream simulator's collider or solver behavior.
+
+The remote MuJoCo runtime also passed actual G1 PPO training, exact-action
+checkpoint reload and resumed optimization. CPU tests, optional CPU-physics
+checks, and package builds cover the new source interfaces.
+
+See [Isaac Lab](ISAAC.md), [Motion Inputs](MOTION_STUDY.md),
+[Motion Study](MOTION_STUDY_EXECUTION.md) and [SONIC Evaluation](SONIC_STUDY.md).
+Simulator binaries, source motions, external weights and experiment outputs
+are not included in this source release.
+
+## Previous Release: 0.3.0
 
 The 2026-10-14 source update integrates the later demonstration runtime while
 preserving the original paper configurations and checkpoint archive:

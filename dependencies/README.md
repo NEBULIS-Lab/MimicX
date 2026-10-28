@@ -24,6 +24,19 @@ historical experiment also requires its motion, warmstart, task configuration,
 seed and budget, not just package versions. A fresh GPU training run is not
 part of this source-release verification.
 
+## Optional Isaac Backend
+
+The [Isaac integration guide](../docs/ISAAC.md) documents a separate simulator
+environment, named joint/body conversion, local-file training and evaluation.
+The default MuJoCo environment remains unchanged. Optional versions and source
+identities are in `isaaclab.txt` and `isaaclab-sources.json`; read the validation
+status before choosing this backend. Do not install the Isaac requirements into
+the MuJoCo or reconstruction environments.
+
+BeyondMimic's `whole_body_tracking`, Isaac Lab, Isaac Sim and the robot asset
+archive are acquired separately under their own licenses. The native backend
+does not imply that an existing MuJoCo policy can be loaded directly in Isaac.
+
 ## Video and Retargeting
 
 For current continuation and scene tasks, first create a separate tracking

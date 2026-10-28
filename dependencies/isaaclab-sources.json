@@ -1,0 +1,38 @@
+{
+  "status": "experimental-native-physx-training-resume-rollout-refinement-smoke-verified",
+  "validation_scope": {
+    "passed": ["cpu-isolation", "g1-physics", "named-motion-live-fk", "link-origin-velocity-reset", "ppo-training", "checkpoint-action-reload", "checkpoint-resume", "strict-rollout-state-export", "full-contact-sensor-scope", "nonzero-physical-contacts", "actual-refinement-cycle", "isolated-cpu-regression-tests"],
+    "pending": ["research-scale-evaluation", "exact-upstream-simulator-parity"],
+    "note": "Bounded functionality smoke tests, not a trained-policy quality or benchmark claim."
+  },
+  "isaac_sim": {
+    "image": "nvcr.io/nvidia/isaac-sim:6.0.0",
+    "digest": "sha256:68735a60b6c15c85e0dd0098570c6d2cc79e928f2d068ce2790aa43284ac165d",
+    "python": "3.12.13",
+    "bundled_torch": "2.11.0+cu128",
+    "bundled_torchvision": "0.26.0+cu128"
+  },
+  "isaac_lab": {
+    "repository": "https://github.com/isaac-sim/IsaacLab",
+    "tag": "v3.0.0-beta2",
+    "commit": "28a37cecdd433c22d9eabd6a5954add9f13a8951",
+    "archive_sha256": "6ad77d5e3a55f053d3f1f471b176cd30b0079a863d0e79142153a5a56beeaaa2"
+  },
+  "whole_body_tracking": {
+    "repository": "https://github.com/HybridRobotics/whole_body_tracking",
+    "commit": "cd65172032893724b445448818c34165846d847d",
+    "license": "MIT",
+    "upstream_reference_pair": {"isaac_lab": "2.1.0", "isaac_sim": "4.5.0"}
+  },
+  "unitree_description": {
+    "url": "https://storage.googleapis.com/qiayuanl_robot_descriptions/unitree_description.tar.gz",
+    "archive_sha256": "b514bc9ddd1039c29a0e6feea9f57f1503f6657d07d97a4ef8a7b11fbebe6674",
+    "note": "Upstream-specified asset archive; acquire separately and preserve included licensing."
+  },
+  "rsl_rl": {"distribution": "rsl-rl-lib", "version": "5.0.1"},
+  "fallback": {
+    "isaac_lab": "2.1.0",
+    "isaac_sim": "4.5.0",
+    "status": "not-installed-not-tested"
+  }
+}
