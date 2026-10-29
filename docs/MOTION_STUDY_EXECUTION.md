@@ -228,6 +228,43 @@ least these repeat counts. Joint initialization noise is +/-0.005 rad for
 selection/nominal and +/-0.01 rad for the predefined perturbation. This is a
 joint-initialization perturbation, not a claim about push/disturbance robustness.
 
+### Development Refinement
+
+The default strategy is `legacy_v3`. Set `"refinement_strategy":
+"joint_neutral_v4"` in a **new** runtime JSON to test an alternative development
+strategy. This requires a development-only task manifest and canonical FK
+capture; it rejects confirmation tasks. Prepare a new campaign, and use the
+same `run`/`resume` commands above. Existing campaigns and their source snapshots
+remain unchanged.
+
+When every selection repeat completes, MimicX retains the native objective and
+proposes full-motion replay with sampling ratios 0.45 and 0.65 for its two stages.
+It adds no body-specific reward terms in that case. If selection still contains
+failures, the existing failure-conditioned diagnosis and proposal generator apply.
+The second stage continues from the protected incumbent, not necessarily the
+latest training endpoint.
+
+All three methods use the same experimental acceptance rule. In addition to
+native safety/horizon checks, every matched selection seed must retain or improve
+the mean and p95 of both canonical world-body and root-local FK body errors.
+Comparisons use the same-clock, pre-reset common prefix; physical execution
+frontiers cannot regress. Acceptance requires a longer execution frontier or at
+least a 2% decrease in the sum of the two metre-valued mean errors. A separate
+warmstart check prevents successive local/global regressions from accumulating.
+This strict rule is an experimental choice, not a demonstrated optimum.
+
+Training budgets remain 3,000 shared warmstart updates and 3,000 additional
+updates per arm, with six candidate checkpoints and three selection seeds each.
+The selected checkpoint is frozen before three nominal and three perturbed
+holdouts. Reused warmstarts retain their original training cost. In this strategy,
+`final.pt` copies the selected policy for **all** methods; `selection.json` and
+`report.json` record its original checkpoint and whether the warmstart was kept.
+The legacy BeyondMimic endpoint convention described below is unchanged for v3.
+
+CPU tests check contracts, symmetric selection, independent holdouts and resume
+receipts. New physical training/evaluation is needed to establish improvement;
+offline re-selection of old candidates is not evidence of improved training.
+
 Scoring, first-failure censoring, common-prefix error guards and native
 qualification reuse `policy_recovery.metrics`. The isolated study gate preserves
 the original rule for positive-prefix incumbents and adds per-seed horizon

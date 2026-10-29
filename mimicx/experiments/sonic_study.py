@@ -536,9 +536,18 @@ def prepare(manifest, runtime_path, output, *, seed, perturb, task_ids=None):
     if config.get("protocol_file"):
         files.add(Path(config["protocol_file"]))
     files |= asset_files(config["canonical_model"]) | asset_files(config["simulator_model"])
-    for root in (Path(config["sonic_root"]) / "gear_sonic/utils/mujoco_sim",
-                 Path(config["sonic_root"]) / "gear_sonic/utils/network"):
-        files.update(root.rglob("*.py"))
+    sonic_root = Path(config["sonic_root"])
+    files.update((sonic_root / "gear_sonic").rglob("*.py"))
+    # Bind deployment source provenance as well as the actual executable bytes.
+    # Build products and model caches are not runtime source inputs.
+    deployment = sonic_root / "gear_sonic_deploy"
+    for subtree in ("src", "include"):
+        for source in (deployment / subtree).rglob("*"):
+            if source.is_file() and (source.suffix in {".c", ".cc", ".cpp", ".h", ".hpp", ".cmake"}
+                                     or source.name == "CMakeLists.txt"):
+                files.add(source)
+    if (deployment / "CMakeLists.txt").is_file():
+        files.add(deployment / "CMakeLists.txt")
     identities = {str(p): sha(p) for p in sorted(files)}
     runs = []
     for task, arrays, audit in audited:
@@ -611,17 +620,24 @@ def prepare(manifest, runtime_path, output, *, seed, perturb, task_ids=None):
                    "scoring_representation": "same canonical FK of measured root and 29 joints, all 30 bodies",
                    "simulator_model": config["simulator_model"]},
                "manifest_sha256": manifest_digest, "manifest_tasks": [t["task_id"] for t in read(manifest)["tasks"]]}
-        startup = dict(schema="mimicx.sonic-startup.v2", mode=config["startup_mode"],
+        startup = dict(schema="mimicx.sonic-startup.v4", mode=config["startup_mode"],
                        source_motion_sha256=task["sha256"], common_protocol_sha256=protocol_digest,
                        canonical_model_sha256=identities[config["canonical_model"]],
                        deployment_model_sha256=identities[config["simulator_model"]],
                        decoder_sha256=identities[config["decoder"]], encoder_sha256=identities[config["encoder"]],
                        observation_config_sha256=identities[config["observation_config"]],
+                       deploy_binary_sha256=identities[config["deploy_binary"]],
+                       causal_source_schema="mimicx.sonic-causal-startup.v1",
+                       torso_identity="all causally prior exact-payload candidates must be fresh and post-reset",
+                       velocity_mapping="physical joint velocity rounded to float32; 2e-8 absolute tolerance",
+                       telemetry_storage="run_directory; external staging requires separately frozen provenance",
                        perturbation=perturb, initialization="once before CONTROL; no scored reset or teleport",
                        dds_receipt="mode_machine application echo restored before CONTROL; unchanged motor commands",
                        heading_history="fresh CONTROL logger history; official I reinitializes heading",
                        activation="I] after restored DDS echo; T immediately after first CONTROL heading log",
                        sampling_gap_scope="reset/release through scored endpoint, including interpolation brackets",
+                       state_identity="actual used LowState tick/receipt plus exact causal source payload; torso independent",
+                       source_max_age_s=.02, source_payload_quantization_tolerance=2e-8,
                        unsupported_paused_reference_hold_seconds=config["release_settle_s"])
         run.update(startup_contract=startup, startup_contract_sha256=protocol_sha256(startup))
         if sha(manifest) != manifest_digest:
@@ -737,6 +753,7 @@ def evaluate(path):
         try:
             with (folder / "sim.log").open("w") as slog, (folder / "deploy.log").open("w") as dlog:
                 env = environment(run["runtime"])
+                env["MIMICX_STARTUP_STATE_LOG"] = str(folder / "controller_startup_source.csv")
                 sim = subprocess.Popen(cmd["sim"], cwd=cmd["sim_cwd"], env=env, stdout=slog,
                                        stderr=subprocess.STDOUT, start_new_session=True)
                 attempt["sim_pid"] = sim.pid
@@ -853,6 +870,11 @@ def simulate(path):
     free_model(model)
     recording.install_no_reset_fall_monitor(env)
     qids, vids = model_addresses(model, JOINT_NAMES)
+    torso_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "torso_link")
+    publications = helper.StartupPublications(sim.unitree_bridge, lambda: dict(
+        physical_q=data.qpos[qids].copy(), physical_dq=data.qvel[vids].copy(),
+        physical_base_quat=data.qpos[3:7].copy(), physical_torso_quat=data.xquat[torso_id].copy()),
+        joint_names=JOINT_NAMES)
     samples = []
     pending_ack, reset_echo = None, None
     requested, acked = folder / "release-band", folder / "release-band.ack.json"
@@ -875,6 +897,7 @@ def simulate(path):
                 phase_zero = c["startup_mode"] == "reference_phase_zero"
                 if phase_zero:
                     initialization = initialize_phase_zero(model, data, target, p)
+                    publications.start(initialization)
                 else:
                     data.qpos[qids] += np.asarray(p["joint_position_delta_rad"])
                     data.qvel[:3] += np.asarray(p["root_velocity_delta_m_s"])
@@ -927,6 +950,7 @@ def simulate(path):
         pass
     finally:
         sim.close()
+        publications.save(folder)
         if samples:
             final_start = time.monotonic()
             arrays = {k: np.asarray([r[k] for r in samples]) for k in samples[0]}
@@ -1132,10 +1156,115 @@ def align_recording(states, target, q, playing, logged_target, ack, play_request
                     "fixed_frames": n, "endpoint_hold_seconds": 0, "startup_failure": startup_failure}
 
 
+def causal_publication_audit(evidence, controller, *, reset_monotonic, reset_simulation_time,
+                             original_header, max_age_s=.02):
+    """Bind actual CONTROL inputs to source publications, never fit a state clock."""
+    tolerance = 2e-8  # Float32 wire values printed by the SDK with nine decimals.
+    epsilon = 1e-6  # The existing controller log clock is rounded to microseconds.
+    required_controller = ("control_read_monotonic", "log_monotonic", "q", "dq", "base_quat", "torso_quat",
+        "torso_gyro", "torso_accel", "lowstate_tick", "mode_machine", "lowstate_received_monotonic", "torso_received_monotonic")
+    if any(k not in controller for k in required_controller):
+        raise ValueError("missing actual used CONTROL source provenance")
+    read_time, log_time = controller["control_read_monotonic"], controller["log_monotonic"]
+    if (not np.isfinite([read_time, log_time, reset_monotonic, reset_simulation_time, max_age_s]).all()
+            or not 0 < max_age_s <= .02 or read_time > log_time + epsilon
+            or log_time - read_time > .02 or read_time < reset_monotonic):
+        raise ValueError("invalid CONTROL/source audit clocks or freshness bound")
+    if (names(evidence.get("joint_names")) != list(JOINT_NAMES)
+            or not np.array_equal(evidence.get("motor_indices"), np.arange(29))):
+        raise ValueError("publication joint names do not match hardware mapping")
+    result = {}
+    for topic in ("lowstate", "torso"):
+        table = {k[len(topic)+1:]: np.asarray(v) for k, v in evidence.items() if k.startswith(topic + "_")}
+        sequence = np.asarray(table.get("sequence", []))
+        if sequence.ndim != 1 or not len(sequence) or not np.isfinite(sequence).all() or np.any(np.diff(sequence) <= 0):
+            raise ValueError("invalid publication sequence")
+        n = len(sequence)
+        required = dict(source_time=(), source_monotonic=(), write_start=(), write_end=(), write_success=(), quat=(4,))
+        required.update(dict(q=(29,), dq=(29,), tick=(), mode_machine=(), wire_motor_count=(), physical_q=(29,),
+                             physical_dq=(29,), physical_base_quat=(4,)) if topic == "lowstate"
+                        else dict(gyro=(3,), accel=(3,), physical_torso_quat=(4,)))
+        for key, shape in required.items():
+            if table.get(key, np.empty(0)).shape != (n, *shape) or not np.isfinite(table[key]).all():
+                raise ValueError("incomplete/nonfinite source publication " + topic + "/" + key)
+        for key in ("source_time", "source_monotonic"):
+            if np.any(np.diff(table[key]) <= 0):
+                raise ValueError("non-increasing source publication " + key)
+        if topic == "lowstate" and np.any(table["wire_motor_count"] != 35):
+            raise ValueError("released LowState requires 35 motor slots with named first29")
+        for key in ("quat", "physical_base_quat" if topic == "lowstate" else "physical_torso_quat"):
+            if np.max(np.abs(np.linalg.norm(table[key], axis=1) - 1)) > 1e-3:
+                raise ValueError("invalid source publication quaternion")
+        if (np.any(table["write_start"] < table["source_monotonic"])
+                or np.any(table["write_end"] < table["write_start"])
+                or not np.isin(table["write_success"], [1]).all()):
+            raise ValueError("invalid publication write clocks or failed transport")
+        same = np.ones(n, dtype=bool)
+        received = controller[topic + "_received_monotonic"]
+        if not np.isfinite(received):
+            raise ValueError("nonfinite source receipt clock")
+        payload = dict(q=controller["q"], dq=controller["dq"], quat=controller["base_quat"]) if topic == "lowstate" else dict(
+            quat=controller["torso_quat"], gyro=controller["torso_gyro"], accel=controller["torso_accel"])
+        for key, observed in payload.items():
+            observed = np.asarray(observed)
+            if observed.shape != table[key].shape[1:] or not np.isfinite(observed).all():
+                raise ValueError("invalid controller source payload " + key)
+            same &= np.max(np.abs(table[key] - observed), axis=1) <= tolerance
+        if topic == "lowstate":
+            if not np.array_equal(table["tick"], np.floor(table["source_time"] * 1000)):
+                raise ValueError("LowState tick disagrees with source physics time")
+            same &= table["tick"] == controller["lowstate_tick"]
+            same &= table["mode_machine"] == controller["mode_machine"]
+        # Search all causally prior history before applying age/reset filters.
+        same &= table["write_start"] <= received + epsilon
+        indices = np.flatnonzero(same)
+        if not len(indices) or (topic == "lowstate" and len(indices) != 1):
+            raise ValueError("missing or ambiguous exact causal publication identity: " + topic)
+        i = int(indices[0])  # Earliest candidate supplies the conservative worst age.
+        source, start = float(table["source_monotonic"][i]), float(table["write_start"][i])
+        if (np.any(table["source_monotonic"][indices] < reset_monotonic)
+                or np.any(table["source_time"][indices] < reset_simulation_time)
+                or received > read_time + epsilon
+                or np.any(read_time - table["source_monotonic"][indices] > max_age_s)
+                or read_time - received > max_age_s):
+            raise ValueError("pre-reset, future or overage source publication: " + topic)
+        if topic == "lowstate" and table["mode_machine"][i] != original_header:
+            raise ValueError("CONTROL did not consume the restored DDS header")
+        if topic == "lowstate":
+            q_error = float(np.sqrt(np.mean((table["q"][i] - table["physical_q"][i])**2)))
+            physical_wire_dq = table["physical_dq"][i].astype(np.float32).astype(float)
+            dq_error = float(np.max(np.abs(table["dq"][i] - physical_wire_dq)))
+            if not np.isfinite(physical_wire_dq).all() or dq_error > tolerance:
+                raise ValueError("source-message joint velocity mapping guard failed")
+            angle = float(quaternion_error(table["quat"][i], table["physical_base_quat"][i]))
+            if q_error > .02 or angle > .03:
+                raise ValueError("source-message joint/base mapping guard failed")
+        else:
+            q_error = None
+            dq_error = None
+            angle = float(quaternion_error(table["quat"][indices], table["physical_torso_quat"][indices]).max())
+            if angle > .03:
+                raise ValueError("source-message torso mapping guard failed")
+        result[topic] = dict(sequence=int(sequence[i]) if len(indices) == 1 else None,
+            candidate_sequences=sequence[indices].astype(int).tolist(), candidate_count=len(indices),
+            all_candidates_fresh=True, source_time=float(table["source_time"][i]),
+            source_monotonic=source, write_start=start, write_end=float(table["write_end"][i]),
+            received_monotonic=float(received), source_age_s=float(read_time-source),
+            receipt_age_s=float(read_time-received), q_mapping_rmse_rad=q_error, imu_mapping_error_rad=angle,
+            dq_mapping_max_rad_s=dq_error,
+            identity="actual used tick and exact float32/CSV payload" if topic == "lowstate" else "causal torso payload-equivalence set; worst age over all candidates")
+    return dict(schema="mimicx.sonic-causal-startup.v1", max_age_s=max_age_s,
+                payload_quantization_tolerance=tolerance, publications=result, rollout_clock_fitted=False)
+
+
 def verify_startup_evidence(folder, run, states, target, q, playing, ack):
     """Verify reset receipt, first CONTROL state and official heading reset causally."""
     if run["runtime"]["startup_mode"] != "reference_phase_zero":
         return {"mode": "legacy_paused_reference", "comparative_initialization_compatible": False}
+    required = ("controller_startup_source.csv", "startup_publications.npz", "startup_publications.json", "state_logs/dq.csv")
+    missing = [name for name in required if not (folder / name).is_file()]
+    if missing:
+        raise ValueError("missing causal startup provenance: " + ", ".join(missing) + "; old captures cannot be silently mixed")
     init, echo = ack["initialization"], ack["dds_reset_echo"]
     events = read(folder / "startup_events.json")
     control = read(folder / "control_request.json")
@@ -1164,11 +1293,22 @@ def verify_startup_evidence(folder, run, states, target, q, playing, ack):
             or not np.allclose(init["root_link_linear_velocity_world"], target["body_lin_vel"][0, root] + run["perturbation"]["root_velocity_delta_m_s"], atol=1e-7, rtol=0)
             or not np.allclose(init["root_link_angular_velocity_world"], target["body_ang_vel"][0, root], atol=1e-7, rtol=0)):
         raise ValueError("initialized state differs from immutable phase zero and declared noise")
-    when = np.asarray([times[-1]])
-    wall = states["monotonic_time"]
     recorded = np.asarray([q[f"q_{i}"][0] for i in range(29)])
-    measured = resample(states["joint_pos"], wall, when)[0]
-    q_rmse = float(np.sqrt(np.mean((recorded - measured)**2)))
+    dq = csv_log(folder / "state_logs/dq.csv")
+    used = csv_log(folder / "controller_startup_source.csv")
+    if (len(used) != 1 or used["index"][0] != q["index"][0]
+            or dq["index"][0] != q["index"][0] or dq["time_monotonic_ms"][0] != q["time_monotonic_ms"][0]):
+        raise ValueError("used-source and CONTROL logger identities do not agree")
+    evidence = load_npz(folder / "startup_publications.npz")
+    source_meta = read(folder / "startup_publications.json")
+    if (source_meta["reset"] != {k: init[k] for k in ("monotonic_time", "simulation_time")}
+            or source_meta["schema"] != "mimicx.sonic-startup-publications.v1"):
+        raise ValueError("source capture reset provenance differs from initialization")
+    controller = {key: float(used[key][0]) for key in ("control_read_monotonic", "lowstate_received_monotonic",
+                  "torso_received_monotonic", "lowstate_tick", "mode_machine")}
+    controller.update(q=recorded, dq=np.asarray([dq[f"dq_{i}"][0] for i in range(29)]), log_monotonic=times[-1],
+                      torso_gyro=[used[f"torso_gyro_{i}"][0] for i in range(3)],
+                      torso_accel=[used[f"torso_accel_{i}"][0] for i in range(3)])
     base = csv_log(folder / "state_logs/base_quat.csv")
     torso = csv_log(folder / "state_logs/torso_quat.csv")
     quaternion_checks = {}
@@ -1179,11 +1319,13 @@ def verify_startup_evidence(folder, run, states, target, q, playing, ack):
                 or log["time_monotonic_ms"][0] != q["time_monotonic_ms"][0]):
             raise ValueError("initial CONTROL IMU and joint log rows do not agree")
         observed = np.asarray([log[c][0] for c in columns])
-        expected = resample(states["body_quat"][:, names(states["body_names"]).index(body)], wall, when, quaternion=True)[0]
-        quaternion_checks[name] = dict(controller_wxyz=observed.tolist(),
-                                      error_rad=float(quaternion_error(observed, expected)))
-    if q_rmse > .02 or any(v["error_rad"] > .03 for v in quaternion_checks.values()):
-        raise ValueError("CONTROL consumed stale pre-reset joints or IMU")
+        controller[name + "_quat"] = observed
+        quaternion_checks[name] = dict(controller_wxyz=observed.tolist())
+    causal = causal_publication_audit(evidence, controller, reset_monotonic=init["monotonic_time"],
+                reset_simulation_time=init["simulation_time"], original_header=echo["original_header"])
+    q_rmse = causal["publications"]["lowstate"]["q_mapping_rmse_rad"]
+    for name, topic in (("base", "lowstate"), ("torso", "torso")):
+        quaternion_checks[name]["error_rad"] = causal["publications"][topic]["imu_mapping_error_rad"]
     text = (folder / "deploy.log").read_text().split("Playing motion", 1)[0]
     headings = re.findall(r"Reset heading state to ([^\n]+)", text)
     if not headings:
@@ -1197,6 +1339,7 @@ def verify_startup_evidence(folder, run, states, target, q, playing, ack):
                 controller_initial_imu=quaternion_checks, official_heading_reset_wxyz=heading.tolist(),
                 actual_CONTROL_monotonic=times[-1], actual_playback_monotonic=float(q["time_monotonic_ms"][first_play]/1000),
                 actual_first_CONTROL_q=recorded.tolist(), reference_first_q=target["joint_pos"][0].tolist(),
+                causal_source_audit=causal,
                 comparative_initialization_compatible=True, reference_frame_at_first_playback=0)
 
 
@@ -1373,6 +1516,8 @@ def score_recording(path, *, output=None, reason=None):
                 "release-band.ack.json", "play_request.json",
                 "sim_ready.json", "runtime_fk_audit.json"]
     evidence.extend(p for p in ("control_request.json", "startup_events.json", "recording_finalization.json",
+                                "controller_startup_source.csv", "startup_publications.npz", "startup_publications.json",
+                                "state_logs/dq.csv",
                                 "state_logs/base_quat.csv", "state_logs/torso_quat.csv") if (folder / p).exists())
     evidence.extend(str(p.relative_to(folder)) for p in (folder / "weights").glob("*.trt"))
     metrics["evidence_sha256"] = {p: sha(folder / p) for p in evidence}

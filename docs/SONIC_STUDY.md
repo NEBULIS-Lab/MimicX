@@ -92,6 +92,115 @@ duplicate guard does not serialize different experiments or establish isolation.
 Do not launch concurrent jobs on the same unisolated domain/interface. No
 transport isolation has been demonstrated by the CPU tests.
 
+## Build the Startup Logger
+
+`reference_phase_zero` scoring requires the optional C++ source instrumentation
+from `mimicx.experiments.sonic_helpers.instrument_startup_cpp`. An uninstrumented
+binary can start, but cannot supply `controller_startup_source.csv` and therefore
+cannot pass the causal startup audit. The runner sets `MIMICX_STARTUP_STATE_LOG`
+to that per-attempt destination; it does not patch or rebuild the binary for you.
+
+Run the following from the MimicX repository in a Python environment with NumPy.
+`SONIC_ROOT` names an existing upstream checkout with its Unitree SDK submodule
+already populated. `SONIC_BUILD` must be a new directory, separate from that
+checkout and from any active experiment. This copies only deployment build
+inputs, leaving the original source, policies and running binaries untouched:
+
+```bash
+export SONIC_ROOT="$PWD/third_party/GR00T-WholeBodyControl"
+export SONIC_BUILD="$PWD/build/sonic-startup-instrumented"
+python3 - <<'PY'
+import difflib
+import hashlib
+import inspect
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+from mimicx.experiments import sonic_helpers
+
+root = Path(os.environ["SONIC_ROOT"]).resolve()
+build = Path(os.environ["SONIC_BUILD"]).resolve()
+deploy = root / "gear_sonic_deploy"
+relative = Path("src/g1/g1_deploy_onnx_ref/src/g1_deploy_onnx_ref.cpp")
+before = (deploy / relative).read_text()
+after = sonic_helpers.instrument_startup_cpp(before)
+revision = subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip()
+build.mkdir(parents=True, exist_ok=False)
+staged = build / "source"
+staged.mkdir()
+shutil.copy2(deploy / "CMakeLists.txt", staged / "CMakeLists.txt")
+for name in ("cmake", "src", "thirdparty/unitree_sdk2"):
+    shutil.copytree(deploy / name, staged / name,
+                    ignore=shutil.ignore_patterns(".git", "build", "target", "__pycache__"))
+(staged / relative).write_text(after)
+digest = lambda data: hashlib.sha256(data).hexdigest()
+(build / "startup-logger.patch").write_text("".join(difflib.unified_diff(
+    before.splitlines(keepends=True), after.splitlines(keepends=True),
+    fromfile="original/" + relative.as_posix(), tofile="instrumented/" + relative.as_posix())))
+provenance = dict(
+    schema="mimicx.sonic-startup-build.v1", upstream_revision=revision,
+    original_cpp_sha256=digest(before.encode()), instrumented_cpp_sha256=digest(after.encode()),
+    helper_sha256=digest(Path(inspect.getsourcefile(sonic_helpers)).read_bytes()),
+    staged_files_sha256={p.relative_to(staged).as_posix(): digest(p.read_bytes())
+                         for p in sorted(staged.rglob("*")) if p.is_file()})
+(build / "source-provenance.json").write_text(json.dumps(provenance, indent=2, sort_keys=True) + "\n")
+PY
+```
+
+The helper requires exactly one occurrence of each released source anchor.
+Missing/duplicate anchors and a second application raise `ValueError`; do not
+weaken the checks for a different upstream revision. Inspect the generated patch
+and retain the provenance manifest, which also hashes any pre-existing local
+changes in the copied build inputs. The patch adds only a steady-clock read,
+capture of the existing logger's returned row index, and first-row CSV output.
+It does not change policy inputs, actions, DDS messages, control periods, physics
+steps, or existing clock values. File I/O still consumes wall time; this is not
+a claim of zero timing overhead.
+
+Build against already installed C++20/CMake, CUDA development libraries,
+TensorRT, ONNX Runtime, Eigen3, Zlib, msgpack, ZeroMQ and the upstream SDK.
+Provide their installation prefixes explicitly; do not source a setup script
+that downloads or changes the environment. Upstream CMake requests GoogleTest
+even when building only the deploy target, so provide an existing GoogleTest
+source tree and installed CMake package for an offline build:
+
+```bash
+# Set these to existing dependency prefixes/source directories in your environment.
+: "${TensorRT_ROOT:?}" "${onnxruntime_ROOT:?}" "${CUDAToolkit_ROOT:?}"
+: "${GOOGLETEST_SOURCE:?}" "${GTest_DIR:?}"
+export TensorRT_ROOT onnxruntime_ROOT CUDAToolkit_ROOT
+set -o pipefail
+CUDA_VISIBLE_DEVICES='' HAS_ROS2=0 cmake -S "$SONIC_BUILD/source" -B "$SONIC_BUILD/cmake" \
+  -DCMAKE_BUILD_TYPE=Release -DFETCHCONTENT_FULLY_DISCONNECTED=ON \
+  -DFETCHCONTENT_SOURCE_DIR_GOOGLETEST="$GOOGLETEST_SOURCE" -DGTest_DIR="$GTest_DIR" \
+  2>&1 | tee "$SONIC_BUILD/configure.log"
+CUDA_VISIBLE_DEVICES='' cmake --build "$SONIC_BUILD/cmake" \
+  --target g1_deploy_onnx_ref --parallel 2 2>&1 | tee "$SONIC_BUILD/build.log"
+sha256sum "$SONIC_BUILD/source/target/release/g1_deploy_onnx_ref" \
+  > "$SONIC_BUILD/deploy-binary.sha256"
+```
+
+Export the dependency-prefix variables so CMake can read them. Keep the CMake
+cache, compiler version, dependency versions, build logs and binary hash with
+`source-provenance.json`. Set runtime `deploy_binary` to the new executable;
+`sonic_root` continues to identify the original simulator/assets checkout.
+Prepare a new run after selecting the binary, then run CPU preflight. Compilation
+alone does not verify TensorRT inference or DDS transport.
+
+The portable regression suite needs no upstream checkout or SDK libraries:
+
+```bash
+CUDA_VISIBLE_DEVICES='' python3 -m pytest -q \
+  tests/test_sonic_startup_instrumentation.py tests/test_sonic_source_packets.py
+```
+
+The instrumentation tests compile and execute original/patched synthetic C++
+buffer/logger fixtures and compare calls, values, return paths and timestamps.
+Set `CXX` to a C++20 compiler; executable checks explicitly skip if none is found.
+These are CPU contract tests, not a full deployment build or a 50 Hz timing test.
+
 ## CPU Preparation
 
 ```bash
@@ -260,12 +369,65 @@ and CONTROL), waits for the first CONTROL heading log, then immediately sends
 `T`. The new controller's history contains no earlier suspended CONTROL frames.
 There is no three-second unsupported hold of a dynamic reference frame. ACK to
 CONTROL request is limited to 30 ms, initialization to first CONTROL to 250 ms,
-and first CONTROL to playback request to 30 ms. Actual first CONTROL joint/base
-and torso IMU logs must agree with measured post-reset physics; stale state or
-heading fails closed. `startup_events.json`, `control_request.json`, release ACK,
-`play_request.json` and `startup_audit.json` preserve causal clocks and the first
-scored state. The separate startup contract/hash binds this sequence, source,
-assets, weights/configuration, declared noise and unchanged common protocol.
+and first CONTROL to playback request to 30 ms. Actual first CONTROL inputs are
+matched to captured source publications, not to a later physical state after
+the robot has moved. LowState identity uses the actual consumed tick, restored
+header, q/dq and base quaternion; torso identity independently uses quaternion,
+gyroscope and accelerometer. Payload matching uses a fixed `2e-8` tolerance for
+float32 wire values printed to nine decimal places. Receipt/read/log ordering
+must hold, and source age at the read is at most 20 ms. Source-time joint/base
+and torso orientation mapping guards remain separate from freshness. Published
+joint velocities must match the physical source velocities after a float32 cast,
+with a maximum absolute error of `2e-8` across all joints. This is not a relative
+tolerance or an average over joints, and does not compare against later physics.
+
+The publication capture retains pre-reset history. A repeated torso payload has
+no unique packet ID, so every matching causally prior candidate must be
+post-reset and fresh; the audit reports the oldest candidate's age rather than
+selecting a convenient fresh match. Identical future publications cannot explain
+an earlier receipt. LowState requires a unique matching identity. The audit does
+not fit clocks, retime references, or subtract a measured rollout phase offset.
+
+`startup_events.json`, `control_request.json`, release ACK, `play_request.json`,
+`startup_publications.npz`, `startup_publications.json`,
+`controller_startup_source.csv` and `startup_audit.json` preserve the causal
+evidence and first scored state. Missing source evidence fails closed; old
+captures cannot be silently mixed into the new audit.
+
+The current startup contract schema is `mimicx.sonic-startup.v4`; it binds the
+startup sequence, motion/assets, weights/configuration, declared noise, common
+protocol and source-age/payload tolerances. Its additional evidence fields are:
+
+- `deploy_binary_sha256`: identity of the configured deploy executable.
+- `causal_source_schema`: `mimicx.sonic-causal-startup.v1`.
+- `torso_identity`: all causally prior exact-payload candidates must be fresh
+  and post-reset.
+- `velocity_mapping`: physical joint velocity rounded to float32, with `2e-8`
+  absolute tolerance.
+- `telemetry_storage`: `run_directory`; external staging requires separately
+  frozen provenance.
+
+The contract hash covers these fields. The full run separately hashes the deploy
+binary and configured checkout sources in `source_files`, and frozen Python code
+in `frozen_files`. For separately staged builds, retain their source/build
+manifest as well: a binary hash does not by itself identify its source patch or
+dependency versions. Historical captures retain their original contract and
+frozen implementation. Do not relabel them or modify an active snapshot to claim
+the new contract. Prepare a new destination to adopt `mimicx.sonic-startup.v4`.
+
+If an external runner stages telemetry in memory-backed storage, record that
+backend, the staging-helper hash, affected files, finalization status and
+per-file source/destination hashes as additional frozen provenance. Copying exact
+bytes after both child processes exit can preserve log contents without changing
+policy/scoring/clock formulas, but changes I/O latency and crash durability.
+Require successful persistence before treating the attempt as archived. A storage
+change is not evidence that the 50 Hz timing issue is fixed: inspect the recorded
+event intervals and phase offsets without correcting them after capture.
+An external batch must reject a nonzero child exit even when `result.json` was
+written before persistence. Final archival verification must additionally require
+`telemetry_storage.json.phase == "persisted"`, complete file coverage and matching
+hashes for every archived telemetry file. A result file alone is not archival
+completion evidence.
 
 `legacy_paused_reference` is an explicit historical diagnostic mode, with its
 former settling delays. Such runs report initialization incompatibility and
@@ -369,6 +531,13 @@ Prepared runs freeze the runner and corrected helper sources, target arrays,
 motion bytes, reference CSVs and hashes. Configured models, their XML includes and
 file-backed assets, weights, observation/parameter/config files, numerical
 interpreter and simulator Python sources are hash-checked again before use.
+Source coverage includes all existing `gear_sonic/**/*.py` files, deployment
+files with `.c`, `.cc`, `.cpp`, `.h`, `.hpp` or `.cmake` suffixes and
+`CMakeLists.txt` under `gear_sonic_deploy/src` and `gear_sonic_deploy/include`,
+plus the deployment's top-level `CMakeLists.txt`. Deployment sources are bound
+for provenance independently of the configured executable's hash. Generated
+build products and model caches are not added by this source scan; the selected
+deploy executable and configured model weights remain separately hash-bound.
 Changes require new preparation. Runtime JSON and generated runs can contain
 private paths; keep them outside source control. Neither proprietary weights nor
 licensed input data are bundled or granted redistribution rights here.

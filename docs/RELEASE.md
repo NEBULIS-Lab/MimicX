@@ -1,6 +1,29 @@
-# Source Release 0.4.0
+# Source Release 0.4.1
 
 ## Current Release
+
+The 2026-10-29 update corrects startup-state validation for asynchronous SONIC
+observations. A controller observation can be fresh even when a fast-moving
+robot has changed pose by the time its observation is logged. The startup audit
+now checks causal source-message evidence rather than treating observation and
+logging time as simultaneous.
+
+Tracking scores retain the original fixed evaluation clock. This change does
+not modify the released policy, motion reference, physical dynamics or tracking
+thresholds. New recordings keep source-message evidence, while earlier captures
+and invalid-attempt records remain unchanged. See
+[SONIC Evaluation](SONIC_STUDY.md) for the startup audit contract.
+
+The motion-study runner also adds opt-in `joint_neutral_v4` development
+experiments. When all selection rollouts complete, MimicX preserves the native
+tracking objective and proposes full-motion sampling changes. A shared gate
+checks canonical local and world-space mean/tail errors for all three methods,
+before independent holdout evaluation. Default and frozen legacy experiments
+are unchanged. See [Development Refinement](MOTION_STUDY_EXECUTION.md#development-refinement)
+for the experimental setting, budgets and selection rules. This source update
+does not assert that the new strategy improves policy performance.
+
+## Previous Release: 0.4.0
 
 The 2026-10-28 update adds an optional native Isaac Lab backend and a prospective
 motion-study workflow. MuJoCo/MjLab remains the default; existing paper inputs,

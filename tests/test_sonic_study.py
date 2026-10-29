@@ -57,6 +57,82 @@ def fixture(target=None):
     return states, target, q, playing, logged, ack, request, protocol()
 
 
+def causal_fixture():
+    evidence = dict(joint_names=np.asarray(study.JOINT_NAMES), motor_indices=np.arange(29))
+    for topic in ("lowstate", "torso"):
+        for key, value in dict(sequence=[1, 2], source_time=[.075, .08], source_monotonic=[9.975, 9.985],
+                write_start=[9.9752, 9.9852], write_end=[9.9753, 9.9853], write_success=[True, True],
+                quat=[[1., 0, 0, 0], [np.cos(.1), 0, np.sin(.1), 0]]).items():
+            evidence[topic + "_" + key] = np.asarray(value)
+    for key, value in dict(q=np.zeros((2, 29)), dq=np.zeros((2, 29)), tick=[75, 80], mode_machine=[0, 0],
+            wire_motor_count=[35, 35], physical_q=np.zeros((2, 29)), physical_dq=np.zeros((2, 29)),
+            physical_base_quat=evidence["lowstate_quat"].copy()).items():
+        evidence["lowstate_" + key] = np.asarray(value)
+    for key, value in dict(gyro=np.zeros((2, 3)), accel=np.zeros((2, 3)),
+            physical_torso_quat=evidence["torso_quat"].copy()).items():
+        evidence["torso_" + key] = np.asarray(value)
+    controller = dict(control_read_monotonic=9.979, log_monotonic=9.98, lowstate_received_monotonic=9.976,
+        torso_received_monotonic=9.9761, lowstate_tick=75, mode_machine=0,
+        q=np.zeros(29), dq=np.zeros(29), base_quat=np.array([1., 0, 0, 0]),
+        torso_quat=np.array([1., 0, 0, 0]), torso_gyro=np.zeros(3), torso_accel=np.zeros(3))
+    return evidence, controller
+
+
+class CausalStartupTests(unittest.TestCase):
+    def evaluate(self, evidence, controller):
+        return study.causal_publication_audit(evidence, controller, reset_monotonic=9.948,
+            reset_simulation_time=0., original_header=0)
+
+    def test_fresh_fast_state_identity_not_concurrent_physics(self):
+        evidence, controller = causal_fixture()
+        evidence["lowstate_q"][0] = np.linspace(-1., 1., 29).astype(np.float32)
+        evidence["lowstate_dq"][0] = np.linspace(-12., 12., 29).astype(np.float32)
+        evidence["lowstate_physical_q"][0] = evidence["lowstate_q"][0]
+        evidence["lowstate_physical_dq"][0] = evidence["lowstate_dq"][0]
+        controller.update(q=np.round(evidence["lowstate_q"][0], 9), dq=np.round(evidence["lowstate_dq"][0], 9))
+        self.assertGreater(np.sqrt(np.mean((controller["dq"] * .01)**2)), .02)
+        self.assertFalse(self.evaluate(evidence, controller)["rollout_clock_fitted"])
+
+    def test_future_identical_torso_is_not_prior_ambiguity(self):
+        evidence, controller = causal_fixture()
+        evidence["torso_quat"][1] = evidence["torso_quat"][0]
+        self.evaluate(evidence, controller)
+        evidence["torso_source_monotonic"][0] = 9.94
+        with self.assertRaisesRegex(ValueError, "pre-reset"):
+            self.evaluate(evidence, controller)
+
+    def test_identical_fresh_torso_set_uses_worst_age(self):
+        evidence, controller = causal_fixture()
+        evidence["torso_source_monotonic"][1] = 9.9755
+        evidence["torso_write_start"][1], evidence["torso_write_end"][1] = 9.9756, 9.9757
+        evidence["torso_quat"][1] = evidence["torso_quat"][0]
+        evidence["torso_physical_torso_quat"][1] = evidence["torso_quat"][0]
+        result = self.evaluate(evidence, controller)["publications"]["torso"]
+        self.assertIsNone(result["sequence"])
+        self.assertEqual(result["candidate_count"], 2)
+        self.assertAlmostEqual(result["source_age_s"], .004)
+
+    def test_reject_payload_age_mapping_receipt_errors(self):
+        for mutation in ("q", "age", "mapping", "receipt"):
+            evidence, controller = causal_fixture()
+            if mutation == "q":
+                controller["q"][0] += .001
+            elif mutation == "age":
+                evidence["lowstate_source_monotonic"][0] = 9.95
+            elif mutation == "mapping":
+                evidence["lowstate_physical_q"][0] += .03
+            else:
+                controller["lowstate_received_monotonic"] = 9.99
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                self.evaluate(evidence, controller)
+
+    def test_old_capture_missing_provenance_fails_clear(self):
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaisesRegex(ValueError, "missing causal startup provenance"):
+                study.verify_startup_evidence(Path(d), dict(runtime=dict(startup_mode="reference_phase_zero")),
+                                              {}, {}, None, None, {})
+
+
 class ClockTests(unittest.TestCase):
     def test_event_clock_fixed_complete_horizon(self):
         a, audit = study.align_recording(*fixture())
@@ -451,6 +527,12 @@ class PhysicsTests(unittest.TestCase):
         path = output / runs[0]
         run = study.verify_run(path)
         command = study.commands(path, run)
+        contract = run["startup_contract"]
+        self.assertEqual(contract["schema"], "mimicx.sonic-startup.v4")
+        self.assertEqual(contract["deploy_binary_sha256"], run["source_files"][run["runtime"]["deploy_binary"]])
+        self.assertEqual(contract["causal_source_schema"], "mimicx.sonic-causal-startup.v1")
+        self.assertIn("all causally prior", contract["torso_identity"])
+        self.assertEqual(contract["velocity_mapping"], "physical joint velocity rounded to float32; 2e-8 absolute tolerance")
         self.assertIn("_simulate", command["sim"])
         self.assertIn("--target-motion-logfile", command["deploy"])
         self.assertEqual(run["frames"], 11)
@@ -514,7 +596,8 @@ class PhysicsTests(unittest.TestCase):
         init = study.initialize_phase_zero(model, mujoco.MjData(model), target, run["perturbation"])
         init["monotonic_time"] = 9.948
         ack.update(initialization=init, dds_reset_echo=dict(marker_received_monotonic=9.949,
-                   restored_received_monotonic=9.95, original_header_restored=True, motor_commands_unchanged=True))
+                   restored_received_monotonic=9.95, original_header=0,
+                   original_header_restored=True, motor_commands_unchanged=True))
         study.dump(folder / "release-band.ack.json", ack)
         request["monotonic_time"] = 9.985
         study.dump(folder / "play_request.json", request)
@@ -525,12 +608,26 @@ class PhysicsTests(unittest.TestCase):
         imu = np.column_stack([q["index"], q["time_monotonic_ms"], np.ones(len(q)), np.zeros((len(q), 3))])
         for filename in ("base_quat.csv", "torso_quat.csv"):
             np.savetxt(folder / "state_logs" / filename, imu, delimiter=",", header=",".join(columns), comments="")
+        source, used = causal_fixture()
+        np.savez_compressed(folder / "startup_publications.npz", **source)
+        study.dump(folder / "startup_publications.json", dict(schema="mimicx.sonic-startup-publications.v1",
+            reset={k: init[k] for k in ("monotonic_time", "simulation_time")}))
+        used_row = {k: used[k] for k in ("control_read_monotonic", "lowstate_received_monotonic", "torso_received_monotonic",
+                                       "lowstate_tick", "mode_machine")}
+        used_row = dict(index=0, **used_row, **{f"torso_gyro_{i}": 0. for i in range(3)},
+                        **{f"torso_accel_{i}": 0. for i in range(3)})
+        np.savetxt(folder / "controller_startup_source.csv", [list(used_row.values())], delimiter=",",
+                   header=",".join(used_row), comments="")
+        dq = np.zeros(len(q), dtype=[("index", float), ("time_monotonic_ms", float)] + [(f"dq_{i}", float) for i in range(29)])
+        dq["index"], dq["time_monotonic_ms"] = q["index"], q["time_monotonic_ms"]
+        np.savetxt(folder / "state_logs/dq.csv", np.column_stack([dq[k] for k in dq.dtype.names]),
+                   delimiter=",", header=",".join(dq.dtype.names), comments="")
         (folder / "deploy.log").write_text("Reset heading state to 1,0,0,0\nPlaying motion\n")
         study.dump(folder / "sim_ready.json", dict(states_only=True, reset_on_fall=False, sim_dt=.005))
         study.dump(folder / "runtime_fk_audit.json", dict(deployment_fk_position_m=0., deployment_fk_rotation_rad=0.))
         valid_q = q.copy()
         q["q_0"][0] = 1.
-        with self.assertRaisesRegex(ValueError, "stale pre-reset"):
+        with self.assertRaisesRegex(ValueError, "publication identity"):
             study.verify_startup_evidence(folder, run, states, target, q, playing, ack)
         q = valid_q
         ack["dds_reset_echo"]["original_header_restored"] = False
@@ -545,7 +642,7 @@ class PhysicsTests(unittest.TestCase):
         stale_imu[0, 2:] = [0, 0, 0, 1]
         np.savetxt(folder / "state_logs/torso_quat.csv", stale_imu, delimiter=",",
                    header=",".join(columns), comments="")
-        with self.assertRaisesRegex(ValueError, "stale pre-reset"):
+        with self.assertRaisesRegex(ValueError, "publication identity"):
             study.verify_startup_evidence(folder, run, states, target, q, playing, ack)
         np.savetxt(folder / "state_logs/torso_quat.csv", imu, delimiter=",", header=",".join(columns), comments="")
         with patch.object(study.subprocess, "Popen") as launch:

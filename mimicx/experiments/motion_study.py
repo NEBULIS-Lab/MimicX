@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 ENTRY = ROOT / 'scripts/experiments/motion_study.py'
 METHODS = ('beyond_mimic', 'static_search', 'mimicx')
 BLOCKED = 'Backend training not implemented'
+V4_STRATEGY = 'joint_neutral_v4'
 
 
 @contextmanager
@@ -152,6 +153,8 @@ def make_jobs(tasks, runtime):
 def prepare(manifest, runtime_path, output):
     manifest, runtime_path, output = map(lambda p: Path(p).expanduser().resolve(), (manifest, runtime_path, output))
     runtime = read(runtime_path)
+    if runtime.get('refinement_strategy', 'legacy_v3') not in ('legacy_v3', V4_STRATEGY):
+        raise ValueError('Unknown refinement strategy')
     for key in ('backend_root', 'native_root', 'rollout_script', 'common_model_xml', 'legacy_backend_asset_proof'):
         if key in runtime:
             runtime[key] = resolve(runtime[key], runtime_path.parent)
@@ -197,6 +200,11 @@ def prepare(manifest, runtime_path, output):
                 raise ValueError('Ground-contact task lacks the frozen dataset common-protocol identity')
     if not tasks or len({t['task_id'] for t in tasks}) != len(tasks):
         raise ValueError('Tasks must be nonempty and unique')
+    if runtime.get('refinement_strategy') == V4_STRATEGY:
+        if reference_contract is None:
+            raise ValueError('v4 requires canonical FK capture')
+        if any(t['split'] != 'development' for t in tasks):
+            raise ValueError('v4 is development-only; do not enable confirmation tasks')
     campaign = dict(schema_version=2, scope='mjlab three-arm closed-loop study; Isaac execution unsupported',
                     tasks=tasks, runtime=runtime, manifest_sha256=digest(manifest), reference_contract=reference_contract,
                     common_protocol_sha256=protocol_sha256,
@@ -483,6 +491,209 @@ def train_native(campaign, job, folder, *, stage=None):
     return summary
 
 
+def refinement_v4(campaign, task, repeats, folder, tried):
+    """Keep the native objective when every selection repeat already completes.
+
+    Full-motion replay retains two distinct sampling candidates without treating
+    a precision maximum as a failure or inventing body-specific reward evidence.
+    """
+    from . import motion_study_loop as loop
+    from mimicx.policy_recovery.metrics import summarize
+    from mimicx.refinement.proposals import ProposalContext, validate_patch
+    n = loop.horizon(task)
+    if not all(summarize(r, n)['complete'] for r in repeats):
+        return loop.untried_patch(loop.diagnose(campaign, task, repeats, folder), tried)
+    context = ProposalContext(task['task_id'], n, 0, None, (0, n), (), (), (), ())
+    signature = lambda p: {k: v for k, v in p.items() if k != 'id'}
+    for ratio in (.45, .65):
+        patch = dict(id=f'native_full_replay_{int(ratio * 100)}',
+                     sampling=dict(mode='window', start=0, end=n, ratio=ratio),
+                     reward_overrides={}, body_pos_rewards=[], body_z_rewards=[],
+                     body_lin_vel_rewards=[], body_ang_vel_rewards=[])
+        if all(signature(patch) != signature(old) for old in tried):
+            return validate_patch(patch, context=context)
+    raise ValueError('No untried native-objective replay remains')
+
+
+def accept_v4(old_rows, new_rows, horizon, old_evidence, new_evidence):
+    """Matched-seed Pareto guard on same-clock, pre-reset local/global errors.
+
+    No task-specific tolerance: both mean and p95 must be nonincreasing for
+    every seed. The existing 2% precision-improvement rule is applied to the
+    sum of the two metre-valued errors, not a mixed metre/radian proxy score.
+    """
+    import numpy as np
+    from .motion_study_gate import accept
+    result = accept(old_rows, new_rows, horizon)
+    if len(old_evidence) != len(old_rows) or len(new_evidence) != len(new_rows):
+        raise ValueError('Joint gate requires matched canonical evidence')
+    keys = ('world_body_error_m', 'root_local_fk_body_error_m')
+    for evidence, summaries in ((old_evidence, result['old']), (new_evidence, result['new'])):
+        for item, summary in zip(evidence, summaries):
+            frontier = item.get('pre_failure_frames')
+            if type(frontier) is not int or not 0 <= frontier <= horizon + 1:
+                raise ValueError('Invalid common physical frontier')
+            valid = min(summary['valid_steps'] + 1, frontier)
+            for key in keys:
+                values = np.asarray(item.get(key), dtype=float)
+                if (values.shape != (horizon + 1,) or not np.isfinite(values[1:valid]).all()
+                        or (values[1:valid] < 0).any()):
+                    raise ValueError('Invalid same-clock canonical tracking evidence')
+    checks, scores_old, scores_new = [], [], []
+    joint_guard = True
+    for index, (a, b, sa, sb) in enumerate(zip(old_evidence, new_evidence, result['old'], result['new'])):
+        frontier_ok = b['pre_failure_frames'] >= a['pre_failure_frames']
+        n = min(sa['valid_steps'], sb['valid_steps'],
+                max(0, a['pre_failure_frames'] - 1), max(0, b['pre_failure_frames'] - 1))
+        measured = {}
+        for key in keys:
+            if n:
+                va, vb = np.asarray(a[key])[1:n + 1], np.asarray(b[key])[1:n + 1]
+                before = [float(va.mean()), float(np.quantile(va, .95))]
+                after = [float(vb.mean()), float(np.quantile(vb, .95))]
+                joint_guard &= all(y <= x + 1e-12 for x, y in zip(before, after))
+                scores_old.append(before[0])
+                scores_new.append(after[0])
+                measured[key] = dict(old=before, new=after)
+        joint_guard &= frontier_ok
+        checks.append(dict(seed_index=index, common_valid_steps=n, frontier_guard=frontier_ok, measured=measured))
+    frontier_improved = any(b['valid_steps'] > a['valid_steps'] for a, b in zip(result['old'], result['new']))
+    frontier_improved |= any(b['pre_failure_frames'] > a['pre_failure_frames']
+                             for a, b in zip(old_evidence, new_evidence))
+    precision_improved = bool(scores_old) and sum(scores_new) < .98 * sum(scores_old)
+    native_safe = result['accepted'] or result['reason'] == 'No execution improvement'
+    accepted = native_safe and joint_guard and (frontier_improved or precision_improved)
+    reason = (result['reason'] if not native_safe else 'Joint local/global guard' if not joint_guard
+              else 'Accepted' if accepted else 'No joint precision improvement')
+    # Legacy prefix tuples must round-trip before immutable resume comparison.
+    return json.loads(json.dumps({**result, 'accepted': accepted, 'reason': reason, 'gate_version': V4_STRATEGY,
+                                  'joint_guard': joint_guard, 'joint_checks': checks, 'uses_holdout': False}))
+
+
+def selection_evidence_v4(folder, seeds):
+    import numpy as np
+    common = read(folder / 'summary.json')['common_metrics']
+    if len(common) != len(seeds):
+        raise ValueError('Missing canonical selection metrics')
+    evidence = []
+    for seed, metrics in zip(seeds, common):
+        with np.load(folder / f'seed{seed}/rollout/common_steps.npz', allow_pickle=False) as data:
+            evidence.append({key: data[key].copy() for key in
+                             ('world_body_error_m', 'root_local_fk_body_error_m')})
+        evidence[-1]['pre_failure_frames'] = metrics['pre_failure_frames']
+    return evidence
+
+
+def execute_arm_v4(campaign_path, campaign, job, folder):
+    """Opt-in development strategy; freeze selection before independent scoring."""
+    import shutil
+    from . import motion_study_loop as loop
+    from mimicx.policy_recovery.metrics import qualifies, summarize
+    task = next(t for t in campaign['tasks'] if t['task_id'] == job['task_id'])
+    if task['split'] != 'development' or not campaign.get('reference_contract'):
+        raise ValueError('v4 requires development tasks and canonical capture')
+    n = loop.horizon(task)
+    protocol = campaign['runtime']['validation_protocol']
+    seeds, noise = protocol['selection_seeds'], protocol['selection_noise']
+    warm_job = next(j for j in campaign['jobs'] if j['id'] == job['dependencies'][0])
+    warm = folder.parent / 'warmstart/final.pt'
+    warm_folder = folder.parent / 'shared_validation/warmstart'
+    warm_rows = loop.evaluate(campaign_path, campaign, warm_job, warm, warm_folder, seeds, noise)
+    warm_evidence = selection_evidence_v4(warm_folder, seeds)
+    incumbent, incumbent_rows, incumbent_evidence = warm, warm_rows, warm_evidence
+    incumbent_folder = warm_folder
+    history, slots, stages, tried = [], [], [], []
+    for index, declaration in enumerate(job['stages']):
+        current = folder if job['method'] == 'beyond_mimic' else folder / declaration['name']
+        spec = None
+        if job['method'] != 'beyond_mimic':
+            parent = warm if job['method'] == 'static_search' else incumbent
+            path = current / 'stage.json'
+            if path.exists():
+                spec = read(path)
+                if spec['parent'] != str(parent) or spec['parent_sha256'] != digest(parent):
+                    raise ValueError('Stage protected-parent contract changed')
+            else:
+                patch = declaration.get('patch')
+                if job['method'] == 'mimicx':
+                    patch = refinement_v4(campaign, task, incumbent_rows, current / 'diagnosis', tried)
+                spec = dict(updates=declaration['updates'], parent=str(parent),
+                            parent_sha256=digest(parent), patch=patch)
+                immutable_json(path, spec)
+            tried.append(spec['patch'])
+            immutable_json(current / 'proposal_history.json', dict(tried=tried[:-1], selected=spec['patch'],
+                rule='Native-objective full-motion replay when selection completion saturates; existing diagnosis otherwise'))
+        training = train_native(campaign, job, current, stage=spec)
+        stages.append(dict(folder=str(current.relative_to(folder)), updates=training['completed_updates'],
+                           transitions=training['transitions']))
+        for name in training['selection_checkpoints']:
+            checkpoint = current / name
+            slot = len(slots)
+            output = folder / 'validation' / f'slot{slot:02d}'
+            candidate_rows = loop.evaluate(campaign_path, campaign, job, checkpoint, output, seeds, noise)
+            candidate_evidence = selection_evidence_v4(output, seeds)
+            gate = accept_v4(incumbent_rows, candidate_rows, n, incumbent_evidence, candidate_evidence)
+            warm_gate = accept_v4(warm_rows, candidate_rows, n, warm_evidence, candidate_evidence)
+            if gate['accepted'] and not warm_gate['joint_guard']:
+                gate.update(accepted=False, reason='Warmstart joint local/global guard')
+            gate.update(slot=slot, stage=index, candidate=str(checkpoint), candidate_sha256=digest(checkpoint),
+                        incumbent=str(incumbent), incumbent_sha256=digest(incumbent),
+                        warmstart_joint_guard=warm_gate['joint_guard'])
+            immutable_json(folder / 'gates' / f'slot{slot:02d}.json', gate)
+            history.append(gate)
+            slots.append(str(checkpoint.relative_to(folder)))
+            if gate['accepted']:
+                incumbent, incumbent_rows, incumbent_evidence = checkpoint, candidate_rows, candidate_evidence
+                incumbent_folder = output
+    if len(slots) != 6 or sum(s['updates'] for s in stages) != 3000:
+        raise RuntimeError('Arm must consume exactly 3000 updates and six selection slots')
+    selection = dict(checkpoint=str(incumbent), sha256=digest(incumbent), history=history,
+                     seeds=seeds, criterion=V4_STRATEGY, slots=6, uses_holdout=False)
+    immutable_json(folder / 'selection.json', selection)
+    held, common_held = {}, {}
+    for kind in ('nominal', 'perturbed'):
+        output = folder / 'holdout' / kind
+        rows = loop.evaluate(campaign_path, campaign, job, incumbent, output,
+                             protocol['holdout'][task['split']][kind], protocol[kind + '_noise'])
+        held[kind] = [summarize(r, n) for r in rows]
+        common_held[kind] = read(output / 'summary.json')['common_metrics']
+    common_selection = read(incumbent_folder / 'summary.json')['common_metrics']
+    native_qualified = qualifies([summarize(r, n) for r in incumbent_rows]) and all(qualifies(v) for v in held.values())
+    common_qualified = len(common_selection) == len(seeds) and all(m['complete_motion'] for m in common_selection)
+    common_qualified = common_qualified and all(
+        len(common_held[k]) == len(protocol['holdout'][task['split']][k])
+        and all(m['complete_motion'] for m in common_held[k]) for k in held)
+    transitions_per_update = campaign['runtime']['num_envs'] * campaign['runtime']['steps_per_env']
+    shared_updates = warm_job['updates'] + sum(j['updates'] for j in campaign['jobs']
+                                              if j['dependencies'] == [warm_job['id']])
+    budget = dict(shared_warmstart_updates=warm_job['updates'], continuation_updates=job['updates'],
+                  arm_updates_including_reused_warmstart=warm_job['updates'] + job['updates'],
+                  shared_three_arm_updates=shared_updates, shared_three_arm_transitions=shared_updates * transitions_per_update,
+                  reused_warmstart_training_cost_not_zero=True, candidate_selection_rollouts=6 * len(seeds),
+                  shared_warmstart_selection_rollouts=len(seeds),
+                  independent_holdout_rollouts=sum(len(protocol['holdout'][task['split']][k]) for k in held))
+    immutable_json(folder / 'report.json', dict(status='completed', holdout=held,
+        selected_checkpoint=str(incumbent), selected_sha256=digest(incumbent), selected_warmstart=incumbent == warm,
+        selection=[summarize(r, n) for r in incumbent_rows], qualified=native_qualified and common_qualified,
+        native_qualified=native_qualified, common_physical_qualified=common_qualified,
+        common_selection_metrics=common_selection, common_physical_metrics=common_held,
+        common_protocol=campaign['runtime']['common_protocol'], common_protocol_sha256=campaign['common_protocol_sha256'],
+        completed_updates=3000, transitions=sum(s['transitions'] for s in stages), stages=stages,
+        metrics_contract=V4_STRATEGY, budget_accounting=budget))
+    atomic_save(lambda path, infos=None: shutil.copy2(incumbent, path), folder / 'final.pt')
+    if job['method'] != 'beyond_mimic':
+        immutable_json(folder / 'effective_training.json', dict(campaign=campaign, job=job, stages=stages))
+    files = [p for p in folder.rglob('*') if p.is_file() and p != folder / 'training.json' and p.name not in
+             ('.run.lock', 'done.json', 'run.log', 'contract.json')
+             and 'attempts' not in p.parts and not any(part.startswith('incomplete_rollout_') for part in p.parts)]
+    summary = dict(status='completed', completed_updates=3000, transitions=sum(s['transitions'] for s in stages),
+                   selection_checkpoints=slots, artifacts=[str(p.relative_to(folder)) for p in files],
+                   stages=stages, selected_checkpoint=str(incumbent), selected_sha256=digest(incumbent),
+                   qualified=native_qualified and common_qualified, budget_accounting=budget, attempted_transitions_exact=None)
+    save_json(folder / 'training.json', summary)
+    return summary
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     subs = parser.add_subparsers(dest='action', required=True)
@@ -561,7 +772,8 @@ def main(argv=None):
                 train_native(campaign, job, folder)
             else:
                 from .motion_study_loop import execute_arm
-                execute_arm(args.campaign.resolve(), campaign, job, folder)
+                executor = execute_arm_v4 if campaign['runtime'].get('refinement_strategy') == V4_STRATEGY else execute_arm
+                executor(args.campaign.resolve(), campaign, job, folder)
     else:
         job_id = f'{args.task}/{args.backend}/seed{args.seed}/{args.method}'
         if args.action == 'adopt-warmstart':
