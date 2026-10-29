@@ -84,7 +84,7 @@ Physics training and evaluation additionally use the
 | **Refine an existing policy** | Create a manifest and [run or resume AutoRefine](docs/QUICKSTART.md#autorefine). |
 | **Reproduce the paper protocols** | Prepare the inputs using the [reproduction guide](docs/REPRODUCIBILITY.md). |
 | **Use the optional Isaac backend** | Follow the isolated [Isaac Lab setup and motion conversion](docs/ISAAC.md); see its current runtime validation scope. |
-| **Compare trackers on additional motions** | Audit [motion inputs](docs/MOTION_STUDY.md), then prepare the [matched-budget study](docs/MOTION_STUDY_EXECUTION.md). |
+| **Compare trackers on additional motions** | Audit [motion inputs](docs/MOTION_STUDY.md) or prepare a [larger grouped cohort](docs/MOTION_SCALEUP.md), then run the [matched-budget study](docs/MOTION_STUDY_EXECUTION.md). |
 
 GPU entry points use the compute allocation provided by your environment.
 Device IDs are process-visible indices; launchers preserve inherited GPU
@@ -132,6 +132,7 @@ The original paper policies remain available separately for reproduction.
 | [HLoop](docs/HLOOP.md) | Heterogeneous execution, scheduling modes and parity checks |
 | [Isaac Lab](docs/ISAAC.md) | Optional native simulator backend, named motion conversion and local-file policy entry points |
 | [Motion Inputs](docs/MOTION_STUDY.md) | Prospective motion selection, source timing and kinematic validation |
+| [Larger Motion Cohorts](docs/MOTION_SCALEUP.md) | Distinct-clip selection, raw-source checks and locked confirmation inputs |
 | [Motion Study](docs/MOTION_STUDY_EXECUTION.md) | Shared warmstarts, controlled continuation budgets and repeated evaluation |
 | [SONIC Evaluation](docs/SONIC_STUDY.md) | Released-controller playback, startup checks and common motion metrics |
 | [Visualization](docs/VISUALIZATION.md) | Rollout videos, screenshots and exact-state replay |
