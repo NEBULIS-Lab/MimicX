@@ -2,6 +2,11 @@
 
 ## Supported Scope
 
+The separately versioned [frozen confirmation route](CONFIRMATION.md) implements
+the 12-motion, two-training-seed, 3+3-evaluation protocol. The legacy defaults and
+development workflow below are unchanged; use the explicit confirmation strategy
+and freeze contract rather than shortening the legacy holdout lists.
+
 This is an executable study coordinator, not a completed study. `prepare` freezes
 the task matrix and code/input identities without launching anything. `run` and
 `resume` execute MjLab scratch warmstart and all three continuation arms.

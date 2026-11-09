@@ -18,12 +18,15 @@ import time
 
 from mimicx.policy_recovery.resume import atomic_save, checkpoint_plan, digest, load_checkpoint, save_json
 from mimicx.policy_recovery.worker import ensure_training_contract
+from .motion_study_confirmation import CONFIRMATION_STRATEGY
 
 ROOT = Path(__file__).resolve().parents[2]
 ENTRY = ROOT / 'scripts/experiments/motion_study.py'
 METHODS = ('beyond_mimic', 'static_search', 'mimicx')
 BLOCKED = 'Backend training not implemented'
 V4_STRATEGY = 'joint_neutral_v4'
+V5_STRATEGY = 'joint_precision_v5'
+V6_STRATEGY = 'joint_adaptive_precision_v6'
 
 
 @contextmanager
@@ -117,7 +120,9 @@ def validate_task(task, base):
 def make_jobs(tasks, runtime):
     jobs = []
     for task in tasks:
-        seeds = runtime.get('seeds', {}).get(task['split'], [101, 202] if task['split'] == 'development' else [101, 202, 303])
+        default_seeds = ([101, 202] if task['split'] == 'development'
+                         or runtime.get('refinement_strategy') == CONFIRMATION_STRATEGY else [101, 202, 303])
+        seeds = runtime.get('seeds', {}).get(task['split'], default_seeds)
         if not seeds or len(seeds) != len(set(seeds)) or any(type(s) is not int or s < 0 for s in seeds):
             raise ValueError('Seeds must be unique nonnegative integers')
         for backend in runtime.get('backends', ['mjlab']):
@@ -150,12 +155,15 @@ def make_jobs(tasks, runtime):
     return jobs
 
 
-def prepare(manifest, runtime_path, output):
-    manifest, runtime_path, output = map(lambda p: Path(p).expanduser().resolve(), (manifest, runtime_path, output))
+def _build_campaign(manifest, runtime_path):
+    """Normalize inputs without writing jobs; shared by preparation and freeze."""
+    manifest, runtime_path = map(lambda p: Path(p).expanduser().resolve(), (manifest, runtime_path))
     runtime = read(runtime_path)
-    if runtime.get('refinement_strategy', 'legacy_v3') not in ('legacy_v3', V4_STRATEGY):
+    if runtime.get('refinement_strategy', 'legacy_v3') not in (
+            'legacy_v3', V4_STRATEGY, V5_STRATEGY, V6_STRATEGY, CONFIRMATION_STRATEGY):
         raise ValueError('Unknown refinement strategy')
-    for key in ('backend_root', 'native_root', 'rollout_script', 'common_model_xml', 'legacy_backend_asset_proof'):
+    for key in ('backend_root', 'native_root', 'rollout_script', 'common_model_xml', 'legacy_backend_asset_proof',
+                'confirmation_contract'):
         if key in runtime:
             runtime[key] = resolve(runtime[key], runtime_path.parent)
     if 'python' in runtime:
@@ -174,7 +182,10 @@ def prepare(manifest, runtime_path, output):
     if runtime['device'] != 'cpu' and not re.fullmatch(r'cuda(?::[0-9]+)?', runtime['device']):
         raise ValueError('Use cpu or a standard CUDA device')
     from .motion_study_loop import validation_protocol
-    runtime['validation_protocol'] = validation_protocol(runtime.get('validation_protocol'))
+    runtime['validation_protocol'] = validation_protocol(runtime.get('validation_protocol'),
+                                                        strategy=runtime.get('refinement_strategy'))
+    if runtime.get('refinement_strategy') == CONFIRMATION_STRATEGY:
+        runtime.setdefault('seeds', {}).setdefault('confirmation', [101, 202])
     data = read(manifest)
     from .motion_study_scoring import common_protocol
     protocol = data.get('protocol', common_protocol())
@@ -200,16 +211,26 @@ def prepare(manifest, runtime_path, output):
                 raise ValueError('Ground-contact task lacks the frozen dataset common-protocol identity')
     if not tasks or len({t['task_id'] for t in tasks}) != len(tasks):
         raise ValueError('Tasks must be nonempty and unique')
-    if runtime.get('refinement_strategy') == V4_STRATEGY:
+    if runtime.get('refinement_strategy') in (V4_STRATEGY, V5_STRATEGY, V6_STRATEGY):
+        version = runtime['refinement_strategy']
         if reference_contract is None:
-            raise ValueError('v4 requires canonical FK capture')
+            raise ValueError(f'{version} requires canonical FK capture')
         if any(t['split'] != 'development' for t in tasks):
-            raise ValueError('v4 is development-only; do not enable confirmation tasks')
-    campaign = dict(schema_version=2, scope='mjlab three-arm closed-loop study; Isaac execution unsupported',
+            raise ValueError(f'{version} is development-only; do not enable confirmation tasks')
+    return dict(schema_version=2, scope='mjlab three-arm closed-loop study; Isaac execution unsupported',
                     tasks=tasks, runtime=runtime, manifest_sha256=digest(manifest), reference_contract=reference_contract,
                     common_protocol_sha256=protocol_sha256,
                     sources=source_identity(runtime), budget=dict(shared_warmstart=3000, per_arm=3000,
                     selection_slots=6, selection_interval=500), jobs=make_jobs(tasks, runtime))
+
+
+def prepare(manifest, runtime_path, output):
+    output = Path(output).expanduser().resolve()
+    campaign = _build_campaign(manifest, runtime_path)
+    if (campaign['runtime'].get('refinement_strategy') == CONFIRMATION_STRATEGY
+            or any(k in campaign['runtime'] for k in ('confirmation_contract', 'confirmation_contract_sha256'))):
+        from .motion_study_confirmation import verify_confirmation_contract
+        verify_confirmation_contract(campaign)
     with duplicate_guard(output):
         immutable_json(output / 'campaign.json', campaign)
         for job in campaign['jobs']:
@@ -218,9 +239,14 @@ def prepare(manifest, runtime_path, output):
 
 
 def verify_campaign(campaign):
-    for path, expected in campaign['sources'].items():
-        if digest(path) != expected:
-            raise RuntimeError(f'Frozen source changed: {path}')
+    if (campaign['runtime'].get('refinement_strategy') == CONFIRMATION_STRATEGY
+            or any(k in campaign['runtime'] for k in ('confirmation_contract', 'confirmation_contract_sha256'))):
+        from .motion_study_confirmation import verify_confirmation_contract
+        verify_confirmation_contract(campaign)
+    else:
+        for path, expected in campaign['sources'].items():
+            if digest(path) != expected:
+                raise RuntimeError(f'Frozen source changed: {path}')
     for task in campaign['tasks']:
         if task['motion_path'] and task['sha256'] and digest(task['motion_path']) != task['sha256']:
             raise RuntimeError(f'Frozen motion changed: {task["task_id"]}')
@@ -268,6 +294,8 @@ def adopt_warmstart(campaign_path, job_id, donor):
     campaign_path, donor = Path(campaign_path).resolve(), Path(donor).resolve()
     campaign = read(campaign_path)
     verify_campaign(campaign)
+    if campaign['runtime'].get('refinement_strategy') == CONFIRMATION_STRATEGY:
+        raise ValueError('Confirmation requires fresh scratch warmstarts; adoption is disabled')
     job = next(j for j in campaign['jobs'] if j['id'] == job_id)
     if job['method'] != 'warmstart' or not job['executable']:
         raise ValueError('Only eligible warmstarts can be adopted')
@@ -515,6 +543,71 @@ def refinement_v4(campaign, task, repeats, folder, tried):
     raise ValueError('No untried native-objective replay remains')
 
 
+def refinement_v5(campaign, task, repeats, folder, tried):
+    """Use the existing static precision pair after completion saturation."""
+    from . import motion_study_loop as loop
+    from mimicx.policy_recovery.metrics import summarize
+    if not all(summarize(r, loop.horizon(task))['complete'] for r in repeats):
+        return loop.untried_patch(loop.diagnose(campaign, task, repeats, folder), tried)
+    signature = lambda p: {k: v for k, v in p.items() if k != 'id'}
+    for patch in loop.static_patches(task):
+        if all(signature(patch) != signature(old) for old in tried):
+            return patch
+    raise ValueError('No untried static precision patch remains')
+
+
+def native_replay_needed_v6(task, tried, history, repeat_count):
+    """Recognize a completed first-stage precision/local tradeoff, selection only."""
+    from . import motion_study_loop as loop
+    signature = lambda p: {k: v for k, v in p.items() if k != 'id'}
+    if (len(tried) != 1 or len(history) != 3 or repeat_count < 3
+            or signature(tried[0]) != signature(loop.static_patches(task)[0])):
+        return False
+    for slot, gate in enumerate(history):
+        if (gate['slot'] != slot or gate['stage'] != 0 or gate['accepted']
+                or gate['uses_holdout'] is not False or gate['gate_version'] != V4_STRATEGY
+                or gate['incumbent_sha256'] != history[0]['incumbent_sha256']
+                or gate['reason'] != 'Joint local/global guard'):
+            return False
+        if any(len(gate[side]) != repeat_count or not all(r['complete'] for r in gate[side])
+               for side in ('old', 'new')):
+            return False
+        checks = gate['joint_checks']
+        if [c['seed_index'] for c in checks] != list(range(repeat_count)):
+            return False
+        local_mean_regressed = False
+        for check in checks:
+            if not check['frontier_guard'] or check['common_valid_steps'] != loop.horizon(task):
+                return False
+            measured = check['measured']
+            for key in ('world_body_error_m', 'root_local_fk_body_error_m'):
+                if any(len(measured[key][side]) != 2 or
+                       not all(math.isfinite(x) and x >= 0 for x in measured[key][side])
+                       for side in ('old', 'new')):
+                    return False
+            world, local = measured['world_body_error_m'], measured['root_local_fk_body_error_m']
+            # All slots rejected, so the protected incumbent is still the donor.
+            # Normalize within each donor channel; retain the gate's numerical epsilon.
+            if any((b - a) / max(a, 1e-12) > 1e-12 / max(a, 1e-12)
+                   for a, b in zip(world['old'], world['new'])):
+                return False
+            scale = max(local['old'][0], 1e-12)
+            local_mean_regressed |= (local['new'][0] - local['old'][0]) / scale > 1e-12 / scale
+        if not local_mean_regressed:
+            return False
+    return True
+
+
+def refinement_v6(campaign, task, repeats, folder, tried, history):
+    """Keep v5 unless every first-stage slot shows the same local sacrifice."""
+    from . import motion_study_loop as loop
+    from mimicx.policy_recovery.metrics import summarize
+    if (all(summarize(r, loop.horizon(task))['complete'] for r in repeats)
+            and native_replay_needed_v6(task, tried, history, len(repeats))):
+        return refinement_v4(campaign, task, repeats, folder, tried)
+    return refinement_v5(campaign, task, repeats, folder, tried)
+
+
 def accept_v4(old_rows, new_rows, horizon, old_evidence, new_evidence):
     """Matched-seed Pareto guard on same-clock, pre-reset local/global errors.
 
@@ -585,13 +678,29 @@ def selection_evidence_v4(folder, seeds):
 
 
 def execute_arm_v4(campaign_path, campaign, job, folder):
-    """Opt-in development strategy; freeze selection before independent scoring."""
+    """Joint gate for development or frozen v6 confirmation; selection first."""
     import shutil
     from . import motion_study_loop as loop
     from mimicx.policy_recovery.metrics import qualifies, summarize
+    strategy = campaign['runtime'].get('refinement_strategy')
+    if strategy not in (V4_STRATEGY, V5_STRATEGY, V6_STRATEGY, CONFIRMATION_STRATEGY):
+        raise ValueError('Joint executor requires an explicit v4, v5 or v6 strategy')
     task = next(t for t in campaign['tasks'] if t['task_id'] == job['task_id'])
-    if task['split'] != 'development' or not campaign.get('reference_contract'):
-        raise ValueError('v4 requires development tasks and canonical capture')
+    if strategy == CONFIRMATION_STRATEGY:
+        verify_campaign(campaign)
+        if job not in campaign['jobs'] or job['method'] not in METHODS:
+            raise ValueError('Confirmation arm is not a frozen campaign job')
+    elif task['split'] != 'development' or not campaign.get('reference_contract'):
+        raise ValueError(f'{strategy} requires development tasks and canonical capture')
+    uses_v6 = strategy in (V6_STRATEGY, CONFIRMATION_STRATEGY)
+    refinement = refinement_v5 if strategy == V5_STRATEGY else refinement_v4
+    proposal_rule = ('Existing static precision pair when selection completion saturates; existing diagnosis otherwise'
+                     if strategy == V5_STRATEGY else
+                     'Native-objective full-motion replay when selection completion saturates; existing diagnosis otherwise')
+    if uses_v6:
+        proposal_rule = ('V5 proposals; replace second precision patch with first untried native replay only when '
+                         'all three completed first-stage slots are rejected for local mean sacrifice without '
+                         'any world mean/p95 regression; selection evidence only')
     n = loop.horizon(task)
     protocol = campaign['runtime']['validation_protocol']
     seeds, noise = protocol['selection_seeds'], protocol['selection_noise']
@@ -616,13 +725,17 @@ def execute_arm_v4(campaign_path, campaign, job, folder):
             else:
                 patch = declaration.get('patch')
                 if job['method'] == 'mimicx':
-                    patch = refinement_v4(campaign, task, incumbent_rows, current / 'diagnosis', tried)
+                    if uses_v6:
+                        patch = refinement_v6(campaign, task, incumbent_rows, current / 'diagnosis', tried, history)
+                    else:
+                        patch = refinement(campaign, task, incumbent_rows, current / 'diagnosis', tried)
                 spec = dict(updates=declaration['updates'], parent=str(parent),
                             parent_sha256=digest(parent), patch=patch)
                 immutable_json(path, spec)
             tried.append(spec['patch'])
             immutable_json(current / 'proposal_history.json', dict(tried=tried[:-1], selected=spec['patch'],
-                rule='Native-objective full-motion replay when selection completion saturates; existing diagnosis otherwise'))
+                rule=proposal_rule, **({'selection_feedback_slots': [g['slot'] for g in history],
+                                       'uses_holdout': False} if uses_v6 else {})))
         training = train_native(campaign, job, current, stage=spec)
         stages.append(dict(folder=str(current.relative_to(folder)), updates=training['completed_updates'],
                            transitions=training['transitions']))
@@ -648,7 +761,7 @@ def execute_arm_v4(campaign_path, campaign, job, folder):
     if len(slots) != 6 or sum(s['updates'] for s in stages) != 3000:
         raise RuntimeError('Arm must consume exactly 3000 updates and six selection slots')
     selection = dict(checkpoint=str(incumbent), sha256=digest(incumbent), history=history,
-                     seeds=seeds, criterion=V4_STRATEGY, slots=6, uses_holdout=False)
+                     seeds=seeds, criterion=strategy, slots=6, uses_holdout=False)
     immutable_json(folder / 'selection.json', selection)
     held, common_held = {}, {}
     for kind in ('nominal', 'perturbed'):
@@ -679,7 +792,8 @@ def execute_arm_v4(campaign_path, campaign, job, folder):
         common_selection_metrics=common_selection, common_physical_metrics=common_held,
         common_protocol=campaign['runtime']['common_protocol'], common_protocol_sha256=campaign['common_protocol_sha256'],
         completed_updates=3000, transitions=sum(s['transitions'] for s in stages), stages=stages,
-        metrics_contract=V4_STRATEGY, budget_accounting=budget))
+        metrics_contract=V4_STRATEGY, budget_accounting=budget,
+        **({'refinement_strategy': strategy} if strategy in (V5_STRATEGY, V6_STRATEGY, CONFIRMATION_STRATEGY) else {})))
     atomic_save(lambda path, infos=None: shutil.copy2(incumbent, path), folder / 'final.pt')
     if job['method'] != 'beyond_mimic':
         immutable_json(folder / 'effective_training.json', dict(campaign=campaign, job=job, stages=stages))
@@ -772,7 +886,8 @@ def main(argv=None):
                 train_native(campaign, job, folder)
             else:
                 from .motion_study_loop import execute_arm
-                executor = execute_arm_v4 if campaign['runtime'].get('refinement_strategy') == V4_STRATEGY else execute_arm
+                executor = (execute_arm_v4 if campaign['runtime'].get('refinement_strategy') in
+                            (V4_STRATEGY, V5_STRATEGY, V6_STRATEGY, CONFIRMATION_STRATEGY) else execute_arm)
                 executor(args.campaign.resolve(), campaign, job, folder)
     else:
         job_id = f'{args.task}/{args.backend}/seed{args.seed}/{args.method}'

@@ -85,6 +85,7 @@ Physics training and evaluation additionally use the
 | **Reproduce the paper protocols** | Prepare the inputs using the [reproduction guide](docs/REPRODUCIBILITY.md). |
 | **Use the optional Isaac backend** | Follow the isolated [Isaac Lab setup and motion conversion](docs/ISAAC.md); see its current runtime validation scope. |
 | **Compare trackers on additional motions** | Audit [motion inputs](docs/MOTION_STUDY.md) or prepare a [larger grouped cohort](docs/MOTION_SCALEUP.md), then run the [matched-budget study](docs/MOTION_STUDY_EXECUTION.md). |
+| **Run frozen confirmation** | Prepare the separate [12-motion v6 confirmation contract](docs/CONFIRMATION.md), preserving legacy defaults and held-out evaluation. |
 
 GPU entry points use the compute allocation provided by your environment.
 Device IDs are process-visible indices; launchers preserve inherited GPU

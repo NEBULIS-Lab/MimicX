@@ -21,7 +21,10 @@ def horizon(task):
     return task['frames'] - 1
 
 
-def validation_protocol(raw=None):
+def validation_protocol(raw=None, *, strategy=None):
+    from .motion_study_confirmation import CONFIRMATION_STRATEGY, confirmation_validation_protocol
+    if strategy == CONFIRMATION_STRATEGY:
+        return confirmation_validation_protocol(raw)
     p = dict(raw or {})
     p.setdefault('selection_seeds', [1001, 1002, 1003])
     p.setdefault('selection_noise', .005)

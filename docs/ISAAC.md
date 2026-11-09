@@ -224,9 +224,29 @@ failures.
 
 The v11 checkpoint had only 100 training updates. Its rollout recorded 21
 terminations, the first at step 13, and zero truncations: this verifies physical
-export and terminal logging, **not policy success**. The longer warmstart and
-research comparison remain separate work; neither this export check nor the
-bounded refinement smoke establishes method superiority.
+export and terminal logging, **not policy success**. Neither this export check
+nor the bounded refinement smoke establishes method superiority. The later
+trained-policy check below uses a different checkpoint.
+
+### Completed One-Motion Training and Evaluation
+
+A subsequent BONES walk-start run completed 3000 PPO updates with 1024
+environments and training seed 101: 73,728,000 environment transitions. Reloading
+its native final checkpoint reproduced actions exactly on the same observation.
+One strict evaluation at seed 11 completed all 277 physical steps with zero
+terminations and zero truncations. The JSON/CSV/state-NPZ transaction hashes
+and finite named state/contact arrays were independently checked on CPU.
+
+The aligned tracking-body mean error was 0.024238 m and the world tracking-body
+mean error was 0.106894 m, over the 14 configured tracking bodies; states and
+contacts retain all 30 physical bodies. The mean per-frame 29-joint error-vector
+L2 norm was 0.410717 rad, not a per-joint MAE. These native metrics retain the
+action-command reference clock described above and must not be pooled with an
+inclusive endpoint-clock common scorer without an explicit compatible protocol.
+
+This is positive one-motion, one-training-seed native execution evidence, not
+a matched multi-task Isaac comparison or a sim-to-sim checkpoint-transfer result.
+The earlier v8 refinement and v11 export checks retain their original outcomes.
 
 ## CPU Verification
 

@@ -1,6 +1,21 @@
-# Source Release 0.4.1
+# Source Release 0.5.0rc1
 
-## Current Release
+## Release Candidate: Frozen Confirmation
+
+This source candidate adds the separately versioned 12-motion, two-training-seed
+confirmation route. It uses the frozen v6 proposal rule with the unchanged v4
+joint local/global gate, six selection slots and independent 3+3 final evaluations.
+An immutable external contract binds source, inputs, protocol, jobs and budgets
+before execution. Legacy development routes and defaults remain intact.
+See [Frozen Confirmation](CONFIRMATION.md) for portable preparation and tests.
+
+V7 is not included in this candidate and is not the strategy used by the frozen
+confirmation campaign. This code update supplies execution support, not new
+multi-task results. Numerical tables, policy artifacts and media are separate
+deliverables. Native Isaac support remains experimental and bounded as described
+in [Isaac Lab](ISAAC.md), including the completed one-motion trained-policy check.
+
+## Previous Release: 0.4.1
 
 The 2026-10-29 update corrects startup-state validation for asynchronous SONIC
 observations. A controller observation can be fresh even when a fast-moving
