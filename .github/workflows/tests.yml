@@ -6,6 +6,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python: ['3.10', '3.11']
     steps:
@@ -30,3 +31,4 @@ jobs:
           tests/test_motion_study.py tests/test_motion_study_scoring.py
           tests/test_motion_study_v4.py tests/test_sonic_study.py
           tests/test_sonic_source_packets.py tests/test_sonic_startup_instrumentation.py tests/isaac
+          tests/test_visual_export_contracts.py tests/test_visual_comparison.py

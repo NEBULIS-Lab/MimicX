@@ -113,7 +113,7 @@ def test_full_decode_does_not_normalize_real_shifted_or_variable_timestamps(tmp_
     video = tmp_path / "bad-clock.nut"
     subprocess.run([ffmpeg.get_ffmpeg_exe(), "-nostdin", "-v", "error", "-f", "lavfi",
                     "-i", "color=red:size=16x12:rate=25", "-frames:v", "4",
-                    "-vf", f"settb=1/1000,setpts='{expression}'", "-vsync", "0",
+                    "-vf", f"settb=1/1000,setpts='{expression}'", "-fps_mode", "passthrough",
                     "-enc_time_base", "1/1000", "-c:v", "rawvideo", "-threads", "1", str(video)],
                    check=True, capture_output=True,
                    env=dict(os.environ, CUDA_VISIBLE_DEVICES="", NVIDIA_VISIBLE_DEVICES=""))
@@ -174,6 +174,7 @@ def test_display_contrast_refuses_existing_floor_and_reserved_names(tmp_path, el
 
 
 def test_display_floor_does_not_inherit_dark_robot_material(tmp_path):
+    pytest.importorskip("mujoco")
     display = importlib.import_module("mimicx.visualization.display_scene")
     path = tmp_path / "robot.xml"
     path.write_text('''<mujoco><asset><material name="dark" rgba=".01 .01 .01 1"/></asset>

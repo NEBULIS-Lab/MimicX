@@ -52,7 +52,7 @@ def audit_video(video, *, frames, fps, size, ffmpeg=None, timeout=3600):
         ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
     command = [str(ffmpeg), "-nostdin", "-hide_banner", "-v", "error", "-xerror", "-copyts",
                "-hwaccel", "none", "-threads", "2", "-i", str(video), "-map", "0:v:0",
-               "-an", "-sn", "-dn", "-vsync", "0", "-enc_time_base", "-1",
+               "-an", "-sn", "-dn", "-fps_mode", "passthrough", "-enc_time_base", "demux",
                "-c:v", "rawvideo", "-threads", "1", "-pix_fmt", "rgb24",
                "-f", "framemd5", "-hash", "sha256", "-"]
     with tempfile.TemporaryFile(mode="w+t") as output, tempfile.TemporaryFile(mode="w+t") as errors:

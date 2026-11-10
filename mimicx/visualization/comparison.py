@@ -89,7 +89,7 @@ def export_comparison(clips, *, labels, physical_complete, calibrations, frames,
                         "[v2][v3]hstack=inputs=2:shortest=1[bottom]",
                         "[top][bottom]vstack=inputs=2:shortest=1[grid]"])
         command.extend(["-filter_complex", ";".join(filters), "-map", "[grid]", "-an", "-sn", "-dn",
-                        "-vsync", "0", "-c:v", "libx264", "-threads", "2", "-preset", "medium", "-crf", "18",
+                        "-fps_mode", "passthrough", "-c:v", "libx264", "-threads", "2", "-preset", "medium", "-crf", "18",
                         "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(partial)])
         result = subprocess.run(command, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=3600,
                                 env=dict(os.environ, CUDA_VISIBLE_DEVICES="", NVIDIA_VISIBLE_DEVICES=""))
