@@ -1,9 +1,15 @@
-# Frozen Confirmation
+# Matched-Budget Motion Comparison
 
-The optional `joint_adaptive_precision_confirmation_v1` route executes the
-provided-motion confirmation protocol using the frozen v6 proposal rule and the
-unchanged `joint_neutral_v4` local/global gate. It does not alter the original
-video-to-policy cohort or legacy development defaults. V7 is not used or bundled.
+This protocol evaluates MimicX, BeyondMimic/MjLab and Static Search on the same
+provided robot motions, with shared warmstarts, matched continuation budgets
+and independent final evaluations. Released SONIC is evaluated on the same
+motion clock without per-task PPO training. It is part of the same MimicX
+workflow described in [Method](METHOD.md).
+
+Select `joint_adaptive_precision_confirmation_v1` in the runtime configuration.
+This stable configuration identifier binds the adaptive proposal rule and joint
+local/global gate used in the completed study. Other saved configurations keep
+their recorded semantics; changing the identifier does not migrate an old run.
 
 ## Fixed Contract
 
@@ -24,11 +30,16 @@ The full matrix contains 24 shared warmstarts and 72 continuations, totaling
 96 training phases and 288,000 updates. Donor-selection, candidate-selection and
 final trained-policy evaluation counts are 72, 1296 and 432 respectively.
 Released SONIC's separate 72 executions do not receive per-task PPO training.
-No completed experiment is implied by preparing this matrix.
+The authors completed this matrix and its final evaluations. Preparing a new
+matrix only creates the jobs; your own run must produce their completion records.
+The corresponding newly trained weights are not yet bundled in the HF release.
 
-The v6 rule uses v5 precision proposals unless selection-only feedback meets its
-explicit native-replay condition. This dependency does not introduce a different
-confirmation strategy. Checkpoint selection is recorded before holdout execution;
+When selection rollouts remain incomplete, MimicX uses failure-conditioned
+proposals. Once they complete, it tries bounded precision objectives; consistent
+local/global tradeoffs in the first stage can trigger native-objective replay
+in the second. The exact selection-only predicate and guards are described in
+[Method](METHOD.md#matched-budget-motion-profile).
+Checkpoint selection is recorded before holdout execution;
 negative, tied and failed outcomes remain outcomes, not reasons to retune the
 freeze. The fixed gate and all three methods retain equal selection budgets.
 

@@ -1,6 +1,58 @@
-# Source Release 0.5.0rc1
+# Source Release 0.5.0
 
-## Release Candidate: Frozen Confirmation
+## Unified MimicX Workflows
+
+MimicX provides video reconstruction and retargeting, prepared-motion inputs,
+PPO continuation, task-aware supervision refinement, repeated execution
+verification and recorded-state visualization within one project. MuJoCo/MjLab
+is the default tracking backend; native Isaac Lab is available through its
+pinned environment and named-motion adapter.
+
+The matched-budget motion study has completed all 96 training phases across
+12 motions and two training seeds, followed by 432 native-policy and 72 released
+SONIC evaluations. The public [protocol](CONFIRMATION.md) specifies shared
+warmstarts, equal continuation budgets, protected candidate selection and
+independent nominal/perturbed evaluations. Those are execution counts, not a
+claim that every learned policy completes its motion. Physical completion,
+precision qualification and tracking fidelity remain distinct measurements.
+
+The Isaac backend has actual train/save/reload/resume, rollout and refinement
+validation on one motion. The 12-motion comparison uses MjLab. The updated
+[method](METHOD.md) and [reproduction guide](REPRODUCIBILITY.md) describe these
+configurations without changing previously recorded experiments.
+
+### Reusable Evaluation and Recording
+
+- CPU result collection checks declared jobs, repeated outcomes and source
+  evidence before producing method tables. Shared warmstarts, failed outcomes
+  and partial reports retain explicit accounting.
+- Four-method report generation checks matched frame windows and preserves
+  separate native and released-policy denominators. SONIC attempt classification
+  distinguishes prelaunch refusal from physical execution without authorizing
+  retries or changing outcomes.
+- Recorded-state exports validate every encoded frame's timestamp and duration,
+  report robot/reference endpoint coverage separately, and optionally enforce
+  a fixed camera shared by comparison methods.
+- Opt-in neutral lighting and a contact-free display floor preserve robot model
+  properties; a synchronous 2x2 montage retains all source frames and adds method
+  and outcome labels outside the images. These are presentation tools, not new
+  physical execution or contact results.
+- Learning-curve integration supports both NumPy 1.x and 2.x as declared by the
+  package requirements.
+
+See [SONIC and combined reports](SONIC_STUDY.md),
+[visual exports](VISUALIZATION.md) and [recording](RECORDING_AND_CONTACT.md)
+for commands, input contracts and verification scope.
+
+Existing policy and asset downloads remain available. Newly trained motion-study
+weights are not yet added to HF; the source workflow can train from authorized
+motion inputs. This release updates source and guides, not website media,
+manuscript content or HF artifacts. Simulator binaries, licensed motions,
+checkpoints and numerical result archives remain outside the source package.
+
+## Previous Candidate: 0.5.0rc1
+
+### Frozen Confirmation
 
 This source candidate adds the separately versioned 12-motion, two-training-seed
 confirmation route. It uses the frozen v6 proposal rule with the unchanged v4

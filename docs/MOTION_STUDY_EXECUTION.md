@@ -2,12 +2,15 @@
 
 ## Supported Scope
 
-The separately versioned [frozen confirmation route](CONFIRMATION.md) implements
-the 12-motion, two-training-seed, 3+3-evaluation protocol. The legacy defaults and
-development workflow below are unchanged; use the explicit confirmation strategy
-and freeze contract rather than shortening the legacy holdout lists.
+Start with the [matched-budget protocol](CONFIRMATION.md) for the completed
+12-motion, two-training-seed study. It specifies three nominal and three perturbed
+final evaluations per selected policy. This page describes the shared executor,
+including the versioned configurations needed to reproduce earlier runs.
+Use the explicit configuration and freeze contract rather than shortening an
+existing run's holdout lists.
 
-This is an executable study coordinator, not a completed study. `prepare` freezes
+The coordinator has executed the complete matched-budget study. For a new run,
+`prepare` freezes
 the task matrix and code/input identities without launching anything. `run` and
 `resume` execute MjLab scratch warmstart and all three continuation arms.
 Requesting a continuation first runs or verifies its shared warmstart dependency.
@@ -225,7 +228,9 @@ It verifies the replay clock, 29-joint contract, finite arrays and artifact hash
 Warmstart validation is shared once per task/backend/training seed, not counted
 as an extra checkpoint-selection slot for any arm.
 
-Default selection seeds are 1001/1002/1003. Development uses three unseen nominal
+Default selection seeds are 1001/1002/1003. The matched-budget configuration uses
+the held-out seeds specified in [CONFIRMATION.md](CONFIRMATION.md). In older
+configurations, development uses three unseen nominal
 holdouts (2001-2003) and three perturbed holdouts (3001-3003); confirmation uses
 ten of each (2001-2010 and 3001-3010). The frozen `validation_protocol` runtime
 object may configure these sets, but they must remain unique/disjoint with at
@@ -354,9 +359,10 @@ guards serialize one task/backend/seed and its shared dependency, not resources.
 Use the public run/resume entry point, not the private `_worker` subcommand.
 Completed arms additionally store `selection.json`, six `gates/slot*.json`,
 per-seed validation and holdout receipts/replays, stage patches/diagnosis, and
-`report.json`. `report.json.selected_checkpoint` is authoritative: BeyondMimic's
-`final.pt` remains its last trained checkpoint, which need not win selection;
-Static Search/MimicX root `final.pt` copies the protected selected checkpoint.
+`report.json`. `report.json.selected_checkpoint` is authoritative. In the
+matched-budget joint-gate profile, root `final.pt` copies the selected checkpoint
+for every method. The older `legacy_v3` profile instead retains BeyondMimic's
+last trained checkpoint at that filename; it need not win selection.
 All candidate weights remain preserved and hashed, including rejected candidates.
 Canonical evaluation additionally stores `native_actual.npz`, `common_steps.npz`
 and `common_metrics.json`. Reports retain native qualification and common physical
@@ -374,15 +380,16 @@ once at campaign level and separately from arm continuation costs. Actual
 transitions per durable PPO update are `num_envs * 24`; updates alone are not
 GPU-hours. Running attempts left by host/process death require reconciliation.
 
-## Remaining Integration Gates
+## Verification Before a New Campaign
 
-The parent must supply clean installed backend/code snapshots and validate a real
-scratch/reload/continuation, full evaluation and replay before scaling the matrix.
-CPU tests exercise all arms with an explicitly fake simulator and actual existing
-diagnosis/scoring/gate logic; they are not physical experiment evidence.
-Native configuration and patch CLI checks do not establish policy performance.
-Remaining runtime gates include actual full-motion capture/scoring against the
-frozen common contract, native closed-loop training/evaluation evidence, Isaac
-runtime execution and SONIC deployment/asset-bridge validation.
-Confirmation stays scientifically gated on development strategy/budget freeze;
-preparing confirmation job records does not authorize launching the full matrix.
+Scratch training, reload, continuation, complete-clock capture/scoring and
+closed-loop selection have been exercised in the completed MjLab study, together
+with released SONIC evaluation. Native Isaac runtime checks use its documented
+environment and motion profile. See [release notes](RELEASE.md).
+
+On a new installation, verify these entry points with your installed backend,
+assets and reference before scaling a matrix. CPU fixtures check all arms and
+the diagnosis/scoring/gate logic without starting a simulator. A preparation
+command freezes configuration but does not execute or validate a new policy.
+Do not change inputs, selection budgets or gates after viewing held-out results;
+use a newly declared experiment for a changed configuration.

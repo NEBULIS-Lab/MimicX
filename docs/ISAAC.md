@@ -1,6 +1,11 @@
-# Optional Isaac Lab Backend (Experimental)
+# Isaac Lab Backend
 
 Start with the public [pinned source/environment installation instructions](ISAAC_INSTALL.md).
+
+Isaac is a simulator backend within MimicX: convert a named reference, train or
+resume a native policy, record execution, and run supervision refinement. The
+pinned Sim 6 / Lab3 beta2 environment is experimental; its completed physical
+validation covers one motion. The 12-motion matched-budget study uses MjLab.
 
 MuJoCo/MjLab remains the default. Core imports, conversion and command
 preparation do not import Isaac, Torch or start Kit. This integration uses

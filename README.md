@@ -44,7 +44,8 @@ current policy.
 
 | Component | What it does |
 | :--- | :--- |
-| **Video-to-policy pipeline** | Connects GVHMR / SMPL-X reconstruction, GMR retargeting and PPO tracking in MuJoCo / MjLab, with an optional [Isaac Lab backend](docs/ISAAC.md). |
+| **Video-to-policy pipeline** | Connects GVHMR / SMPL-X reconstruction, GMR retargeting and PPO tracking. Prepared robot motions enter the same learning and refinement stages. |
+| **Simulator backends** | MuJoCo / MjLab and an optional [native Isaac Lab backend](docs/ISAAC.md), with named motion conversion, training, continuation and recorded execution. |
 | **Task-aware AutoRefine** | Uses failure windows and body-error channels to propose targeted objectives and curricula. |
 | **Repeated execution gate** | Checks execution improvements and tracking guards before replacing the current policy; records acceptance or protection. |
 | **MimicX-HLoop** | Overlaps GPU rollout and CPU diagnosis while preserving policy-selection decisions. |
@@ -54,6 +55,17 @@ training objectives and curricula are refined. Input reference preparation
 is a separate stage. The [method documentation](docs/METHOD.md) describes
 the training and selection procedure; the [project website](https://nebulis-lab.github.io/MimicX/)
 contains the visual comparisons and numerical results.
+
+### Current workflows
+
+Video reconstruction and provided-motion experiments share MimicX's supervision
+refinement and execution verification. The [reproduction guide](docs/REPRODUCIBILITY.md)
+organizes task inputs, backend requirements and comparison protocols in one place.
+The matched-budget motion protocol has completed a 12-motion, two-training-seed
+study with BeyondMimic/MjLab, Static Search, MimicX and released SONIC evaluation.
+Native Isaac training and refinement have a one-motion physical validation;
+the 12-motion comparison uses MjLab. See [release notes](docs/RELEASE.md) for
+the verified coverage and [method](docs/METHOD.md) for selection rules.
 
 ## Quickstart
 
@@ -82,10 +94,10 @@ Physics training and evaluation additionally use the
 | **Continue or record a policy** | Use [checkpoint continuation](docs/CONTINUATION.md) and [camera/contact-aware recording](docs/RECORDING_AND_CONTACT.md). |
 | **Learn a skill from a new video** | Follow [video reconstruction, retargeting and tracking](docs/QUICKSTART.md). |
 | **Refine an existing policy** | Create a manifest and [run or resume AutoRefine](docs/QUICKSTART.md#autorefine). |
-| **Reproduce the paper protocols** | Prepare the inputs using the [reproduction guide](docs/REPRODUCIBILITY.md). |
+| **Reproduce MimicX experiments** | Select task inputs and the corresponding protocol in the [reproduction guide](docs/REPRODUCIBILITY.md). |
 | **Use the optional Isaac backend** | Follow the isolated [Isaac Lab setup and motion conversion](docs/ISAAC.md); see its current runtime validation scope. |
 | **Compare trackers on additional motions** | Audit [motion inputs](docs/MOTION_STUDY.md) or prepare a [larger grouped cohort](docs/MOTION_SCALEUP.md), then run the [matched-budget study](docs/MOTION_STUDY_EXECUTION.md). |
-| **Run frozen confirmation** | Prepare the separate [12-motion v6 confirmation contract](docs/CONFIRMATION.md), preserving legacy defaults and held-out evaluation. |
+| **Run the 12-motion comparison** | Follow the [matched-budget protocol](docs/CONFIRMATION.md), with shared warmstarts, feedback-guided continuation and held-out evaluation. |
 
 GPU entry points use the compute allocation provided by your environment.
 Device IDs are process-visible indices; launchers preserve inherited GPU
@@ -116,7 +128,9 @@ and historical 23-DoF policies use different model layouts.
 The [2026-10-14 demonstration release](docs/DEMONSTRATIONS.md) provides nine
 standalone PPO policies and a separately identified Parkour hybrid controller.
 Choose a task by name to download its policy and matching assets.
-The original paper policies remain available separately for reproduction.
+Recorded experiment policies remain available for reproducing their respective
+protocols. Newly trained motion-study checkpoints are not yet included in these
+HF downloads; the runnable study trains its warmstarts and continuations locally.
 
 ## Documentation
 
@@ -129,12 +143,13 @@ The original paper policies remain available separately for reproduction.
 | [Recording and Contact](docs/RECORDING_AND_CONTACT.md) | Source-camera recording, baseline playback and contact-causal replay |
 | [Hybrid Control](docs/HYBRID_CONTROL.md) | Parkour actor-prefix and predictive-controller replay |
 | [Method](docs/METHOD.md) | Diagnosis, proposals, continuation and acceptance rules |
-| [Paper Reproduction](docs/REPRODUCIBILITY.md) | Registered inputs, controlled comparisons and evaluation protocols |
+| [Reproduction](docs/REPRODUCIBILITY.md) | Video and motion inputs, controlled comparisons and evaluation protocols |
 | [HLoop](docs/HLOOP.md) | Heterogeneous execution, scheduling modes and parity checks |
 | [Isaac Lab](docs/ISAAC.md) | Optional native simulator backend, named motion conversion and local-file policy entry points |
 | [Motion Inputs](docs/MOTION_STUDY.md) | Prospective motion selection, source timing and kinematic validation |
 | [Larger Motion Cohorts](docs/MOTION_SCALEUP.md) | Distinct-clip selection, raw-source checks and locked confirmation inputs |
 | [Motion Study](docs/MOTION_STUDY_EXECUTION.md) | Shared warmstarts, controlled continuation budgets and repeated evaluation |
+| [Matched-Budget Protocol](docs/CONFIRMATION.md) | The 12-motion, two-seed study and its independent final evaluations |
 | [SONIC Evaluation](docs/SONIC_STUDY.md) | Released-controller playback, startup checks and common motion metrics |
 | [Visualization](docs/VISUALIZATION.md) | Rollout videos, screenshots and exact-state replay |
 | [Release Notes](docs/RELEASE.md) | Available components and tested workflows |

@@ -1,7 +1,10 @@
 # Video to Policy
 
 For pretrained demonstrations, start with the [paired release guide](DEMONSTRATIONS.md).
-The workflow below remains the video-to-policy and original-paper entry point.
+The workflow below starts from a video. With an existing robot motion, enter at
+training and refinement after checking its named joints, bodies and timing;
+use the [motion-study guide](MOTION_STUDY_EXECUTION.md) for matched comparisons.
+The [Isaac guide](ISAAC.md) provides the corresponding native simulator entry points.
 
 Run commands from the repository root unless a subshell changes directory.
 Complete [dependency setup](../dependencies/README.md) first. All GPU operations
