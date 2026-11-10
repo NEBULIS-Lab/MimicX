@@ -43,7 +43,10 @@ def prepare_source_replay(arrays, *, frames, fps, max_endpoint_hold=.04):
                          arrays["reference_joint_positions"], query, max_endpoint_hold=max_endpoint_hold)
     if actual.shape != reference.shape:
         raise ValueError("Actual and reference joint dimensions differ")
+    reference_times = arrays.get("reference_timestamps", arrays["timestamps"])
     return dict(time=query, actual=actual, reference=reference, coordinate_transform="identity",
+                reference_endpoint_hold_seconds=[max(0., float(reference_times[0] - query[0])),
+                                                 max(0., float(query[-1] - reference_times[-1]))],
                 endpoint_hold_seconds=[max(0., float(arrays["timestamps"][0] - query[0])),
                                        max(0., float(query[-1] - arrays["timestamps"][-1]))])
 
@@ -60,6 +63,40 @@ def _camera_arrays(origin, linear, intrinsics):
     if k[0, 0] <= 0 or k[1, 1] <= 0 or not np.allclose(k[2], [0, 0, 1]) or k[0, 1] != 0 or k[1, 0] != 0:
         raise ValueError("Expected positive, zero-skew pinhole intrinsics")
     return origin, linear, k, scale
+
+
+def validate_camera_sequence(calibration, *, frames, require_constant=False, shared_with=None):
+    """Audit all camera frames, optionally requiring exact fixed/shared matrices.
+
+    The digest covers normalized numeric arrays, not JSON formatting or paths.
+    This validates a supplied camera; it never follows or recenters robot poses.
+    """
+    import hashlib
+
+    if isinstance(frames, bool) or int(frames) != frames or frames < 1:
+        raise ValueError("Positive integer camera frame count required")
+    keys = ("camera_origin_world_m", "world_from_camera_linear", "intrinsics")
+    shapes = ((frames, 3), (frames, 3, 3), (frames, 3, 3))
+    arrays = [np.asarray(calibration[key], dtype="<f8") for key in keys]
+    if any(array.shape != shape for array, shape in zip(arrays, shapes)):
+        raise ValueError("Camera/source timeline mismatch")
+    for values in zip(*arrays):
+        _camera_arrays(*values)
+    constant = all(np.array_equal(array, np.broadcast_to(array[0], array.shape)) for array in arrays)
+    if require_constant and not constant:
+        raise ValueError("Comparison camera must be constant at every frame")
+    shared = None
+    if shared_with is not None:
+        validate_camera_sequence(shared_with, frames=frames)
+        shared = all(np.array_equal(array, shared_with[key]) for key, array in zip(keys, arrays))
+        if not shared:
+            raise ValueError("Comparison methods must share every camera frame")
+    digest = hashlib.sha256()
+    for key, array in zip(keys, arrays):
+        digest.update(key.encode("ascii"))
+        digest.update(np.asarray(array.shape, dtype="<i8").tobytes())
+        digest.update(array.tobytes())
+    return dict(camera_sha256=digest.hexdigest(), constant_all_frames=constant, shared_all_frames=shared)
 
 
 def project_points(points, origin, world_from_camera_linear, intrinsics):
@@ -158,7 +195,8 @@ def stabilize(calibration, background, *, sigma_frames=10., static_step_px=.8,
 
 
 def export_source_video(prepared, joint_names, calibration, *, model_path, output, fps,
-                        source_size, output_size=None, ghost_rgba=(.23, .47, .66, .23)):
+                        source_size, output_size=None, ghost_rgba=(.23, .47, .66, .23),
+                        require_constant_camera=False, display_contrast=False):
     """Render saved states only; caller configures the graphics backend explicitly.
 
     The output is published only after a full decode verifies frame count, FPS and
@@ -167,9 +205,11 @@ def export_source_video(prepared, joint_names, calibration, *, model_path, outpu
     advances physics or invokes a controller.
     """
     import os
+    from fractions import Fraction
     from pathlib import Path
     import tempfile
     from .baseline_recording import named_joint_addresses
+    from .video_audit import audit_video
 
     output = Path(output)
     if output.exists() or output.is_symlink():
@@ -181,10 +221,7 @@ def export_source_video(prepared, joint_names, calibration, *, model_path, outpu
     if not np.allclose(prepared["time"], frame_times(frames, fps), atol=1e-10, rtol=0):
         raise ValueError("Prepared replay and output frame clocks differ")
     camera_keys = ("camera_origin_world_m", "world_from_camera_linear", "intrinsics")
-    if any(len(calibration[key]) != frames for key in camera_keys):
-        raise ValueError("Camera/source timeline mismatch")
-    for index in range(frames):
-        _camera_arrays(*(calibration[key][index] for key in camera_keys))
+    camera_audit = validate_camera_sequence(calibration, frames=frames, require_constant=require_constant_camera)
     rgba = np.asarray(ghost_rgba, dtype=float)
     if rgba.shape != (4,) or not np.isfinite(rgba).all() or np.any((rgba < 0) | (rgba > 1)) or not 0 < rgba[3] < 1:
         raise ValueError("Ghost color must be RGBA with translucent alpha")
@@ -201,7 +238,12 @@ def export_source_video(prepared, joint_names, calibration, *, model_path, outpu
     import imageio_ffmpeg
     import mujoco
 
-    model = mujoco.MjModel.from_xml_path(str(model_path))
+    display_audit = None
+    if display_contrast:
+        from .display_scene import load_contrast_model
+        model, display_audit = load_contrast_model(model_path)
+    else:
+        model = mujoco.MjModel.from_xml_path(str(model_path))
     addresses, _ = named_joint_addresses(model, joint_names)
     if model.nq != actual.shape[1] or model.jnt_type[0] != 0:
         raise ValueError("Rendering requires one free-root robot and its named scalar joints")
@@ -217,8 +259,12 @@ def export_source_video(prepared, joint_names, calibration, *, model_path, outpu
         writer = None
         with mujoco.Renderer(model, height=height, width=width) as renderer:
             try:
+                # ImageIO formats fps to two decimals; override that input option
+                # without treating literal 29.97/59.94 as NTSC rate aliases.
+                rate = str(Fraction(str(fps)).limit_denominator(1_000_000))
                 writer = imageio_ffmpeg.write_frames(str(partial), (width, height), fps=fps, codec="libx264",
-                                                     macro_block_size=1, output_params=["-crf", "18", "-movflags", "+faststart"])
+                                                     macro_block_size=1, input_params=["-r", rate],
+                                                     output_params=["-crf", "18", "-movflags", "+faststart"])
                 writer.send(None)
                 for index in range(frames):
                     data.qpos[:7], data.qpos[addresses] = actual[index, :7], actual[index, 7:]
@@ -250,18 +296,13 @@ def export_source_video(prepared, joint_names, calibration, *, model_path, outpu
             finally:
                 if writer is not None:
                     writer.close()
-        reader = imageio_ffmpeg.read_frames(str(partial), pix_fmt="rgb24")
-        try:
-            metadata = next(reader)
-            count = sum(1 for _ in reader)
-        finally:
-            reader.close()
-        if count != frames or tuple(metadata["size"]) != (width, height) or abs(metadata["fps"] - fps) > .011:
-            raise ValueError("Encoded frame count, dimensions or FPS differ from source")
+        clock_audit = audit_video(partial, frames=frames, fps=fps, size=(width, height))
         # Same-filesystem hard-link publication is atomic and never replaces a
         # destination created after the preflight check. Temporary files are owned.
         os.link(partial, output)
     return dict(frames=frames, fps=fps, output_size=[width, height], full_decode_passed=True,
+                full_clock_passed=True, clock_audit=clock_audit, camera_audit=camera_audit,
+                display_audit=display_audit,
                 coordinate_transform="identity", retime_factor=1., policy_or_reference_modified=False,
                 robot_protected_pixels=protected_pixels, protected_pixel_max_delta=protected_pixel_max_delta,
                 ghost_rgba=rgba.tolist(), camera_policy=calibration.get("display_camera_policy", "raw source camera"))

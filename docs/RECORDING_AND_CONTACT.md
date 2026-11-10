@@ -103,10 +103,12 @@ python scripts/visualization/source_camera.py render \
 
 The exporter preserves actual-robot pixels under the translucent reference,
 including a one-pixel silhouette guard. It replays poses with forward kinematics,
-never simulation steps. Full decode verifies frame count, dimensions and FPS
+never simulation steps. Full decode verifies frame count, dimensions and every
+zero-based presentation timestamp and frame duration
 before publishing the MP4. All source frames, including the tail, are requested.
 At most 0.04 seconds of endpoint hold is allowed by default; set
-`--max-endpoint-hold 0` for strict coverage. The receipt reports endpoint holds,
+`--max-endpoint-hold 0` for strict coverage. The receipt reports actual-robot
+`endpoint_hold_seconds` and separate `reference_endpoint_hold_seconds`,
 identity coordinate transform and input hashes. Output pixel protection is exact
 before lossy video encoding, not a claim about decoded pixel equality.
 Source and output sizes must have the same aspect ratio: only uniform resizing is
@@ -114,6 +116,47 @@ supported, with no implicit stretch, crop or letterboxing. All source-camera CLI
 commands refuse existing outputs; rendering also refuses an existing JSON receipt.
 Video encoding uses a unique temporary directory and publishes the decoded video
 atomically without replacing a destination created by another export.
+
+## Comparison Display Contract
+
+`validate_camera_sequence(calibration, frames=..., require_constant=False,
+shared_with=None)` checks the existing source-camera arrays at every frame.
+`require_constant=True` rejects any change in origin, basis or intrinsics;
+`shared_with` additionally requires exact numeric equality with another method's
+camera sequence. It never fits, follows or recenters a trajectory. The returned
+digest covers normalized numeric arrays rather than JSON formatting or file paths.
+Moving cameras remain valid when constant-camera validation is not requested.
+
+`export_source_video(..., require_constant_camera=True)` and the corresponding
+`--require-constant-camera` CLI flag enforce this check before loading a model.
+Receipts include `camera_audit` and `clock_audit`. Ghost colors and alpha retain
+their existing API/default; robot-pixel protection and the guard are unchanged.
+Use the same alpha and a consistent method color across a comparison set.
+
+`mimicx.visualization.display_scene.load_contrast_model(model_path)` compiles an
+in-memory display wrapper: neutral background, brighter headlight, and one
+non-colliding world plane at z=0. Source XML/assets are not rewritten. The helper
+checks original robot geometry/physics arrays, options, default-pose forward
+kinematics, and exclusion of the floor from dynamic ghost geometry. Its receipt
+reports zero physics steps and no rendering. No coordinate offsets, contact
+correction, mesh recoloring or physical trajectory changes are applied.
+
+Use `export_source_video(..., display_contrast=True)` or `--display-contrast` to
+opt in. Standalone MJCF with mesh/texture files is supported; nested includes,
+attachments, plugins, existing planes/skyboxes, reserved display names and
+`strippath` asset rewriting are rejected. For those scenes, supply an explicitly
+prepared model through the unchanged default rendering path. No universal scene
+rewriter or asset packager is provided. Asset files must remain immutable during
+compilation/export; the existing model receipt does not hash transitive assets.
+
+The display floor can conceal geometry below z=0; it does not fix penetration or
+establish contact. Retain the original view for geometry inspection. Compilation
+and default-pose FK checks are technical checks, not visual approval or additional
+physical evaluation. Actual-robot and reference endpoint coverage, complete
+decoded clocks, and physical-outcome labels remain independent evidence.
+
+The CPU-only four-clip comparison command, configuration and verification
+boundaries are documented in [Visual Exports](VISUALIZATION.md#synchronous-review-montage).
 
 ## Dynamic Ball Replay
 

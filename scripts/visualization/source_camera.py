@@ -43,6 +43,8 @@ def main():
             p.add_argument("--output-size", type=int, nargs=2, metavar=("WIDTH", "HEIGHT"))
             p.add_argument("--backend", choices=("egl", "osmesa"), required=True)
             p.add_argument("--ghost-rgba", type=float, nargs=4, default=(.23, .47, .66, .23))
+            p.add_argument("--require-constant-camera", action="store_true")
+            p.add_argument("--display-contrast", action="store_true", help="Opt-in neutral, contact-free display scene")
     args = parser.parse_args()
     if args.command == "prepare" and args.output.suffix != ".npz":
         args.output = Path(str(args.output) + ".npz")
@@ -65,7 +67,8 @@ def main():
             with args.output.open("xb") as stream:
                 np.savez_compressed(stream, time=prepared["time"], actual=prepared["actual"],
                                     reference=prepared["reference"], joint_names=np.asarray(names, dtype=str))
-            result = {key: prepared[key] for key in ("coordinate_transform", "endpoint_hold_seconds")}
+            result = {key: prepared[key] for key in ("coordinate_transform", "endpoint_hold_seconds",
+                                                   "reference_endpoint_hold_seconds")}
             result["frames"] = args.frames
         else:
             os.environ["MUJOCO_GL"] = args.backend
@@ -74,8 +77,10 @@ def main():
             result = export_source_video(prepared, names, json.loads(args.calibration.read_text()),
                                          model_path=args.model, output=args.output, fps=args.fps,
                                          source_size=args.source_size, output_size=args.output_size,
-                                         ghost_rgba=args.ghost_rgba)
+                                         ghost_rgba=args.ghost_rgba, require_constant_camera=args.require_constant_camera,
+                                         display_contrast=args.display_contrast)
             result["endpoint_hold_seconds"] = prepared["endpoint_hold_seconds"]
+            result["reference_endpoint_hold_seconds"] = prepared["reference_endpoint_hold_seconds"]
             result["input_sha256"] = {key: hashlib.sha256((args.replay / f"{key}.npy").read_bytes()).hexdigest()
                                       for key in arrays}
             result["calibration_sha256"] = hashlib.sha256(args.calibration.read_bytes()).hexdigest()
