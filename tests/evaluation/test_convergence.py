@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from mimicx.evaluation.convergence import (
@@ -21,6 +22,13 @@ def test_normalized_auc_and_threshold() -> None:
     assert normalized_auc([20, 40, 60, 80, 100], [0, 0.25, 0.5, 0.75, 1.0]) == pytest.approx(0.5)
     assert threshold_milestone([20, 40, 60], [0.2, 0.91, 1.0], 0.9) == 40
     assert threshold_milestone([20, 40], [0.1, 0.2], 0.9) is None
+
+
+def test_normalized_auc_supports_numpy_one_api(monkeypatch) -> None:
+    integration = getattr(np, "trapezoid", None) or np.trapz
+    monkeypatch.setattr(np, "trapz", integration, raising=False)
+    monkeypatch.delattr(np, "trapezoid", raising=False)
+    assert normalized_auc([0, 25, 100], [0, 1, 1]) == pytest.approx(0.875)
 
 
 def test_rejects_nonmonotonic_checkpoint_steps() -> None:

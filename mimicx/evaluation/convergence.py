@@ -60,7 +60,10 @@ def normalized_auc(x_percent: Sequence[float], values: Sequence[float]) -> float
     y = np.asarray(values, dtype=np.float64)
     if not np.isfinite(x).all() or not np.isfinite(y).all() or np.any(np.diff(x) <= 0):
         raise ValueError("AUC inputs must be finite with increasing milestones")
-    return float(np.trapezoid(y, x) / (x[-1] - x[0]))
+    integrate = getattr(np, "trapezoid", None)
+    if integrate is None:
+        integrate = np.trapz
+    return float(integrate(y, x) / (x[-1] - x[0]))
 
 
 def threshold_milestone(

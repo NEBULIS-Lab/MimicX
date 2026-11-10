@@ -525,6 +525,114 @@ When a validity tail is missing, full-horizon errors are null, and a common-pref
 error is available only if that entire prefix was physically observed. Missing
 tails are never padded or labelled complete.
 
+## Combined Confirmation Reports
+
+The public CPU-only producer reads the frozen campaign and its original
+`jobs/` tree. This one command collects the native runs without a SONIC adapter:
+
+```bash
+python scripts/experiments/collect_results.py \
+  --campaign /path/to/campaign/campaign.json \
+  --snapshot /path/to/the-campaigns-frozen-source-checkout \
+  --expected-strategy joint_adaptive_precision_confirmation_v1 \
+  --output-dir /path/to/new-collected-results
+```
+
+The snapshot must be the code recorded by the campaign, not an updated checkout
+substituted after execution. The collector checks its source/input hashes and
+confirmation freeze, all 96 native job identities, donor dependencies, checkpoint
+receipts, six-slot selection history, independent heldout seeds, replay artifacts,
+50 Hz clocks, numerical traces, physical-failure persistence and qualification.
+It never launches evaluations, retries outcomes or chooses a new checkpoint.
+Collection against another snapshot uses an isolated CPU Python process, so an
+already imported public package cannot silently replace frozen modules.
+
+Outputs include `report.json` (`mimicx.confirmation-results.v1`), native rollout
+and endpoint CSVs, donor/cost accounting, paired changes, and missing/invalid
+identity reports. Without SONIC evidence, a fully validated native matrix is
+reported as `native_matrix_complete: true` while overall status stays `partial`.
+Native results are still written; no four-method completeness is claimed.
+`--strict` writes the same packet and exits 2 unless both native and SONIC matrices
+validate. Existing output directories are rejected. Raw full-clock errors after
+physical failure remain diagnostics in the producer; the consumer below applies
+the completed-motion aggregation rule for cross-method presentation.
+
+### SONIC Adapter Boundary
+
+To include released SONIC, pass both `--sonic-input /path/to/input.json` and
+`--sonic-adapter /path/to/trusted_adapter.py` to the same producer command.
+**No public single-run or formal-queue SONIC adapter is bundled here.** The
+delivery's formal-queue adapter depends on its separately retained audit runtime;
+copying that one file is insufficient. Public `sonic_study.py` results cannot be
+passed directly as a normalized 72-row formal packet. Do not label completion
+as strict qualification or substitute a zero-noise diagnostic for a noisy repeat.
+
+A trusted adapter exposes
+`collect_rows(input_path: pathlib.Path, campaign: dict) -> dict`, returning
+`rows`, `invalid_rows`, and `raw_counts`. It owns SONIC capture, input, protocol,
+condition/noise and precision-qualification audits. Each valid row includes
+`task_id`, `condition`, integer `seed`, boolean `complete_motion` and
+`strict_qualified`, world/local `mean` and `p95` values in cm, and a nonempty
+`evidence` list of absolute `path`/`sha256` objects. The producer independently
+checks formal identities, uniqueness, evidence hashes, metric validity, absence
+of a training-seed dimension, and zero per-task PPO/search cost. Failed physical
+outcomes remain rows; missing or protocol-invalid outcomes cannot complete the
+matrix. For the four-method consumer, additionally retain `row_id`,
+`protocol_valid`, the full `common_metrics` block and
+`raw_counts.physical_executions`. Those fields must come from the adapter's audit,
+not fabricated placeholders. Adapter and optional confirmation-helper modules are
+trusted executable Python, not sandboxed data or an automatic download interface.
+
+### Four-Method Tables
+
+The CPU-only consumer combines BeyondMimic, Static Search, MimicX and released
+SONIC from a completed collector report. Supply the matching manifest, campaign
+and native holdout summaries at canonical paths or through verified transfer
+indexes. It does not execute or retry evaluations or replace capture audits:
+
+```bash
+python scripts/experiments/collect_confirmation.py \
+  --report /path/to/completed-collector/report.json \
+  --manifest /path/to/confirmation/manifest.json \
+  --source-index /path/to/transferred-evidence/sha-audit.json \
+  --output /path/to/new-four-method-report
+```
+
+Omit `--source-index` when canonical source paths are accessible. Repeat it for
+multiple transfers. Each index is a list of records with `source`, relative
+`copy`, `sha256`, and optional `expected_sha256`; copied paths cannot escape the
+index directory. The command checks the pinned campaign and manifest, frozen
+confirmation seed/noise identities and physical thresholds, native holdout
+checkpoint identities, and all 504 full/prefix window definitions. It requires
+the complete 12-task, two-training-seed native matrix and 72 unique SONIC outcomes.
+Source hashes are rechecked before the final `FOUR_METHODS.json` receipt is written.
+
+Outputs are four-column Markdown tables and JSON/CSV cohort, all-task and window
+audits. Native denominators are six per task/condition; SONIC denominators are
+three. Failed physical outcomes remain in these denominators even when their
+recording continued. Any failed or censored constituent makes the completed-motion
+full-horizon aggregate undefined. Prefix errors remain explicitly separate;
+time-p95 is the mean of rollout time-p95, not a pooled quantile. Native endpoint
+qualification and SONIC rollout qualification are not treated as interchangeable.
+Temporal-tail metrics and measured cost packaging are outside this consumer's
+scope. A newly hashed report is not independent authentication of its raw inputs;
+retain the strict collector's original audit and provenance alongside it.
+
+`mimicx.evaluation.sonic_recovery.classify_attempt(queue_path, declaration, audited)`
+is a separate read-only utility for archived formal queue journals. Supply a row
+already checked by its original auditor. It distinguishes `physical`,
+`prelaunch_dds`, `blocked_invalid`, and `unstarted`. A structured pre-native DDS
+conflict must have no execution markers; an attempted physical rollout, including
+a valid policy failure, never becomes a prelaunch refusal. Incomplete or
+contradictory journals fail closed. Classification is not retry authorization:
+the helper neither launches processes nor merges queues, and does not verify
+cross-generation protocol identity or enforce single-execution ownership itself.
+The single-run runner's existing immutable-attempt policy is unchanged.
+
+```bash
+python -m pytest tests/evaluation/test_confirmation_collect.py tests/evaluation/test_confirmation_report.py tests/evaluation/test_sonic_recovery.py
+```
+
 ## Reproducibility And Tests
 
 Prepared runs freeze the runner and corrected helper sources, target arrays,
