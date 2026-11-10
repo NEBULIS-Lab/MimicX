@@ -16,10 +16,11 @@
 .motion-table th, .motion-table td { padding: 14px 12px; border-bottom: 1px solid var(--rx-line); text-align: right; vertical-align: middle; overflow-wrap: anywhere; }
 .motion-table th:first-child { text-align: left; width: 34%; }
 .motion-table thead th { font-size: 14px; font-weight: 500; color: var(--rx-muted); }
-.motion-table tbody th { font-weight: 500; }
+.motion-table tbody th { font-weight: 500; color: var(--rx-text); }
 .motion-table .ours-row { background: var(--rx-ours); }
 .motion-table .ours-row th { color: var(--rx-accent); font-weight: 700; }
 .motion-detail > p { margin: 18px 0; }
+.backend-line strong { color: var(--rx-text); }
 @media (max-width: 760px) {
   .contribution-columns, .motion-comparisons { grid-template-columns: minmax(0,1fr); gap: 20px; }
   .motion-table { font-size: 13px; }

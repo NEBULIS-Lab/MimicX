@@ -30,6 +30,9 @@ def verify(site, output, chromium):
                     if theme == 'light':
                         page.locator('#theme-toggle').click()
                     assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+                    if theme == 'dark':
+                        color = page.locator('.motion-table tbody th').first.evaluate('n=>getComputedStyle(n).color')
+                        assert color == 'rgb(241, 240, 238)', color
                     for selector, name in (('.motion-comparisons', 'comparisons'),
                                            ('#method', 'method'), ('#motion-study > div > .motion-table-frame', 'summary')):
                         page.locator('.research-nav').evaluate('n=>n.style.visibility="hidden"')
