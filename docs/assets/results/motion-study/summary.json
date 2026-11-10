@@ -1,0 +1,29 @@
+{
+  "motions": 12,
+  "training_seeds": 2,
+  "conditions": [
+    "nominal",
+    "perturbed"
+  ],
+  "native_repeats_per_seed_condition": 3,
+  "sonic_repeats_per_condition": 3,
+  "completion": {
+    "beyond_mimic": {
+      "complete": 120,
+      "count": 144
+    },
+    "static_search": {
+      "complete": 132,
+      "count": 144
+    },
+    "mimicx": {
+      "complete": 132,
+      "count": 144
+    },
+    "sonic": {
+      "complete": 60,
+      "count": 72
+    }
+  },
+  "media": "Fixed-clock representative recordings; statistics use all evaluations."
+}

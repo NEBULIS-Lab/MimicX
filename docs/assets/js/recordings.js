@@ -63,7 +63,8 @@
       row.buffering = false;
       row.videos.forEach(video => pause(video, blocked || !row.visible));
       if (!blocked && row.near && !row.visible && !row.userPaused) {
-        media.prepare(row.element.querySelector('[data-method="ours"] video'), 'metadata');
+        const preview = row.element.querySelector('[data-method="ours"] video') || row.videos[0];
+        media.prepare(preview, 'metadata');
       }
       label(row);
       return;

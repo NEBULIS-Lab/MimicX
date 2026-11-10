@@ -1,0 +1,30 @@
+/* Additive motion evidence; existing media and layouts are retained. */
+.contribution-columns { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 30px; margin-top: 38px; padding-top: 30px; border-top: 1px solid var(--rx-line); }
+#research .contribution-columns h3 { font-size: 18px; }
+#research .contribution-columns p, #research .backend-line p { margin-bottom: 12px; }
+.backend-line { margin-top: 32px; padding: 24px 0; border-block: 1px solid var(--rx-line); }
+.backend-line a, .contribution-columns a, .motion-recording > a { color: var(--rx-accent); text-underline-offset: 4px; }
+.motion-comparisons { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px; }
+.motion-recording { min-width: 0; }
+.motion-recording .recording-frame { aspect-ratio: 8 / 5; }
+#research .motion-recording .recording-frame video { object-fit: contain; }
+#research .motion-recording p { margin: 18px 0 10px; }
+.motion-recording strong { color: var(--rx-accent); }
+.motion-table-frame { width: 100%; min-width: 0; margin: 24px 0; }
+.motion-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 15px; line-height: 1.5; color: var(--rx-text); }
+.motion-table caption { text-align: left; font-size: 18px; font-weight: 600; padding-bottom: 14px; color: var(--rx-text); }
+.motion-table th, .motion-table td { padding: 14px 12px; border-bottom: 1px solid var(--rx-line); text-align: right; vertical-align: middle; overflow-wrap: anywhere; }
+.motion-table th:first-child { text-align: left; width: 34%; }
+.motion-table thead th { font-size: 14px; font-weight: 500; color: var(--rx-muted); }
+.motion-table tbody th { font-weight: 500; }
+.motion-table .ours-row { background: var(--rx-ours); }
+.motion-table .ours-row th { color: var(--rx-accent); font-weight: 700; }
+.motion-detail > p { margin: 18px 0; }
+@media (max-width: 760px) {
+  .contribution-columns, .motion-comparisons { grid-template-columns: minmax(0,1fr); gap: 20px; }
+  .motion-table { font-size: 13px; }
+  .motion-table th, .motion-table td { padding: 12px 6px; }
+  .motion-table thead th { font-size: 12px; }
+  .motion-table th:first-child { width: 32%; }
+  .motion-task-table th:first-child { width: 34%; }
+}

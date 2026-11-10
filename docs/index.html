@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="assets/css/research.css">
   <link rel="stylesheet" href="assets/css/experience.css">
   <link rel="stylesheet" href="assets/css/recordings.css">
+  <link rel="stylesheet" href="assets/css/motion-study.css">
   <link rel="preload" as="image" href="assets/icons/lucide/x.svg">
   <link rel="preload" as="image" href="assets/icons/lucide/zoom-in.svg">
   <link rel="preload" as="image" href="assets/icons/lucide/zoom-out.svg">
@@ -61,7 +62,7 @@
   <div class="research-nav">
     <div class="research-nav-inner">
       <nav aria-label="Page sections">
-        <a href="#showcase">Motions &amp; scenes</a><a href="#overview">Video to policy</a><a href="#method">Method</a><a href="#policies">Rollouts</a><a href="#results">Results</a><a href="#hloop">HLoop</a>
+        <a href="#showcase">Motions &amp; scenes</a><a href="#overview">Video to policy</a><a href="#method">Method</a><a href="#policies">Rollouts</a><a href="#motion-study">Motion study</a><a href="#results">Results</a><a href="#hloop">HLoop</a>
       </nav>
       <button id="theme-toggle" class="rx-icon-button theme-switch" type="button" aria-label="Switch to light theme" title="Switch to light theme" aria-pressed="true"><span class="rx-icon icon-sun" aria-hidden="true"></span><span id="theme-label">Dark</span></button>
     </div>
@@ -198,7 +199,7 @@
 
     <section id="method" class="rx-section">
       <div class="rx-container">
-        <div class="rx-heading"><h2>Execution becomes supervision</h2><p>A registered motion reference establishes the task. Policy feedback determines how that task is practiced and rewarded.</p></div>
+        <div class="rx-heading"><h2>Execution becomes supervision</h2><p>A motion reference describes what to do; physical execution reveals what the policy still needs to learn. MimicX feeds those errors back into task-aware supervision, then retains updates through repeated execution verification.</p></div>
         <div class="rx-method-layout">
         <figure id="method-overview" class="rx-paper-art">
           <a href="assets/media/research/refinement.webp" data-viewer="image" data-caption="Policy-in-the-loop supervision refinement" aria-label="Open the MimicX supervision-refinement diagram"><img src="assets/media/research/refinement.webp" width="2400" loading="lazy" alt="MimicX method: rollout diagnosis conditions training objectives and failure-window practice, followed by verified policy continuation"></a>
@@ -214,6 +215,63 @@
           <div class="ledger-return"><span class="rx-icon icon-rotate-ccw" aria-hidden="true"></span><span>The selected policy starts the next pass.</span></div>
         </div>
         </div>
+        <div class="contribution-columns">
+          <div><h3>Diagnose the task, not just the reward</h3><p>Rollout feedback identifies difficult time windows and body regions. Local articulation and end-effector accuracy are considered alongside global motion and velocity errors.</p><a href="METHOD.md">Task-aware refinement</a></div>
+          <div><h3>Coordinate the next learning step</h3><p>Bounded changes to tracking objectives and failure-window practice guide policy continuation. Video-derived and prepared-motion references enter the same feedback cycle.</p><a href="#motion-study">Matched-budget comparison</a></div>
+          <div><h3>Keep improvements that execute</h3><p>Repeated rollouts compare each candidate with the current policy. Completion and tracking guards determine acceptance; higher training reward alone does not replace a reliable policy.</p><a href="#hloop">Verification and faster feedback</a></div>
+        </div>
+        <div class="backend-line"><h3>Two simulation backends</h3><p><strong>MuJoCo / MjLab</strong> powers the video and 12-motion comparisons. <strong>Isaac Lab</strong> also supports native training, checkpoint recovery, rollout and refinement, validated end to end on one motion.</p><a href="ISAAC.md">Isaac setup and validation</a></div>
+      </div>
+    </section>
+
+    <section id="motion-study" class="rx-section rx-band">
+      <div class="rx-container">
+        <div class="rx-heading"><h2>Refinement across motion skills</h2><p>Beyond video reconstruction, MimicX refines supervision for prepared motion references. Twelve motions span locomotion, gestures, dance and dynamic transitions. BeyondMimic / MjLab, Static Search and MimicX share warmstarts and continuation budgets; released SONIC tracks the same references.</p></div>
+        <div class="motion-comparisons">
+          <article class="recording-row motion-recording" data-policy-task="broad-jump">
+            <div class="recording-heading"><h3>Broad Jump</h3><button type="button" class="rx-icon-button recording-toggle" title="Pause Broad Jump comparison" aria-label="Pause Broad Jump comparison"><span class="rx-icon icon-pause" aria-hidden="true"></span></button></div>
+            <div class="recording-frame"><video controls muted playsinline loop preload="none" data-src="assets/media/motion-study/broad-jump-preview.mp4" data-original-src="assets/media/motion-study/broad-jump.mp4" data-poster="assets/media/motion-study/broad-jump.jpg" aria-label="Broad Jump: four methods on one fixed timeline"></video></div>
+            <p>MimicX completes the jump and reduces nominal world-space mean error by <strong>30.83%</strong> and temporal-p95 error by <strong>48.90%</strong> relative to Static Search.</p>
+            <a href="assets/media/motion-study/broad-jump.mp4" data-viewer="video" data-caption="Broad Jump: BeyondMimic, Static Search, MimicX and released SONIC; representative nominal executions on a shared clock.">View full-resolution comparison</a>
+          </article>
+          <article class="recording-row motion-recording" data-policy-task="heel-toe">
+            <div class="recording-heading"><h3>Heel-and-Toe Dance</h3><button type="button" class="rx-icon-button recording-toggle" title="Pause Heel-and-Toe comparison" aria-label="Pause Heel-and-Toe comparison"><span class="rx-icon icon-pause" aria-hidden="true"></span></button></div>
+            <div class="recording-frame"><video controls muted playsinline loop preload="none" data-src="assets/media/motion-study/heel-toe-preview.mp4" data-original-src="assets/media/motion-study/heel-toe.mp4" data-poster="assets/media/motion-study/heel-toe.jpg" aria-label="Heel-and-Toe Dance: four methods on one fixed timeline"></video></div>
+            <p>MimicX follows the global trajectory more closely: nominal world-space mean and temporal-p95 errors decrease by <strong>18.44%</strong> and <strong>34.20%</strong> relative to Static Search.</p>
+            <a href="assets/media/motion-study/heel-toe.mp4" data-viewer="video" data-caption="Heel-and-Toe Dance: BeyondMimic, Static Search, MimicX and released SONIC; representative nominal executions on a shared clock.">View full-resolution comparison</a>
+          </article>
+        </div>
+        <p class="rx-source-note">Clips show one nominal execution per method; the reductions above use all six nominal evaluations. Full-motion completion below combines nominal and perturbed conditions. Completion measures finishing the motion; tracking precision is reported separately.</p>
+        <div class="motion-table-frame"><table class="motion-table">
+          <caption>Full-motion execution across 12 skills</caption>
+          <thead><tr><th scope="col">Method</th><th scope="col">Complete evaluations</th><th scope="col">Completion rate</th><th scope="col">Complete tasks</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">BeyondMimic / MjLab</th><td>120 / 144</td><td>83.33%</td><td>10 / 12</td></tr>
+            <tr><th scope="row">Static Search</th><td>132 / 144</td><td>91.67%</td><td>11 / 12</td></tr>
+            <tr class="ours-row"><th scope="row">MimicX</th><td>132 / 144</td><td>91.67%</td><td>11 / 12</td></tr>
+            <tr><th scope="row">Released SONIC</th><td>60 / 72</td><td>83.33%</td><td>10 / 12</td></tr>
+          </tbody>
+        </table></div>
+        <p class="rx-source-note">Native methods: two training seeds, three evaluations per condition and seed. SONIC: three released-policy evaluations per condition, with no additional training. MimicX and Static Search complete Broad Jump; all methods remain incomplete on Get-up.</p>
+        <details class="rx-data motion-detail"><summary>All 12 motions, training costs and protocol</summary>
+          <div class="motion-table-frame"><table class="motion-table motion-task-table"><caption>Complete evaluations, nominal and perturbed combined</caption><thead><tr><th scope="col">Motion</th><th scope="col">BeyondMimic</th><th scope="col">Static Search</th><th scope="col">MimicX</th><th scope="col">SONIC</th></tr></thead><tbody id="motion-completion-rows">
+<tr><th scope="row">Turn and Jog</th><td>12/12</td><td>12/12</td><td>12/12</td><td>6/6</td></tr>
+<tr><th scope="row">Side Step</th><td>12/12</td><td>12/12</td><td>12/12</td><td>6/6</td></tr>
+<tr><th scope="row">Forward Jog</th><td>12/12</td><td>12/12</td><td>12/12</td><td>6/6</td></tr>
+<tr><th scope="row">Rubbing Eyes</th><td>12/12</td><td>12/12</td><td>12/12</td><td>6/6</td></tr>
+<tr><th scope="row">Praying/Salute</th><td>12/12</td><td>12/12</td><td>12/12</td><td>6/6</td></tr>
+<tr><th scope="row">Heel-and-Toe Dance</th><td>12/12</td><td>12/12</td><td>12/12</td><td>6/6</td></tr>
+<tr><th scope="row">Crouch Transition</th><td>12/12</td><td>12/12</td><td>12/12</td><td>6/6</td></tr>
+<tr><th scope="row">Pointing Down</th><td>12/12</td><td>12/12</td><td>12/12</td><td>6/6</td></tr>
+<tr><th scope="row">Dodge Backward</th><td>12/12</td><td>12/12</td><td>12/12</td><td>6/6</td></tr>
+<tr><th scope="row">Injured-Torso Walk</th><td>12/12</td><td>12/12</td><td>12/12</td><td>6/6</td></tr>
+<tr><th scope="row">Broad Jump</th><td>0/12</td><td>12/12</td><td>12/12</td><td>0/6</td></tr>
+<tr><th scope="row">Get-up</th><td>0/12</td><td>0/12</td><td>0/12</td><td>0/6</td></tr>
+</tbody></table></div>
+          <div class="motion-table-frame"><table class="motion-table"><caption>Measured training-phase costs across all tasks and seeds</caption><thead><tr><th scope="col">Phase</th><th scope="col">PPO updates</th><th scope="col">Assigned-GPU hours</th></tr></thead><tbody><tr><th scope="row">Shared warmstarts</th><td>72,000</td><td>35.62</td></tr><tr><th scope="row">BeyondMimic continuation</th><td>72,000</td><td>42.50</td></tr><tr><th scope="row">Static Search continuation</th><td>72,000</td><td>42.91</td></tr><tr class="ours-row"><th scope="row">MimicX continuation</th><td>72,000</td><td>42.71</td></tr></tbody></table></div>
+          <p>Training-phase wall times include their evaluation overhead; shared warmstarts are counted once. Released SONIC required 1.136 assigned-GPU hours for 72 final evaluations; its upstream pretraining cost is not included. Static Search tests fixed supervision alternatives, while MimicX uses execution feedback to propose updates and protect its current policy.</p>
+          <p><a href="assets/results/motion-study/all_tasks.csv">All task-level metrics (CSV)</a> &middot; <a href="assets/results/motion-study/native_phase_costs.csv">Measured training costs (CSV)</a> &middot; <a href="assets/results/motion-study/four_methods.md">Full comparison and metric definitions</a> &middot; <a href="CONFIRMATION.md">Training and evaluation protocol</a></p>
+        </details>
       </div>
     </section>
 

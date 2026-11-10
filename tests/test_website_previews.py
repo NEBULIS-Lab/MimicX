@@ -23,10 +23,10 @@ class Media(HTMLParser):
 
 def test_inline_videos_only_load_previews_on_demand_and_keep_hd_links():
     media = Media((SITE / 'index.html').read_text())
-    assert len(media.videos) == 34
+    assert len(media.videos) == 36
     hd_links = {a['href'] for a in media.links if a.get('data-viewer') == 'video'}
     previews = [v for v in media.videos if 'data-src' in v]
-    assert len(previews) == 32
+    assert len(previews) == 34
     showcase = [v for v in media.videos if 'src' in v]
     assert len(showcase) == 2
     for video in showcase:
@@ -36,7 +36,7 @@ def test_inline_videos_only_load_previews_on_demand_and_keep_hd_links():
     for video in previews:
         assert 'src' not in video, 'Do not let the parser load offscreen originals'
         assert video['preload'] == 'none'
-        assert video['data-src'].startswith('assets/media/previews/')
+        assert video['data-src'].startswith(('assets/media/previews/', 'assets/media/motion-study/'))
         assert (SITE / video['data-src']).is_file()
         assert video['data-original-src'] in hd_links
         assert video.get('data-poster') and 'poster' not in video

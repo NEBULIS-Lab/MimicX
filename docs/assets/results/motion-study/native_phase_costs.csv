@@ -1,0 +1,5 @@
+phase,validated_phases,measured_jobs,observed_attempts,updates,transitions,candidate_checkpoints,candidate_rollouts,observed_assigned_gpu_wall_seconds,observed_assigned_gpu_union_seconds,measured_gpu_kernel_seconds,note
+warmstart,24,24,24,72000,7077888000,0,0,128248.48032736778,128248.48036170006,,Shared donor counted once
+beyond_mimic,24,24,24,72000,7077888000,144,432,153006.19879746437,153006.19882822037,,Continuation phase including its evaluation overhead; donor excluded
+static_search,24,24,24,72000,7077888000,144,432,154477.88730549812,154477.88733530045,,Continuation phase including its evaluation overhead; donor excluded
+mimicx,24,24,24,72000,7077888000,144,432,153759.10278511047,153759.10281801224,,Continuation phase including its evaluation overhead; donor excluded
