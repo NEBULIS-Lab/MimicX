@@ -114,6 +114,15 @@ keys, not additional named methods. Full execution, native precision qualificati
 and common-clock tracking error are reported separately; a complete recording is
 not itself evidence of a physically completed motion.
 
+## Continuous Motion Evaluation
+
+The same loop can be evaluated over a continuous multi-phase reference. Separate
+source duration, scored window, uninterrupted physical coverage and tracking
+quality. Reference wrap, episode resets and slowed video playback do not extend
+the demonstrated execution horizon. The [horizon audit](LONG_MOTIONS.md) checks
+explicit clocks/frame IDs and optional stage boundaries without joining episodes.
+Method reuse across per-motion training is not zero-shot policy generalization.
+
 ## HLoop
 
 HLoop schedules dependency-ready CPU, GPU and I/O jobs while preserving their

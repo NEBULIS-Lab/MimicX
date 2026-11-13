@@ -185,7 +185,14 @@
   </section>
     <section id="overview" class="rx-section rx-intro">
       <div class="rx-container">
-        <div class="rx-heading"><h2>From human video to robot execution</h2><p>MimicX turns a human demonstration into a humanoid skill, then uses the robot's execution to refine its supervision. Motion reconstruction and retargeting establish a reference; rollout feedback guides what the policy learns next.</p></div>
+        <div class="rx-heading"><h2>From human video to robot execution</h2><p>MimicX connects motion preparation, policy learning and execution feedback in one supervision-refinement framework. Video supplies the complete application route; prepared motions isolate the same feedback loop from reconstruction.</p></div>
+        <div class="reference-interface" aria-label="Shared motion reference interface">
+          <dl class="reference-inputs">
+            <div><dt>Video</dt><dd>GVHMR / SMPL-X reconstruction and GMR retargeting</dd></div>
+            <div><dt>Prepared motion</dt><dd>Validated robot motion</dd></div>
+          </dl>
+          <div class="reference-contract"><h3>One reference interface. One refinement loop.</h3><p>Both routes supply robot motion, reference timing and named joints/bodies. Controlled refinement keeps this geometry fixed while execution feedback updates objectives and curriculum.</p></div>
+        </div>
         <div class="rx-workflow-tabs" role="group" aria-label="Video-to-policy example"><button type="button" data-workflow="tennis" aria-pressed="true">Tennis Swing</button><button type="button" data-workflow="forest" aria-pressed="false">Forest Traversal</button></div>
         <ol class="rx-stages rx-paper-stages" id="workflow-stages">
           <li><a data-viewer="image" href="assets/media/showcase/tennis-stage-input.webp"><img src="assets/media/showcase/tennis-stage-input.webp" loading="lazy" alt="Paper-selected original tennis video frame"></a><span>Input video</span><small>Human demonstration</small></li>
@@ -199,7 +206,7 @@
 
     <section id="method" class="rx-section">
       <div class="rx-container">
-        <div class="rx-heading"><h2>Execution becomes supervision</h2><p>A motion reference describes what to do; physical execution reveals what the policy still needs to learn. MimicX feeds those errors back into task-aware supervision, then retains updates through repeated execution verification.</p></div>
+        <div class="rx-heading"><h2>Execution becomes supervision</h2><p>MimicX closes the loop between what a reference asks for and what a policy can execute: diagnose rollout errors, coordinate bounded supervision changes, continue learning, and retain progress through repeated physical verification.</p></div>
         <div class="rx-method-layout">
         <figure id="method-overview" class="rx-paper-art">
           <a href="assets/media/research/refinement.webp" data-viewer="image" data-caption="Policy-in-the-loop supervision refinement" aria-label="Open the MimicX supervision-refinement diagram"><img src="assets/media/research/refinement.webp" width="2400" loading="lazy" alt="MimicX method: rollout diagnosis conditions training objectives and failure-window practice, followed by verified policy continuation"></a>
@@ -208,25 +215,34 @@
         <div class="method-ledger">
           <h3>One refinement pass</h3>
           <ol>
-            <li><span class="ledger-icon"><span class="rx-icon icon-locate-fixed" aria-hidden="true"></span></span><div><h4>Read the rollout</h4><p>Localize where execution departs from the demonstration.</p><dl class="ledger-fields"><dt>When</dt><dd>Failure windows</dd><dt>Where</dt><dd>Root, limbs and contacts</dd><dt>What</dt><dd>Pose and dynamics errors</dd></dl></div></li>
-            <li><span class="ledger-icon"><span class="rx-icon icon-sliders-horizontal" aria-hidden="true"></span></span><div><h4>Change the supervision</h4><p>Coordinate task-aware tracking objectives and targeted practice; continue from the current policy.</p></div></li>
-            <li><span class="ledger-icon"><span class="rx-icon icon-shield-check" aria-hidden="true"></span></span><div><h4>Keep verified progress</h4><p>Repeated execution decides the update. Completion, failure horizon and tracking quality take priority over reward.</p></div></li>
+            <li><span class="ledger-icon"><span class="rx-icon icon-locate-fixed" aria-hidden="true"></span></span><div><h4>Diagnose execution</h4><p>Locate difficult intervals and affected body regions.</p><dl class="ledger-fields"><dt>Local</dt><dd>Articulation and end effectors</dd><dt>Global</dt><dd>Root and world-space motion</dd><dt>Dynamics</dt><dd>Velocity and contact behavior</dd></dl></div></li>
+            <li><span class="ledger-icon"><span class="rx-icon icon-sliders-horizontal" aria-hidden="true"></span></span><div><h4>Coordinate objectives and curriculum</h4><p>Apply bounded tracking objectives and targeted replay, then continue PPO from the protected policy.</p></div></li>
+            <li><span class="ledger-icon"><span class="rx-icon icon-shield-check" aria-hidden="true"></span></span><div><h4>Gate on repeated execution</h4><p>Compare candidates on a fixed evaluation target. Completion, failure frontiers and tracking guards determine which policy is retained.</p></div></li>
           </ol>
           <div class="ledger-return"><span class="rx-icon icon-rotate-ccw" aria-hidden="true"></span><span>The selected policy starts the next pass.</span></div>
         </div>
         </div>
-        <div class="contribution-columns">
-          <div><h3>Diagnose the task, not just the reward</h3><p>Rollout feedback identifies difficult time windows and body regions. Local articulation and end-effector accuracy are considered alongside global motion and velocity errors.</p><a href="METHOD.md">Task-aware refinement</a></div>
-          <div><h3>Coordinate the next learning step</h3><p>Bounded changes to tracking objectives and failure-window practice guide policy continuation. Video-derived and prepared-motion references enter the same feedback cycle.</p><a href="#motion-study">Matched-budget comparison</a></div>
-          <div><h3>Keep improvements that execute</h3><p>Repeated rollouts compare each candidate with the current policy. Completion and tracking guards determine acceptance; higher training reward alone does not replace a reliable policy.</p><a href="#hloop">Verification and faster feedback</a></div>
+        <div class="contribution-columns" role="group" aria-label="Framework contributions and evidence">
+          <div><h3>Coordinated supervision refinement</h3><p>Diagnosis couples local articulation, global motion and dynamics in objective and curriculum updates, with continuation from the protected parent.</p><a href="#motion-study">Matched-budget motion evidence</a></div>
+          <div><h3>Execution-priority verification</h3><p>The motion-study gate jointly checks world and root-local mean/tail errors while preserving the execution frontier. Rejected candidates leave the incumbent unchanged.</p><a href="METHOD.md#matched-budget-motion-profile">Joint verification rule</a><a href="assets/results/reward_higher_regression_rejection.csv">Reward/execution disagreement records</a></div>
+          <div><h3>One workflow, controlled evidence</h3><p>Video and scene executions show the complete route; prepared motions test the same loop with shared references, matched budgets and heldout executions.</p><a href="#policies">Video and scene executions</a><a href="CONFIRMATION.md">Controlled comparison protocol</a></div>
         </div>
-        <div class="backend-line"><h3>Two simulation backends</h3><p><strong>MuJoCo / MjLab</strong> powers the video and 12-motion comparisons. <strong>Isaac Lab</strong> also supports native training, checkpoint recovery, rollout and refinement, validated end to end on one motion.</p><a href="ISAAC.md">Isaac setup and validation</a></div>
+        <div class="backend-line" aria-labelledby="framework-layers-title">
+          <h3 id="framework-layers-title">Distinct roles in one framework</h3>
+          <dl class="framework-layers">
+            <div><dt>MimicX &middot; supervision</dt><dd>Diagnoses execution, coordinates objectives and curriculum, and selects verified policy continuation.</dd></div>
+            <div><dt>PPO &middot; learning</dt><dd>The default tracking learner optimizes the policy under the selected supervision.</dd></div>
+            <div><dt>MuJoCo / Isaac &middot; simulation</dt><dd>MuJoCo through MjLab powers the video and motion studies. Native Isaac Lab training and execution are validated end to end on one motion.</dd></div>
+            <div><dt>HLoop &middot; scheduling</dt><dd>Overlaps dependency-ready CPU, GPU and I/O jobs while preserving commands, inputs, seeds, budgets and verification decisions.</dd></div>
+          </dl>
+          <div class="framework-links"><a href="METHOD.md">Method and experimental profiles</a><a href="ISAAC.md">Isaac setup and validation</a><a href="#hloop">Scheduling evidence</a></div>
+        </div>
       </div>
     </section>
 
     <section id="motion-study" class="rx-section rx-band">
       <div class="rx-container">
-        <div class="rx-heading"><h2>Refinement across motion skills</h2><p>Beyond video reconstruction, MimicX refines supervision for prepared motion references. Twelve motions span locomotion, gestures, dance and dynamic transitions. BeyondMimic / MjLab, Static Search and MimicX share warmstarts and continuation budgets; released SONIC tracks the same references.</p></div>
+        <div class="rx-heading"><h2>Refinement across motion skills</h2><p>Twelve prepared motions enter the shared reference interface, spanning locomotion, gestures, dance and dynamic transitions. BeyondMimic / MjLab, Static Search and MimicX share references, warmstarts, continuation budgets and checkpoint-selection slots. Released SONIC is an execution baseline on the same references.</p></div>
         <div class="motion-comparisons">
           <article class="recording-row motion-recording" data-policy-task="broad-jump">
             <div class="recording-heading"><h3>Broad Jump</h3><button type="button" class="rx-icon-button recording-toggle" title="Pause Broad Jump comparison" aria-label="Pause Broad Jump comparison"><span class="rx-icon icon-pause" aria-hidden="true"></span></button></div>
@@ -320,7 +336,7 @@
 
     <section id="hloop" class="rx-section">
       <div class="rx-container">
-        <div class="rx-heading"><h2>Faster feedback. The same decision.</h2><p>MimicX-HLoop overlaps GPU rollout and CPU diagnosis along a dependency graph. Selection uses all evaluation evidence, independent of execution order.</p></div>
+        <div class="rx-heading"><h2>Faster feedback. The same decision.</h2><p>HLoop is the scheduling layer beneath the refinement loop. It overlaps dependency-ready rollout and diagnosis jobs; the same verification rule consumes the complete evidence, independent of execution order.</p></div>
         <div class="rx-hloop-layout">
           <figure class="rx-paper-art"><a href="assets/media/research/verification.webp" data-viewer="image" aria-label="Open the repeated-verification and HLoop diagram" data-caption="Repeated verification and MimicX-HLoop"><img src="assets/media/research/verification.webp" loading="lazy" width="2400" alt="Execution-priority acceptance and heterogeneous scheduling preserve the selected policy"></a><figcaption>Candidate policies are repeatedly evaluated against the current policy. Selection prioritizes task completion, the failure frontier and tracking guards: accepted candidates start the next refinement pass, while rejected candidates leave the current policy unchanged. HLoop overlaps independent GPU rollouts and CPU diagnosis as their dependencies are satisfied, then assembles the complete evidence before applying the same selection rule.</figcaption></figure>
           <div class="rx-timings">

@@ -1,8 +1,25 @@
 /* Additive motion evidence; existing media and layouts are retained. */
+.reference-interface { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.2fr); gap: 32px; margin: 0 0 30px; padding-block: 22px; border-block: 1px solid var(--rx-line); }
+.reference-inputs { display: grid; gap: 14px; margin: 0; }
+.reference-inputs dt { color: var(--rx-teal); font-weight: 600; }
+.reference-inputs dd { margin: 3px 0 0; color: var(--rx-muted); font-size: 14px; }
+.reference-contract { min-width: 0; padding-left: 32px; border-left: 1px solid var(--rx-line); }
+#research .reference-contract h3 { font-size: 18px; }
+#research .reference-contract p { margin: 0; color: var(--rx-muted); font-size: 14px; text-align: left; }
 .contribution-columns { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 30px; margin-top: 38px; padding-top: 30px; border-top: 1px solid var(--rx-line); }
+.contribution-columns > div { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
 #research .contribution-columns h3 { font-size: 18px; }
-#research .contribution-columns p, #research .backend-line p { margin-bottom: 12px; }
+#research .contribution-columns p { flex: 1; margin-bottom: 12px; color: var(--rx-muted); text-align: left; }
+.contribution-columns a { font-size: 14px; line-height: 1.6; }
+.contribution-columns a + a { margin-top: 8px; }
 .backend-line { margin-top: 32px; padding: 24px 0; border-block: 1px solid var(--rx-line); }
+.framework-layers { margin: 0; }
+.framework-layers > div { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,2fr); gap: 24px; padding-block: 14px; }
+.framework-layers > div + div { border-top: 1px solid var(--rx-line); }
+.framework-layers dt { color: var(--rx-text); font-size: 14px; font-weight: 600; }
+.framework-layers dd { margin: 0; color: var(--rx-muted); font-size: 14px; }
+.framework-links { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 16px; font-size: 14px; }
+.reference-interface, .contribution-columns, .backend-line { overflow-wrap: anywhere; }
 .backend-line a, .contribution-columns a, .motion-recording > a { color: var(--rx-accent); text-underline-offset: 4px; }
 .motion-comparisons { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px; }
 .motion-recording { min-width: 0; }
@@ -22,7 +39,10 @@
 .motion-detail > p { margin: 18px 0; }
 .backend-line strong { color: var(--rx-text); }
 @media (max-width: 760px) {
+  .reference-interface { grid-template-columns: minmax(0,1fr); gap: 20px; }
+  .reference-contract { padding: 20px 0 0; border-left: 0; border-top: 1px solid var(--rx-line); }
   .contribution-columns, .motion-comparisons { grid-template-columns: minmax(0,1fr); gap: 20px; }
+  .framework-layers > div { grid-template-columns: minmax(0,1fr); gap: 6px; }
   .motion-table { font-size: 13px; }
   .motion-table th, .motion-table td { padding: 12px 6px; }
   .motion-table thead th { font-size: 12px; }

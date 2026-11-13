@@ -1,4 +1,19 @@
-# Source Release 0.5.0
+# Source Release 0.5.1
+
+## Continuous-Execution Evidence
+
+The source adds a CPU-only horizon audit and a guide for continuous multi-phase
+motion evaluation. Explicit source/frame clocks, reset/failure evidence and
+optional stage boundaries keep source length and recorded-video length separate
+from uninterrupted execution. Existing frozen comparisons, model recommendations
+and result tables retain their recorded protocols. This tooling release does
+not declare a new long-motion success rate.
+
+Website method descriptions now distinguish the reference interface, supervision
+loop, learner, simulators and feedback scheduler. Accepted visual assets remain
+unchanged. No world-model backend replaces the default PPO path.
+
+## Source Release 0.5.0
 
 ## Unified MimicX Workflows
 

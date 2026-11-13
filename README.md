@@ -98,6 +98,7 @@ Physics training and evaluation additionally use the
 | **Use the optional Isaac backend** | Follow the isolated [Isaac Lab setup and motion conversion](docs/ISAAC.md); see its current runtime validation scope. |
 | **Compare trackers on additional motions** | Audit [motion inputs](docs/MOTION_STUDY.md) or prepare a [larger grouped cohort](docs/MOTION_SCALEUP.md), then run the [matched-budget study](docs/MOTION_STUDY_EXECUTION.md). |
 | **Run the 12-motion comparison** | Follow the [matched-budget protocol](docs/CONFIRMATION.md), with shared warmstarts, feedback-guided continuation and held-out evaluation. |
+| **Evaluate continuous multi-phase motion** | Audit the real source window, reset-free coverage and declared stages using [continuous-motion evaluation](docs/LONG_MOTIONS.md). |
 
 GPU entry points use the compute allocation provided by your environment.
 Device IDs are process-visible indices; launchers preserve inherited GPU
