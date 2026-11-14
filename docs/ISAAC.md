@@ -2,6 +2,15 @@
 
 Start with the public [pinned source/environment installation instructions](ISAAC_INSTALL.md).
 
+The existing trained example is available at
+[MimicX-Policies/isaac/walk-start](https://huggingface.co/Shuaijun/MimicX-Policies/tree/main/isaac/walk-start),
+with its native runner configuration and paired validation in
+[MimicX-Assets/benchmarks/isaac](https://huggingface.co/datasets/Shuaijun/MimicX-Assets/tree/main/benchmarks/isaac).
+Acquire the BONES source motion under its upstream license, then convert it to
+the exact named articulation order recorded in `config.json`. The public model
+is the existing 3,000-update checkpoint described below; no new training is
+implied by this artifact packaging update.
+
 Isaac is a simulator backend within MimicX: convert a named reference, train or
 resume a native policy, record execution, and run supervision refinement. The
 pinned Sim 6 / Lab3 beta2 environment is experimental; its completed physical

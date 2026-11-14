@@ -1,4 +1,34 @@
-# Source Release 0.5.1
+# Source Release 0.5.2
+
+## Unified Policies and Assets
+
+The two HF repositories now use task/method/seed paths rather than dated release
+layers or hash-named user downloads. The paired downloader pins the compatible
+policy manifest and complete runtime index. Nine demonstration actors retain
+their original weight and reference bytes; Parkour remains a separately
+identified actor-prefix/predictive-controller bundle.
+
+The completed 12-motion comparison now includes all 72 selected native endpoints,
+24 shared donor mappings, training configurations, selection lineage and full
+four-method numerical evidence. The native Isaac walk-start checkpoint is also
+available. BONES raw trajectories are obtained from the licensed upstream source;
+source-window preparation records are provided instead of a motion-data mirror.
+
+The previous complete HF snapshots are preserved at
+`archive-before-unified-20261114`. Legacy pinned download contracts remain
+supported; the previous demonstration spec is available as
+`mimicx/configs/releases/demonstrations-20261014.json`. Historical core preparation
+rejects a new-layout snapshot with a clear archive-download instruction.
+
+This update packages existing policies and results and does not start new
+training, simulation evaluation or rendering. Website media and manuscript
+content retain their current versions. See [paired downloads](DEMONSTRATIONS.md),
+[comparison reproduction](CONFIRMATION.md) and [historical inputs](REPRODUCIBILITY.md).
+Validation passes 945 CPU tests with four optional tests skipped; source and
+wheel distributions build successfully. Both current and legacy artifact
+contracts have dedicated regression coverage.
+
+## Source Release 0.5.1
 
 ## Release Map
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CPU-only preparation of paired MimicX Hugging Face artifact snapshots."""
+"""CPU-only preparation of historical paired MimicX artifact snapshots."""
 
 import argparse
 import gzip
@@ -10,6 +10,34 @@ import shlex
 import shutil
 import sys
 import tempfile
+
+
+ARCHIVE_REVISION = "archive-before-unified-20261114"
+ARCHIVE_HINT = (
+    f"Download both repositories at --revision {ARCHIVE_REVISION} into separate archive directories. "
+    "For current demonstrations use python -m mimicx.runtime.demonstrations."
+)
+
+
+def require_archive(root):
+    """Reject the unified layout before interpreting historical paths or trials."""
+    root = Path(root)
+    index_path = root / "policy_index.json"
+    index = json.loads(index_path.read_text()) if index_path.is_file() else None
+    if isinstance(index, dict) and index.get("schema") == "mimicx.policy-index.v2":
+        raise ValueError("The unified policy index is not the historical trials index. " + ARCHIVE_HINT)
+    if (root / "asset_index.json").is_file():
+        raise ValueError("Unified Assets cannot replace the historical core snapshot. " + ARCHIVE_HINT)
+    return index
+
+
+def archive_policy_index(root):
+    index = require_archive(root)
+    if (not isinstance(index, dict)
+            or index.get("schema") not in (None, "mimicx.hf-policy-index.v1")
+            or not isinstance(index.get("trials"), list)):
+        raise ValueError("Expected a historical policy index with a trials list. " + ARCHIVE_HINT)
+    return index
 
 
 def sha256(path):
@@ -30,6 +58,9 @@ def safe_path(root, name):
 
 def verify(root):
     root = Path(root).resolve()
+    require_archive(root)
+    if not (root / "FILES.json").is_file():
+        raise ValueError("Historical verification requires root FILES.json and every indexed file. " + ARCHIVE_HINT)
     records = json.loads((root / "FILES.json").read_text())
     for record in records:
         path = safe_path(root, record["path"])
@@ -48,6 +79,7 @@ def resolve_uri(uri, policies, assets):
 
 
 def materialize_core(policies, assets, output):
+    archive_policy_index(policies)
     verify(policies)
     verify(assets)
     output = Path(output)
@@ -65,7 +97,8 @@ def materialize_core(policies, assets, output):
 
 def prepare_evaluation(policies, assets, code, backend, runtime_python, trial_id, output, external_motion=None, video=False):
     policies, assets = Path(policies).resolve(), Path(assets).resolve()
-    index = json.loads((policies / "policy_index.json").read_text())
+    index = archive_policy_index(policies)
+    require_archive(assets)
     matching = [row for row in index["trials"] if row["id"] == trial_id]
     if len(matching) != 1:
         raise ValueError(f"Unknown or ambiguous trial ID: {trial_id}")
@@ -122,6 +155,7 @@ def prepare_evaluation(policies, assets, code, backend, runtime_python, trial_id
 
 
 def verify_gates(assets, code):
+    require_archive(assets)
     sys.path.insert(0, str(Path(code).resolve()))
     from mimicx.refinement.gate import aggregate_repeats, decide_acceptance, load_rollout_metrics
     from mimicx.refinement.manifest import GuardSpec, VerificationSpec

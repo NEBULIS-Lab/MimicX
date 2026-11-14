@@ -32,7 +32,14 @@ final trained-policy evaluation counts are 72, 1296 and 432 respectively.
 Released SONIC's separate 72 executions do not receive per-task PPO training.
 The authors completed this matrix and its final evaluations. Preparing a new
 matrix only creates the jobs; your own run must produce their completion records.
-The corresponding newly trained weights are not yet bundled in the HF release.
+The [HF policy release](https://huggingface.co/Shuaijun/MimicX-Policies/tree/main/comparisons)
+provides all 72 selected native endpoints and 24 shared donor mappings. Task,
+method, seed, selected parent and incumbent retention are recorded in
+`policy_index.json`; training and selection evidence is paired under
+`MimicX-Assets/benchmarks/motion-tracking/runs/`. The release retains the exact
+selection output, including protected donors, rather than substituting the
+last candidate. Authorized source motions are acquired separately; source IDs,
+window boundaries and canonical reference checks are in `references.json`.
 
 When selection rollouts remain incomplete, MimicX uses failure-conditioned
 proposals. Once they complete, it tries bounded precision objectives; consistent

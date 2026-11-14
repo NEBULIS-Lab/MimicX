@@ -56,7 +56,7 @@ is a separate stage. The [method documentation](docs/METHOD.md) describes
 the training and selection procedure; the [project website](https://nebulis-lab.com/MimicX/)
 contains the visual comparisons and numerical results.
 
-**Source release:** 0.5.1. Start with the paired HF policies for execution,
+**Source release:** 0.5.2. Start with the paired HF policies for execution,
 the quickstart for video inputs, or the matched-budget protocol for the
 12-motion comparison. The [release map](docs/RELEASE.md#release-map) lists
 the source, pretrained artifacts and evidence for each workflow.
@@ -115,28 +115,32 @@ Pretrained policies and their companion motion references are hosted on
 Hugging Face, separate from the source code. **Start with one task:**
 
 <p>
-  <a href="https://huggingface.co/Shuaijun/MimicX-Policies/blob/main/recommended/README.md#tennis"><strong>Tennis</strong></a> &nbsp;&middot;&nbsp;
-  <a href="https://huggingface.co/Shuaijun/MimicX-Policies/blob/main/recommended/README.md#football"><strong>Football</strong></a> &nbsp;&middot;&nbsp;
-  <a href="https://huggingface.co/Shuaijun/MimicX-Policies/blob/main/recommended/README.md#dance"><strong>Dance</strong></a> &nbsp;&middot;&nbsp;
-  <a href="https://huggingface.co/Shuaijun/MimicX-Policies/blob/main/recommended/README.md#kungfu"><strong>Kung Fu</strong></a>
+  <a href="https://huggingface.co/Shuaijun/MimicX-Policies/tree/main/policies/tennis"><strong>Tennis</strong></a> &nbsp;&middot;&nbsp;
+  <a href="https://huggingface.co/Shuaijun/MimicX-Policies/tree/main/policies/football"><strong>Football</strong></a> &nbsp;&middot;&nbsp;
+  <a href="https://huggingface.co/Shuaijun/MimicX-Policies/tree/main/policies/dance"><strong>Dance</strong></a> &nbsp;&middot;&nbsp;
+  <a href="https://huggingface.co/Shuaijun/MimicX-Policies/tree/main/policies/kungfu"><strong>Kung Fu</strong></a>
 </p>
 
 | Release | Contents |
 | :--- | :--- |
-| [**MimicX-Policies**](https://huggingface.co/Shuaijun/MimicX-Policies) | Recommended final policies, multi-seed baselines, warmstarts, candidate checkpoints and training settings. |
-| [**MimicX-Assets**](https://huggingface.co/datasets/Shuaijun/MimicX-Assets) | Matching robot references, public configurations, execution records and reproduction metadata. |
+| [**MimicX-Policies**](https://huggingface.co/Shuaijun/MimicX-Policies) | Nine named demonstration policies, 12-motion comparison endpoints and shared warmstarts, a Parkour controller and a native Isaac example. |
+| [**MimicX-Assets**](https://huggingface.co/datasets/Shuaijun/MimicX-Assets) | Paired task inputs and frozen runtimes, training/selection records, numerical comparisons and licensed-input preparation recipes. |
 
 The [artifact usage guide](https://huggingface.co/Shuaijun/MimicX-Policies/blob/main/USAGE.md)
-covers selective downloads and reconstruction of the exact core input bundle.
+covers selective downloads and links to the complete historical core archive.
 Pair each policy with its recorded reference and configuration: G1 29-DoF
 and historical 23-DoF policies use different model layouts.
 
-The [2026-10-14 demonstration release](docs/DEMONSTRATIONS.md) provides nine
+The [paired demonstration release](docs/DEMONSTRATIONS.md) provides nine
 standalone PPO policies and a separately identified Parkour hybrid controller.
 Choose a task by name to download its policy and matching assets.
 Recorded experiment policies remain available for reproducing their respective
-protocols. Newly trained motion-study checkpoints are not yet included in these
-HF downloads; the runnable study trains its warmstarts and continuations locally.
+protocols. The completed 12-motion study provides 72 selected native-policy
+endpoints and 24 shared warmstart mappings under semantic task/method/seed
+paths. Its raw source motions are acquired from their authorized providers;
+the asset repository includes source-window preparation recipes. The complete
+preceding archive remains available at `archive-before-unified-20261114` in
+both HF repositories, including all original candidates and core trial records.
 
 ## Documentation
 
@@ -213,6 +217,10 @@ See [website maintenance](docs/WEBSITE.md) for rebuilding and publishing it.
 MimicX builds on **GVHMR, GMR, SMPL-X, MuJoCo, MjLab and RSL-RL**.
 Upstream projects, pinned dependencies and their notices are listed in
 [dependencies](dependencies/README.md).
+
+Training data includes [Motion Data by Bones Studio](https://bones.studio/).
+Use of the underlying dataset is subject to the BONES Motion Capture Dataset
+License Agreement. Restricted source motion trajectories are not redistributed.
 
 Code is released under [**Apache-2.0**](LICENSE). Included Unitree hand
 visualization assets retain BSD-3-Clause, and the tracking backend retains

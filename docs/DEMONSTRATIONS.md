@@ -18,15 +18,26 @@ Repeat `--task` for several policies. Omit it to select all nine: `tennis`,
 motion/runtime bundle are fetched, not the historical checkpoint archive.
 Downloading does not execute code.
 
-The shared release also includes scene records and example media. The downloader
+The shared release also includes scene records. The downloader
 selects compatible policy and asset versions automatically using
 `mimicx/configs/releases/demonstrations.json`; no file identifiers need to be
 copied manually.
 
-`releases/2026-10-14-demonstrations` reuses the frozen scene runtime in
-`releases/2026-10-11-scenes`. These snapshots form a pair. Do not mix actors
-with unrelated references, scenes or observation configurations. A custom
-pair requires an explicit `--release-spec` JSON.
+The unified HF layout stores actors at `policies/<task>/policy.pt`, with the
+paired policy records in root `manifest.json`. Assets use `tasks/<task>/` for
+motions and configuration, `runtimes/demonstrations/run_policy.py` for the
+runner, and `runtimes/FILES.json` for its runtime/task checksums. The nine
+actors and their motion inputs are unchanged by this path migration.
+The packaged release spec pins the compatible Policies and Assets revisions;
+do not mix either snapshot with an unrelated `main` download. A custom pair
+requires an explicit `--release-spec` JSON before the subcommand.
+
+Root `policy_index.json` now uses `mimicx.policy-index.v2`; it is not the
+historical `trials` index. The 12-motion comparison checkpoints are separate,
+at `comparisons/<task>/<method>/seed-101/policy.pt`, not replacements for the
+nine demonstration actors. Licensed BONES raw motions are not redistributed;
+`benchmarks/motion-tracking/references.json` supplies the acquisition/conversion
+recipe and expected hashes, not the motion bytes.
 
 ## Verify and Evaluate
 
@@ -47,7 +58,8 @@ python -m mimicx.runtime.demonstrations evaluate \
 
 Inspect the command, then omit `--dry-run` to evaluate in your allocated
 compute environment. GPU visibility is inherited unchanged. The tracking
-Python environment needs the versions in the downloaded `requirements.txt`;
+Python environment needs the versions in the downloaded
+`MimicX-Assets/runtimes/demonstrations/runtime/requirements.txt`;
 the lightweight `artifacts` extra does not install a simulator or PyTorch.
 The default seed is the first registered holdout seed; use `--seed` to select
 another. Existing output directories are refused to protect prior evidence.
@@ -66,20 +78,26 @@ observation layout, joint ordering, action scaling and motion timing.
 | Parkour completion | [Hybrid Control](HYBRID_CONTROL.md) | Recorded actor prefix followed by predictive control |
 | Sports display | [Recording and Contact](RECORDING_AND_CONTACT.md) | Fixed robot-state replay with a dynamically simulated ball |
 
-Parkour is not listed as a standalone PPO actor; its controller configuration
-and recorded trajectory accompany the HF release. Sports replay preserves
+Parkour is not listed as a standalone PPO actor; its unchanged prefix actor,
+controller configuration and recorded trajectory have a separate download in
+the [hybrid guide](HYBRID_CONTROL.md). Sports replay preserves
 robot states and is not a newly trained ball-interaction policy. Both modes
 retain execution provenance.
 
 ## Original Paper Archive
 
-For full HF snapshots, `scripts/reproduction/hf_artifacts.py` provides CPU
-operations `verify`, `core-inputs`, `prepare-eval`, and `verify-gates`.
+For full **historical** HF snapshots, `scripts/reproduction/hf_artifacts.py`
+provides CPU operations `verify`, `core-inputs`, `prepare-eval`, and
+`verify-gates`. Download **both** repositories at
+`archive-before-unified-20261114` into separate directories using the
+[archive commands](REPRODUCIBILITY.md#exact-core-input-bundle). Do not point
+these operations at unified `main` or a selective demonstration download.
 
 ```bash
-python scripts/reproduction/hf_artifacts.py verify --root /path/to/full/MimicX-Policies
+python scripts/reproduction/hf_artifacts.py verify \
+  --root artifacts/archive-before-unified-20261114/MimicX-Policies
 python scripts/reproduction/hf_artifacts.py verify-gates \
-  --assets /path/to/full/MimicX-Assets --code .
+  --assets artifacts/archive-before-unified-20261114/MimicX-Assets --code .
 ```
 
 Full-archive verification needs root `FILES.json` and every indexed file; a

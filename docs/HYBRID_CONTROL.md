@@ -14,24 +14,46 @@ world-contact penetration is 0.05344 m. The locally retimed reference is 5.38 s.
 
 ## Inputs and Dependencies
 
-Use matching Assets and Policies releases. Asset resolution
+Use the matching Assets and Policies revisions pinned by the demonstration
+release spec, not independently downloaded `main` snapshots. Asset resolution
 and download are separate from controller execution; no private paths, weights,
 or third-party robot meshes are included in this code.
 
+The nine-policy demo downloader intentionally excludes the separate controller.
+Fetch its paired inputs explicitly (download only, no execution):
+
 ```bash
-ASSETS=/path/to/Assets-snapshot
-POLICIES=/path/to/Policies-snapshot
-RELEASE="$ASSETS/releases/2026-10-14-demonstrations"
-P="$RELEASE/controllers/parkour"
-RUNTIME="$RELEASE/runtime"
-MOTION="$ASSETS/releases/2026-10-11-scenes/tasks/parkour/motion.npz"
-SCENE="$ASSETS/releases/2026-10-11-scenes/tasks/parkour/scene.json"
+python -m pip install -e '.[artifacts]'
+python - <<'PY'
+from pathlib import Path
+from huggingface_hub import snapshot_download
+from mimicx.runtime.demonstrations import load_spec
+
+spec = load_spec()
+root = Path('artifacts')
+snapshot_download(spec['policies_repository'], revision=spec['policies_revision'],
+                  local_dir=root / 'MimicX-Policies',
+                  allow_patterns=['manifest.json', 'controllers/parkour/*'])
+snapshot_download(spec['assets_repository'], repo_type='dataset',
+                  revision=spec['assets_revision'], local_dir=root / 'MimicX-Assets',
+                  allow_patterns=['controllers/parkour/*', 'tasks/*', 'runtimes/*', 'asset_index.json'])
+PY
+ASSETS=artifacts/MimicX-Assets
+POLICIES=artifacts/MimicX-Policies
+P="$ASSETS/controllers/parkour"
+RUNTIME="$ASSETS/runtimes/demonstrations/runtime"
+MOTION="$ASSETS/tasks/parkour/motion.npz"
+SCENE="$ASSETS/tasks/parkour/scene.json"
 TRACE="$P/recorded_states/seed29003/traces.npz"
 NAMES="$P/recorded_states/seed29003/names.json"
 ```
 
-`controller.json` in `$P` supplies the matching checkpoint, motion and scene files. Resolve checkpoint paths relative to `$POLICIES`, other paths relative
-to `$ASSETS`; do not treat the archival `source-artifact://` entries in
+Root `$POLICIES/manifest.json` identifies the current Parkour checkpoint,
+motion and scene in its `controllers` list. The prefix actor is at
+`controllers/parkour/prefix-policy.pt`; its weights and motion inputs are
+unchanged by the semantic-path migration. `$P/controller.json` supplies the
+controller metadata. Resolve checkpoint paths relative to `$POLICIES`, other
+paths relative to `$ASSETS`; do not treat the archival `source-artifact://` entries in
 `config.json` as filenames. Keep `names.json`, `planner.json`, `traces.npz`, and
 `validation/seed*.json` paired. Controller index 0 is frozen PPO, index 1 is the
 previous shooting controller, and index 2 is the selected actor+MPC run.
@@ -178,8 +200,8 @@ With the native runtime and checkpoint installed, use the dedicated entry point:
 
 ```bash
 CHECKPOINT="$POLICIES/$(python -c \
-  'import json,sys; print(json.load(open(sys.argv[1]))["checkpoint"]["path"])' \
-  "$P/controller.json")"
+  'import json,sys; rows=json.load(open(sys.argv[1]))["controllers"]; print(next(r for r in rows if r["task"] == "parkour")["checkpoint"]["path"])' \
+  "$POLICIES/manifest.json")"
 PYTHONPATH="$RUNTIME${PYTHONPATH:+:$PYTHONPATH}" \
   python scripts/parkour/hybrid.py actor-mpc \
   --scene "$SCENE" --motion "$MOTION" --checkpoint "$CHECKPOINT" \

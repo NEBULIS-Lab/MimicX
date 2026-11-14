@@ -36,10 +36,11 @@ def _check(root: Path, record: dict) -> Path:
 
 
 def _manifest(policies: Path, spec: dict) -> dict:
-    path = _check(policies, {'path': spec['release']+'/manifest.json',
+    relative = spec['manifest_path'] if 'manifest_path' in spec else spec['release']+'/manifest.json'
+    path = _check(policies, {'path': relative,
                              'sha256': spec['manifest_sha256']})
     manifest = json.loads(path.read_text())
-    if manifest.get('schema') != 'mimicx.demonstrations.v2':
+    if manifest.get('schema') not in ('mimicx.demonstrations.v2', 'mimicx.demonstrations.v3'):
         raise ValueError('Unsupported demonstration manifest schema')
     if manifest.get('assets_revision') != spec['assets_revision']:
         raise ValueError('The Policies and Assets revision pair does not match')
@@ -59,8 +60,9 @@ def verify_task(policies: Path, assets: Path, task: str, spec: dict | None = Non
     """Check selected weights and all bundled runtime bytes without importing a simulator."""
     spec = spec or load_spec()
     row = _task(_manifest(policies, spec), task)
-    indexes = {spec['release']+'/FILES.json': spec['assets_index_sha256'],
-               **spec.get('dependency_indexes', {})}
+    indexes = spec['asset_indexes'] if 'asset_indexes' in spec else {
+        spec['release']+'/FILES.json': spec['assets_index_sha256'],
+        **spec.get('dependency_indexes', {})}
     for relative, expected in indexes.items():
         index = _check(assets, {'path': relative, 'sha256': expected})
         for record in json.loads(index.read_text()):
@@ -84,14 +86,19 @@ def download(output: Path, tasks: list[str], spec: dict | None = None,
         raise ValueError('Provide --policies-repository and --assets-repository for this release')
     from huggingface_hub import snapshot_download
     policies, assets = Path(output)/'MimicX-Policies', Path(output)/'MimicX-Assets'
+    metadata = (spec['policy_metadata_patterns'] if 'policy_metadata_patterns' in spec
+                else [spec['release']+'/*'])
     snapshot_download(policy_repo, revision=spec['policies_revision'],
-                      local_dir=policies, allow_patterns=[spec['release']+'/*'])
+                      local_dir=policies, allow_patterns=metadata)
     manifest = _manifest(policies, spec)
     chosen = [_task(manifest, name) for name in tasks]
     snapshot_download(policy_repo, revision=spec['policies_revision'], local_dir=policies,
                       allow_patterns=[r['checkpoint']['path'] for r in chosen])
-    patterns = [spec['release']+'/*']
-    patterns += [str(Path(p).parent)+'/*' for p in spec.get('dependency_indexes', {})]
+    if 'assets_patterns' in spec:
+        patterns = spec['assets_patterns']
+    else:
+        patterns = [spec['release']+'/*']
+        patterns += [str(Path(p).parent)+'/*' for p in spec.get('dependency_indexes', {})]
     snapshot_download(asset_repo, repo_type='dataset', revision=spec['assets_revision'],
                       local_dir=assets, allow_patterns=patterns)
     for task in tasks:
@@ -108,7 +115,8 @@ def evaluation_command(policies: Path, assets: Path, task: str, output: Path, *,
     output = Path(output).resolve()
     if output.exists():
         raise FileExistsError(output)
-    runner = safe_path(assets, spec['release']+'/'+spec['runner'])
+    relative = spec['runner_path'] if 'runner_path' in spec else spec['release']+'/'+spec['runner']
+    runner = safe_path(assets, relative)
     command = [str(python or sys.executable), str(runner), '--policies', str(Path(policies).resolve()),
                '--assets', str(Path(assets).resolve()), '--task', task, '--evaluate',
                '--seed', str(row['holdout_seeds'][0] if seed is None else seed),

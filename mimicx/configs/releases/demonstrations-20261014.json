@@ -1,0 +1,15 @@
+{
+  "schema": "mimicx.paired-release.v1",
+  "release": "releases/2026-10-14-demonstrations",
+  "policies_repository": "Shuaijun/MimicX-Policies",
+  "assets_repository": "Shuaijun/MimicX-Assets",
+  "policies_revision": "2ecacde275a3b70c97fe82b44ce45178e8df3d01",
+  "assets_revision": "3c7eb5214e6137bafb1a101c32d8c4c42c32a8e3",
+  "manifest_sha256": "8e9e6fca46802e6535729e0b6efd3f49100fbfd210fa4c4a3b451e4ae584e3d6",
+  "assets_index_sha256": "038331bede56192e511f5eb83d0a2c3fe23cba96775558a2c4f3e0ace5b61c96",
+  "dependency_indexes": {
+    "releases/2026-10-11-scenes/FILES.json": "ee7e441a4e0771e203caf076641b94881b2cc6407b917dfe1f9230b3b1bd1c48"
+  },
+  "runner": "run_policy.py",
+  "tasks": ["tennis", "football", "dance", "kungfu", "track", "stairs", "forest", "bench", "descent"]
+}

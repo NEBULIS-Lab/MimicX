@@ -22,10 +22,14 @@ reproducing an existing run.
 These are experiment configurations within one framework. The completed
 12-motion study used MjLab; native Isaac has a one-motion physical validation.
 Do not interchange simulator checkpoints or combine metrics with different
-body sets, clocks or success criteria. Current HF downloads contain the
-documented core and demonstration releases; the newly trained 12-motion
-checkpoints have not yet been added. The study can train them from authorized
-motion inputs using the published configuration and commands.
+body sets, clocks or success criteria. Unified HF `main` separates the nine
+demonstration actors (`policies/<task>/policy.pt`) from the 12-motion comparison
+policies (`comparisons/<task>/<method>/seed-101/policy.pt`). Their current
+`policy_index.json` uses `mimicx.policy-index.v2`, not the historical `trials`
+schema. BONES raw motions are not redistributed: acquire authorized upstream
+inputs and follow `benchmarks/motion-tracking/references.json` for the source,
+window, conversion recipe and expected hashes. The original four-task core
+archive is retained at `archive-before-unified-20261114` in both HF repositories.
 
 ## Available Components
 
@@ -52,9 +56,37 @@ parameter dumps, and four fixed-policy HLoop checkpoints. The bundle has been
 assembled and verified by the authors. It is now available through the paired
 [MimicX-Policies](https://huggingface.co/Shuaijun/MimicX-Policies) and
 [MimicX-Assets](https://huggingface.co/datasets/Shuaijun/MimicX-Assets)
-repositories, rather than stored in Git. The bundled `prepare.py core-inputs`
-command reconstructs the 22-file input bundle; see the
-[artifact usage guide](https://huggingface.co/Shuaijun/MimicX-Policies/blob/main/USAGE.md).
+repositories at the historical tag **`archive-before-unified-20261114`**,
+rather than stored in Git. Download both complete tagged snapshots into
+dedicated directories; unified `main` no longer contains the old hash-addressed
+core archive. Its v2 policy index must not be passed to historical `prepare-eval`.
+The tagged index retains `mimicx.hf-policy-index.v1` and its `trials` records;
+see the [archived artifact usage guide](https://huggingface.co/Shuaijun/MimicX-Policies/blob/archive-before-unified-20261114/USAGE.md).
+
+```bash
+python -m pip install -e '.[artifacts]'
+python - <<'PY'
+from pathlib import Path
+from huggingface_hub import snapshot_download
+
+revision = 'archive-before-unified-20261114'
+root = Path('artifacts') / revision
+snapshot_download('Shuaijun/MimicX-Policies', revision=revision,
+                  local_dir=root / 'MimicX-Policies')
+snapshot_download('Shuaijun/MimicX-Assets', repo_type='dataset', revision=revision,
+                  local_dir=root / 'MimicX-Assets')
+PY
+python scripts/reproduction/hf_artifacts.py core-inputs \
+  --policies artifacts/archive-before-unified-20261114/MimicX-Policies \
+  --assets artifacts/archive-before-unified-20261114/MimicX-Assets \
+  --output artifacts/paper-core-inputs
+```
+
+The CPU-only `core-inputs` command checks the complete archived `FILES.json`
+inventories and reconstructs the 22-file bundle. `verify`, `prepare-eval` and
+`verify-gates` in the same script also target these historical snapshots, not
+the new main index. `prepare-eval --trial` uses an exact ID from the tagged
+`trials` list and only prepares commands; it does not execute a rollout.
 Public parameter dumps use portable paths; use the
 emitted `manifest.json` with `--spec`, as shown below. Checkpoint and motion
 bytes are unchanged. Do not substitute a newly trained
@@ -68,8 +100,8 @@ After obtaining the bundle and installing the pinned backend:
 
 ```bash
 python scripts/reproduction/configure_core.py \
-  --assets /path/to/paper-core-inputs \
-  --spec /path/to/paper-core-inputs/manifest.json \
+  --assets artifacts/paper-core-inputs \
+  --spec artifacts/paper-core-inputs/manifest.json \
   --backend third_party/unitree_rl_mjlab \
   --runtime-python /path/to/tracking-environment/bin/python \
   --output runs/paper-config
