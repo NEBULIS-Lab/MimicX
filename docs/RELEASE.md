@@ -1,5 +1,24 @@
 # Source Release 0.5.1
 
+## Release Map
+
+| Workflow | Source and protocol | Artifacts and evidence |
+| --- | --- | --- |
+| Video to policy | [Quickstart](QUICKSTART.md), [method](METHOD.md) | [Recorded video and scene executions](https://nebulis-lab.com/MimicX/#policies) |
+| Pretrained execution | [Paired downloads](DEMONSTRATIONS.md) | [Policies](https://huggingface.co/Shuaijun/MimicX-Policies), [assets](https://huggingface.co/datasets/Shuaijun/MimicX-Assets) |
+| Matched-budget comparison | [12-motion protocol](CONFIRMATION.md) | [All tasks and training costs](https://nebulis-lab.com/MimicX/#motion-study) |
+| Repeated verification | [Proposal and gate rules](METHOD.md) | [Execution and mechanism records](https://nebulis-lab.com/MimicX/#results) |
+| Heterogeneous feedback | [HLoop](HLOOP.md) | [Measured feedback workload](https://nebulis-lab.com/MimicX/#hloop) |
+| Native Isaac Lab | [Installation and execution](ISAAC.md) | One-motion train, reload, continuation and refinement validation |
+| Continuous-motion auditing | [Clock and coverage checks](LONG_MOTIONS.md) | CPU audit utility; independent of a new policy release |
+
+The source distribution and wheel build successfully. The release passes849 CPU
+tests, with50 optional-runtime tests skipped in that environment. Existing
+policy/reference recommendations and website media keep their recorded versions.
+The complete12-motion results retain all tasks and both evaluation conditions.
+Numerical results belong to the website evidence, while checkpoints remain on HF
+or in their recorded experiment archives rather than in the source repository.
+
 ## Continuous-Execution Evidence
 
 The source adds a CPU-only horizon audit and a guide for continuous multi-phase

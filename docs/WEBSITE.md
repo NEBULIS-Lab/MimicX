@@ -148,8 +148,8 @@ link visible on phones. Dataset values and research media are not altered.
 
 Header and footer retain their approved design. Resource links are configured
 per release; anonymous releases use local artifact documentation instead of
-identifying model-hosting links. The arXiv button remains a placeholder until
-an identifier is available. GitHub Pages uses main/docs;
+identifying model-hosting links. The public paper button links to the published
+arXiv record, `2610.09055`. GitHub Pages uses main/docs;
 a push alone is not proof that a hosted deployment has completed.
 
 ## Attribution

@@ -1,13 +1,13 @@
 <div align="center">
 
-<a href="https://nebulis-lab.github.io/MimicX/">
+<a href="https://nebulis-lab.com/MimicX/">
   <img src="docs/assets/branding/mimicx-full-logo.svg" alt="MimicX" width="680">
 </a>
 
 <h1>MimicX: Policy-in-the-Loop Supervision Refinement<br>for Video-Driven Humanoid Motion Tracking</h1>
 
 <p>
-  <a href="https://nebulis-lab.github.io/MimicX/"><img src="https://img.shields.io/badge/Project-Website-D45B4C?style=flat-square" alt="Project website" height="23"></a>
+  <a href="https://nebulis-lab.com/MimicX/"><img src="https://img.shields.io/badge/Project-Website-D45B4C?style=flat-square" alt="Project website" height="23"></a>
   <a href="https://arxiv.org/abs/2610.09055"><img src="https://img.shields.io/badge/arXiv-2610.09055-D45B4C?style=flat-square&amp;logo=arxiv&amp;logoColor=white" alt="arXiv paper" height="23"></a>
   <a href="https://huggingface.co/Shuaijun/MimicX-Policies"><img src="https://img.shields.io/badge/Hugging_Face-Policies-D45B4C?style=flat-square&amp;logo=huggingface&amp;logoColor=white" alt="Hugging Face policies" height="23"></a>
   <a href="https://huggingface.co/datasets/Shuaijun/MimicX-Assets"><img src="https://img.shields.io/badge/Hugging_Face-Assets-3B78A8?style=flat-square&amp;logo=huggingface&amp;logoColor=white" alt="Hugging Face assets" height="23"></a>
@@ -21,7 +21,7 @@
 
 **[Overview](#overview) &middot; [Quickstart](#quickstart) &middot; [Policies & Assets](#policies-and-assets) &middot; [Documentation](#documentation)**
 
-<a href="https://nebulis-lab.github.io/MimicX/#policies">
+<a href="https://nebulis-lab.com/MimicX/#policies">
   <img src="docs/assets/media/readme-tennis-motion.png" alt="Successive poses of the recorded MimicX G1 tennis policy, arranged across a tennis-court presentation scene" width="1000">
 </a>
 <p><sub>Recorded G1 tennis policy motion. Successive poses are arranged spatially for visualization.</sub></p>
@@ -53,8 +53,13 @@ current policy.
 Within each automated loop, the registered reference stays fixed while
 training objectives and curricula are refined. Input reference preparation
 is a separate stage. The [method documentation](docs/METHOD.md) describes
-the training and selection procedure; the [project website](https://nebulis-lab.github.io/MimicX/)
+the training and selection procedure; the [project website](https://nebulis-lab.com/MimicX/)
 contains the visual comparisons and numerical results.
+
+**Source release:** 0.5.1. Start with the paired HF policies for execution,
+the quickstart for video inputs, or the matched-budget protocol for the
+12-motion comparison. The [release map](docs/RELEASE.md#release-map) lists
+the source, pretrained artifacts and evidence for each workflow.
 
 ### Current workflows
 
@@ -179,7 +184,7 @@ HF downloads; the runnable study trains its warmstarts and continuations locally
 <details>
 <summary><strong>Website and numerical data</strong></summary>
 
-The [project website](https://nebulis-lab.github.io/MimicX/) presents the
+The [project website](https://nebulis-lab.com/MimicX/) presents the
 method, paired policy videos and numerical evidence. Measured results live
 only under `docs/assets/results/`, separate from implementation and runtime
 inputs. The static page can also be opened from [docs/index.html](docs/index.html).
